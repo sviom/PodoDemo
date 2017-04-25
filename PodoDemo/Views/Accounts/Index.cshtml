@@ -1,8 +1,7 @@
 @model string
 
 @{
-    string title = "고d객";
-    ViewData["Title"] = title;
+    ViewData["Title"] = "Account";
 }
 <script type="text/javascript">
     $(document).ready(function () {
@@ -33,7 +32,7 @@
 
         $("#accountList").jqxGrid(
             {
-                width: 1100,
+                width: '100%',
                 source: dataAdapter,
                 pageable: true,
                 autoheight: true,
@@ -53,9 +52,9 @@
                 columns: [
                     //문자로 나오는 항목
                     { text: "Num", datafield: "Accountid", hidden: true, align: 'center', cellsalign: 'center' },
-                    { text: "Name", datafield: "Name", align: 'center', cellsalign: 'left' },
+                    { text: "Name", datafield: "Name", align: 'center', cellsalign: 'left', width: '95%' },
                     //{ text: '사업자번호', datafield: 'BizNum', align: 'center', cellsalign: 'center', width: 100 },
-                    { text: "Phone", datafield: "Phone", align: 'center', cellsalign: 'center', width: 100 }
+                    { text: "Phone", datafield: "Phone", align: 'center', cellsalign: 'center', width: '5%' }
                     //{ text: '주소', datafield: 'Address', align: 'center', cellsalign: 'center' }
                     //{ text: 'Maker', datafield: 'MainProduct', align: 'center', cellsalign: 'center', width: 80 },
                     // 업종 (메인페이지 및 거래처 페이지 중단 GRID에 표시함)CustomerTypeText
@@ -75,8 +74,42 @@
     });
 </script>
 
+
+
 <div class="View">
-    <div class="ViewTitle">거래처 목록</div>
-    <div id="accountList"></div>
+    <div class="ViewTitle">
+        <span>Account List</span>
+    </div>
+    <div class="SearchCondition">
+        <table>
+            <tr>
+                <td class="SearchLabel">Account Name</td>
+                <td class="SearchInput">
+                    <input type="text" placeholder="Account Name" />
+                </td>
+                <td class="SearchLabel">Phone</td>
+                <td class="SearchInput">
+                    <input type="text" placeholder="Account Phone" />
+                </td>
+                <td class="SearchLabel">CustomerType</td>
+                <td class="SearchInput">
+                    <input type="text" />
+                </td>
+                <td class="SearchLabel">ETC</td>
+                <td class="SearchInput">
+                    <input type="text" />
+                </td>
+            </tr>
+
+            <tr class="SearchFunctionTr">
+                <td colspan="8">
+                    <button type="button" class="SearchButton">Search</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="ViewContent">
+        <div id="accountList"></div>
+    </div>
 </div>
 

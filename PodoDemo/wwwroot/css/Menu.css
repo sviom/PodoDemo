@@ -1,6 +1,6 @@
 ﻿.menuList {
     width: 100%;
-    height: 78px;
+    height: 60px;
     margin: 0 auto;
     background-color: #2588EA;
 }
@@ -9,7 +9,7 @@
         float: left;
         width: 184px;
         min-width: 184px;
-        line-height: 78px;
+        line-height: 60px;
         margin-right: 20px;
     }
 
@@ -22,7 +22,7 @@
         float: right;
         width: 300px;
         color: white;
-        line-height:78px;
+        line-height:60px;
         text-align:center;
     }
 
@@ -41,7 +41,7 @@
         color: white;
         text-align: center;
         position: relative;
-        line-height: 78px;
+        line-height: 60px;
         width: 100px;
     }
 
@@ -70,7 +70,7 @@
 
 .userInfo .userName {
     font-weight: bold;
-    line-height:78px;
+    line-height:60px;
     font-size:30px;
     /*vertical-align:middle;*/
 }
