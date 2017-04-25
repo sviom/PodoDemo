@@ -1,0 +1,33 @@
+﻿* {
+    font-family: 'Malgun Gothic';
+}
+
+html, body {
+    margin: 0 auto;
+}
+
+.RenderView {
+    background-color: #f9f9f9;
+    padding-top:20px;
+}
+
+
+.View {
+    width: 1300px;
+    background-color:white;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius:4px;
+    /*margin-top:20px;*/
+}
+
+.ViewTitle {
+    background-color: #474747;
+    height: 45px;
+    text-align: left;
+    border-radius: 5px 5px 0px 0px;
+    color:white;
+    vertical-align:middle;
+    line-height:45px;
+}

@@ -1,0 +1,86 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>포도CRM</title>
+    <script src="~/js/jquery-3.2.1.min.js"></script>
+    <link href="~/css/LoginPage.css" rel="stylesheet" />
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#LoginButton").click(function () {
+                var id = $("#userID").val();
+                var pw = $("#userPW").val();
+
+                if (id == undefined || id == "" || id == null) {
+                    alert("아이디를 확인하세요.");
+                    return;
+                }
+
+                if (pw == undefined || pw == "" || pw == null) {
+                    alert("비밀번호를 확인하세요.");
+                    return;
+                }
+
+                $("#loginForm").prop("action", "/Home/CheckUser");
+                $("#loginForm").prop("method", "post");
+                $("#loginForm").submit();
+            });
+        });
+
+
+        function OnKeyDown(elementId) {
+            if (event.keyCode == 13) {
+                $("#" + elementId).trigger('click');
+            }
+        }
+    </script>
+</head>
+<body>
+    <form id="loginForm" class="loginForm">
+        <div class="loginLogo">
+            <img src="~/images/Login/login_logo.png" />
+        </div>
+        <div class="logindiv">
+            <div class="logintab">
+                <div class="mainImage">
+                    <img src="~/images/Login/login_img.png" />
+                </div>
+                <div class="userInput">
+                    <img src="~/images/Login/login_text.png" />
+                    <br />
+                    <input type="text" id="userID" name="useriD" class="inputbox1" placeholder="아이디" onkeydown="OnKeyDown(this.id)" />
+                    <br />
+                    <input type="password" id="userPW" name="userPW" class="inputbox2" placeholder="비밀번호" onkeydown="OnKeyDown(this.id)" />
+                    <br />
+                    <br />
+                    <button type="button" id="LoginButton" class="loginButton">로그인</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- bottom -->
+        <div class="bottom">
+            <br />
+            상호명 : 트루인포 | 사업자등록번호 : 119-86-17769 |
+            대표자 : 신수원 | 전화번호 : 070-8231-4590 | 팩스번호 : 02-6008-3199
+            <br />
+            주소 :
+            서울특별시 금천구 서부샛길 606, 디폴리스 B동 1309호
+            <br />
+            <br />
+            Copyrights(c) @DateTime.Now.Year
+            trueinfo.All rights reserved.
+            <br />
+            <br />
+        </div>
+    </form>
+</body>
+</html>
