@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PodoDemo.Models;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace PodoDemo.Controllers
 {
@@ -47,6 +48,30 @@ namespace PodoDemo.Controllers
         // GET: Accounts/Create
         public IActionResult Create()
         {
+            int count = this.GetType().GetProperties().Count();
+            // or
+            count = typeof(Account).GetProperties().Count();
+
+            ViewBag.AccountPropertyCount = count;
+            //Account data = new Account();
+            //Dictionary<string, string> myDict = new Dictionary<string, string>();
+            //Type t = data.GetType();
+            //foreach (PropertyInfo pi in t.GetProperties())
+            //{
+            //    //myDict[pi.Name] = //...value appropiate sended data.
+            //    myDict[pi.Name] = pi.GetValue(data, null).ToString();
+            //}
+            //ViewBag.AccountPropertyList = myDict;
+
+            PropertyInfo[] propertyInfos;
+            propertyInfos = typeof(Account).GetProperties();
+            List<string> propertyList = new List<string>();
+            foreach (PropertyInfo propertyInfo in propertyInfos)
+            {
+                propertyList.Add(propertyInfo.Name);
+            }
+
+            ViewBag.AccountPropertyList = propertyList;
             return View();
         }
 

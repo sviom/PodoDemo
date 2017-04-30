@@ -2,10 +2,83 @@
 
 @{
     ViewData["Title"] = "Create";
+    List<string> propertyList = ViewBag.AccountPropertyList;
 }
 
-<h2>Create</h2>
+<div class="View">
+    <div class="ViewTitle">
+        <span>Create Account</span>
+    </div>
+    <div class="ViewContent">
+        <span>@ViewBag.AccountPropertyCount</span>
+        <form>
+            <table>
+                @{
+                    for (int i = 0; i < propertyList.Count; i += 2)
+                    {
+                        if (i + 1 <= propertyList.Count)
+                        {
+                            <tr>
+                                <td>
+                                    <span>
+                                        @propertyList[i].ToString()
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (propertyList[i].ToString() == "Detail")
+                                    {
 
+                                        <textarea placeholder="@propertyList[i].ToString()"></textarea>
+                                    }
+                                    else
+                                    {
+                                        <input type="text" id="@propertyList[i].ToString()" placeholder="@propertyList[i].ToString()" />
+                                    }
+                                    
+                                </td>
+                                @if (i + 1 < propertyList.Count)
+                                {
+                                    <td>
+                                        <span>
+                                            @propertyList[i + 1].ToString()
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (propertyList[i+1].ToString() == "Detail")
+                                        {
+
+                                            <textarea placeholder="@propertyList[i+1].ToString()"></textarea>
+                                        }
+                                        else
+                                        {
+                                            <input type="text" id="@propertyList[i+1].ToString()" placeholder="@propertyList[i+1].ToString()" />
+                                        }
+                                    </td>
+                                }                                
+                            </tr>
+                        }
+                    }
+                }
+            </table>
+            @for (int i = 0; i < propertyList.Count; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    <span>@propertyList[i].ToString()</span>
+
+                }
+                else
+                {
+                    <span>@propertyList[i].ToString()</span>
+                    <br />
+                }
+            }
+        </form>
+    </div>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>
 <form asp-action="Create">
     <div class="form-horizontal">
         <h4>Account</h4>
@@ -153,7 +226,4 @@
     </div>
 </form>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
