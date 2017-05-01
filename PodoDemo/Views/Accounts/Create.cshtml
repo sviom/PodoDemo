@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Create";
     List<string> propertyList = ViewBag.AccountPropertyList;
+    List<string> propertyTypeList = ViewBag.AccountPropertyTypeList;
 }
 
 <div class="View">
@@ -10,220 +11,75 @@
         <span>Create Account</span>
     </div>
     <div class="ViewContent">
-        <span>@ViewBag.AccountPropertyCount</span>
-        <form>
+        <form action="/Accounts/Create" method="post">
             <table>
-                @{
-                    for (int i = 0; i < propertyList.Count; i += 2)
-                    {
-                        if (i + 1 <= propertyList.Count)
-                        {
-                            <tr>
-                                <td>
-                                    <span>
-                                        @propertyList[i].ToString()
-                                    </span>
-                                </td>
-                                <td>
-                                    @if (propertyList[i].ToString() == "Detail")
-                                    {
-
-                                        <textarea placeholder="@propertyList[i].ToString()"></textarea>
-                                    }
-                                    else
-                                    {
-                                        <input type="text" id="@propertyList[i].ToString()" placeholder="@propertyList[i].ToString()" />
-                                    }
-                                    
-                                </td>
-                                @if (i + 1 < propertyList.Count)
-                                {
-                                    <td>
-                                        <span>
-                                            @propertyList[i + 1].ToString()
-                                        </span>
-                                    </td>
-                                    <td>
-                                        @if (propertyList[i+1].ToString() == "Detail")
-                                        {
-
-                                            <textarea placeholder="@propertyList[i+1].ToString()"></textarea>
-                                        }
-                                        else
-                                        {
-                                            <input type="text" id="@propertyList[i+1].ToString()" placeholder="@propertyList[i+1].ToString()" />
-                                        }
-                                    </td>
-                                }                                
-                            </tr>
-                        }
-                    }
-                }
+                <tr>
+                    <td class="tableLabelTD">
+                        <span>CompanyName</span>
+                    </td>
+                    <td class="tableInputTD">
+                        <input type="text" class="inputType" />
+                    </td>
+                    <td class="tableLabelTD">
+                        <span>Tel</span>
+                    </td>
+                    <td class="tableInputTD">
+                        <input type="tel" class="inputType" />
+                    </td>
+                    <td class="tableLabelTD">
+                        <span>Fax</span>
+                    </td>
+                    <td class="tableInputTD">
+                        <input type="tel" class="inputType" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tableLabelTD">
+                        <span>HomePage</span>
+                    </td>
+                    <td class="tableInputTD">
+                        <input type="text" class="inputType" />
+                    </td>
+                    <td class="tableLabelTD">
+                        <span>CEO</span>
+                    </td>
+                    <td class="tableInputTD">
+                        <input type="text" class="inputType" />
+                    </td>
+                    <td class="tableLabelTD">
+                        <span>Biz No.</span>
+                    </td>
+                    <td class="tableInputTD">
+                        <input type="text" class="inputType" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tableLabelTD">
+                        <span>Founded Date</span>
+                    </td>
+                    <td class="tableInputTD">
+                        <input type="date" class="inputType" />
+                    </td>
+                    <td class="tableLabelTD">
+                        <span> Detail</span>
+                    </td>
+                    <td class="tableInputTD" colspan="3">
+                        <div class="inputDiv" contenteditable="true"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tableLabelTD"></td>
+                    <td class="tableInputTD"></td>
+                    <td class="tableLabelTD"></td>
+                    <td class="tableInputTD"></td>
+                    <td class="tableLabelTD"></td>
+                    <td class="tableInputTD"></td>
+                </tr>
             </table>
-            @for (int i = 0; i < propertyList.Count; i++)
-            {
-                if (i % 2 == 0)
-                {
-                    <span>@propertyList[i].ToString()</span>
-
-                }
-                else
-                {
-                    <span>@propertyList[i].ToString()</span>
-                    <br />
-                }
-            }
+            <div class="ControlButtonArea">
+                <button type="submit">Create an Account</button>
+                <a href="/Accounts/Index">Back to List</a>
+            </div>
         </form>
     </div>
-    <div>
-        <a asp-action="Index">Back to List</a>
-    </div>
 </div>
-<form asp-action="Create">
-    <div class="form-horizontal">
-        <h4>Account</h4>
-        <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="Name" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Phone" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Fax" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Fax" class="form-control" />
-                <span asp-validation-for="Fax" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Homepage" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Homepage" class="form-control" />
-                <span asp-validation-for="Homepage" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Ceo" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Ceo" class="form-control" />
-                <span asp-validation-for="Ceo" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Postcode" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Postcode" class="form-control" />
-                <span asp-validation-for="Postcode" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Address" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Addresscity" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Addresscity" class="form-control" />
-                <span asp-validation-for="Addresscity" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Addressdetail" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Addressdetail" class="form-control" />
-                <span asp-validation-for="Addressdetail" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Addresstype" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Addresstype" class="form-control" />
-                <span asp-validation-for="Addresstype" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Biznum" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Biznum" class="form-control" />
-                <span asp-validation-for="Biznum" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Founddate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Founddate" class="form-control" />
-                <span asp-validation-for="Founddate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Detail" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Detail" class="form-control" />
-                <span asp-validation-for="Detail" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Createdate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Createdate" class="form-control" />
-                <span asp-validation-for="Createdate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Createuser" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Createuser" class="form-control" />
-                <span asp-validation-for="Createuser" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Modifydate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Modifydate" class="form-control" />
-                <span asp-validation-for="Modifydate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Modifyuser" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Modifyuser" class="form-control" />
-                <span asp-validation-for="Modifyuser" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <div class="checkbox">
-                    <input asp-for="Isdeleted" />
-                    <label asp-for="Isdeleted"></label>
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Ownerid" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Ownerid" class="form-control" />
-                <span asp-validation-for="Ownerid" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-</form>
-
-

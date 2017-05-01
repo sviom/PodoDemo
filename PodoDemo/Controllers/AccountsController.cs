@@ -49,28 +49,23 @@ namespace PodoDemo.Controllers
         public IActionResult Create()
         {
             int count = this.GetType().GetProperties().Count();
-            // or
             count = typeof(Account).GetProperties().Count();
 
             ViewBag.AccountPropertyCount = count;
-            //Account data = new Account();
-            //Dictionary<string, string> myDict = new Dictionary<string, string>();
-            //Type t = data.GetType();
-            //foreach (PropertyInfo pi in t.GetProperties())
-            //{
-            //    //myDict[pi.Name] = //...value appropiate sended data.
-            //    myDict[pi.Name] = pi.GetValue(data, null).ToString();
-            //}
-            //ViewBag.AccountPropertyList = myDict;
-
             PropertyInfo[] propertyInfos;
             propertyInfos = typeof(Account).GetProperties();
             List<string> propertyList = new List<string>();
+            List<string> propertyTypeList = new List<string>();
             foreach (PropertyInfo propertyInfo in propertyInfos)
             {
-                propertyList.Add(propertyInfo.Name);
+                if (!propertyInfo.Name.Equals("Accountid") &&
+                    !propertyInfo.Name.Equals("Contact"))
+                {
+                    propertyList.Add(propertyInfo.Name);
+                    propertyTypeList.Add(propertyInfo.PropertyType.Name);
+                }
             }
-
+            ViewBag.AccountPropertyTypeList = propertyTypeList;
             ViewBag.AccountPropertyList = propertyList;
             return View();
         }

@@ -87,3 +87,59 @@ html, body {
         cursor: pointer;
         color: #796d6d;
     }
+
+.ViewContent form {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+    .ViewContent form table {
+        border: 1px solid #494949;
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+.ViewContent .tableLabelTD {
+    background-color: #EEF7FF;
+    border: 1px solid #494949;
+    width:150px;
+}
+
+.ViewContent .tableInputTD {
+    border: 1px solid #494949;
+}
+
+.tableInputTD .inputType {
+    width: 80%;
+    text-align: left;
+    float: left;
+}
+
+.tableInputTD .inputDiv {
+    width: 80%;
+    text-align: left;
+    float: left;
+    border: 1px solid black;
+}
+
+.ControlButtonArea {
+    float: right;
+    text-align: center;
+}
+
+    .ControlButtonArea a {
+        text-decoration: none;
+        border: none;
+        background-color: #EEF7FF;
+        font-size: 15px;
+    }
+
+    .ControlButtonArea button {
+        border: none;
+        background-color: #EEF7FF;
+        font-size: 15px;
+    }
+
+        .ControlButtonArea button:hover {
+            cursor: pointer;
+        }
