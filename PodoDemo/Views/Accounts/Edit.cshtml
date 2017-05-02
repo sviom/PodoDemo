@@ -1,160 +1,349 @@
-@model PodoDemo.Models.Account
+﻿@model PodoDemo.Models.Account
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h2>Edit</h2>
+<script type="text/javascript">
+    $(document).ready(function () {
+        SetBasicElement();// 기본적으로 그리는 화면 내용
+    });
 
-<form asp-action="Edit">
-    <div class="form-horizontal">
-        <h4>Account</h4>
-        <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="Accountid" />
-        <div class="form-group">
-            <label asp-for="Name" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+    // 기본적으로 그리는 화면 내용
+    function SetBasicElement() {
+        $("#jqdatetimeinput_founddate")
+            .jqxDateTimeInput({ width: '80%', formatString: 'yyyy-MM-dd' })
+            .jqxDateTimeInput('setDate', new Date("@Html.Raw(Model.Founddate)"));
+    }
+
+    // 폼이 입력될 때
+    function SubmitForm() {
+        // 유효성 검사 후 진행
+        if (ValidateForm()) {
+            $("#Founddate").val($('#jqdatetimeinput_founddate').jqxDateTimeInput('getText'));
+            $("#Detail").val($("#tempDetail").html());
+            $("#AccountEditForm").submit();
+        }
+    }
+
+    // 입력한 값들에 대한 유효성 검사
+    function ValidateForm() {
+        var nameValue = $("#Name").val();
+        var phoneValue = $("#Phone").val();
+        var faxValue = $("#Fax").val();
+        var homepageValue = $("#Homepage").val();
+        var ceoValue = $("#Ceo").val();
+        var biznumValue = $("#Biznum").val();
+        var founddateValue = $("#jqdatetimeinput_founddate").jqxDateTimeInput('getText');
+        var detailValue = $("#Detail").val();
+
+        if (nameValue == "") {
+            alert("거래처 이름을 입력해주세요.");
+            return false;
+        }
+
+        if (phoneValue != "") {
+            if (!IsPhoneType(phoneValue)) {
+                alert("전화번호 형식을 00-000-0000 형식으로\n올바르게 입력해주세요.");
+                return false;
+            }
+        }
+
+        if (faxValue != "") {
+            if (!IsPhoneType(faxValue)) {
+                alert("팩스 형식을 00-000-0000 형식으로\n올바르게 입력해주세요.");
+                return false;
+            }
+        }
+
+        if (biznumValue != "") {
+            if (!IsBizNumType(biznumValue)) {
+                alert("사업자번호를 올바르게 입력해주세요.");
+                return false;
+            }
+        }
+
+        if (founddateValue != "") {
+            if (!IsDateType(founddateValue)) {
+                alert("날짜 형식을 올바르게 입력해주세요.");
+                return false;
+            }
+        }
+
+        return true;
+    }
+</script>
+<div class="View">
+    <div class="ViewTitle">
+        <span>거래처 생성</span>
+    </div>
+    <div class="ViewContent">
+        <span class="ViewSubTitle">> 기본 정보</span>
+        <form id="AccountEditForm" action="/Accounts/Edit/@Model.Accountid" method="post">
+            @*asp-action="Create"*@
+            <input type="hidden" id="Accountid" name="Accountid" value="@Model.Accountid" />
+            <table>
+                <tr>
+                    <td class="tableLabelTD">
+                        <span class="requireField">회사명</span>
+                    </td>
+                    <td class="tableInputTD">
+                        <input type="text" id="Name" name="Name" class="inputType" value="@Model.Name" placeholder="거래처 이름" />
+                        @*<input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>*@
+                    </td>
+                    <td class="tableLabelTD">
+                        <span>전화번호</span>
+                    </td>
+                    <td class="tableInputTD">
+                        <input type="tel" id="Phone" name="Phone" class="inputType" value="@Model.Phone" placeholder="전화번호[00-000-0000]" />
+                    </td>
+                    <td class="tableLabelTD">
+                        <span>팩스</span>
+                    </td>
+                    <td class="tableInputTD">
+                        <input type="tel" id="Fax" name="Fax" class="inputType" value="@Model.Fax" placeholder="팩스[00-000-0000]" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tableLabelTD">
+                        <span>홈페이지</span>
+                    </td>
+                    <td class="tableInputTD">
+                        <input type="text" id="Homepage" name="Homepage" class="inputType" value="@Model.Homepage" placeholder="홈페이지 주소" />
+                    </td>
+                    <td class="tableLabelTD">
+                        <span>CEO</span>
+                    </td>
+                    <td class="tableInputTD">
+                        <input type="text" id="Ceo" name="Ceo" class="inputType" value="@Model.Ceo" placeholder="대표/사장 성함" />
+                    </td>
+                    <td class="tableLabelTD">
+                        <span>사업자번호</span>
+                    </td>
+                    <td class="tableInputTD">
+                        <input type="text" id="Biznum" name="Biznum" class="inputType" value="@Model.Biznum" placeholder="사업자번호" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tableLabelTD">
+                        <span>설립일</span>
+                    </td>
+                    <td class="tableInputTD">
+                        @*<input type="date" id="Founddate" name="Founddate" class="inputType" />*@
+                        <div id="jqdatetimeinput_founddate"></div>
+                        <input type="hidden" id="Founddate" name="Founddate" />
+                    </td>
+                    <td class="tableLabelTD">
+                        <span>비고</span>
+                    </td>
+                    <td class="tableInputTD" colspan="3">
+                        <div class="inputDiv" id="tempDetail" name="tempDetail" contenteditable="true">@Model.Detail</div>
+                        <input type="hidden" id="Detail" name="Detail" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tableLabelTD">
+                        <span>담당자</span>
+                    </td>
+                    <td class="tableInputTD">
+                        <input type="text" id="Ownerid" name="Ownerid" class="inputType" value="@Model.Ownerid" />
+                    </td>
+                    <td class="tableLabelTD"></td>
+                    <td class="tableInputTD"></td>
+                    <td class="tableLabelTD"></td>
+                    <td class="tableInputTD"></td>
+                </tr>
+            </table>
+            <div class="ControlButtonArea">
+                <button type="button" id="EditAccountButton" onclick="SubmitForm();">저장</button>
+                <a href="/Accounts/Index">목록</a>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Phone" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
+
+            <span class="ViewSubTitle">> 이력 정보</span>
+            <table>
+                <tr>
+                    <td class="tableLabelTD"><span>생성일</span></td>
+                    <td class="tableInputTD">
+                        <label>@Model.Createdate</label>
+                        <input type="hidden" asp-for="Createdate" value="@Model.Createdate" />
+                    </td>
+                    <td class="tableLabelTD"><span>생성자</span></td>
+                    <td class="tableInputTD">
+                        <label>@Model.Createuser</label>
+                        <input type="hidden" id="Createuser" name="Createuser" value="@Model.Createuser" />
+                    </td>
+                    <td class="tableLabelTD"></td>
+                    <td class="tableInputTD"></td>
+                </tr>
+                <tr>
+                    <td class="tableLabelTD"><span>수정일</span></td>
+                    <td class="tableInputTD">
+                        <label>@Model.Modifydate</label>
+                        <input type="hidden" id="Modifydate" name="Modifydate" value="@Model.Modifydate" />
+                    </td>
+                    <td class="tableLabelTD"><span>수정자</span></td>
+                    <td class="tableInputTD">
+                        <label>@Model.Modifyuser</label>
+                        <input type="hidden" id="Modifyuser" name="Modifyuser" value="@Model.Modifyuser" />
+                    </td>
+                    <td class="tableLabelTD"></td>
+                    <td class="tableInputTD"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+@*<form asp-action="Edit">
+        <div class="form-horizontal">
+            <h4>Account</h4>
+            <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Accountid" />
+            <div class="form-group">
+                <label asp-for="Name" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Fax" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Fax" class="form-control" />
-                <span asp-validation-for="Fax" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Phone" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Homepage" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Homepage" class="form-control" />
-                <span asp-validation-for="Homepage" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Fax" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Fax" class="form-control" />
+                    <span asp-validation-for="Fax" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Ceo" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Ceo" class="form-control" />
-                <span asp-validation-for="Ceo" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Homepage" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Homepage" class="form-control" />
+                    <span asp-validation-for="Homepage" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Postcode" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Postcode" class="form-control" />
-                <span asp-validation-for="Postcode" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Ceo" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Ceo" class="form-control" />
+                    <span asp-validation-for="Ceo" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Address" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Postcode" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Postcode" class="form-control" />
+                    <span asp-validation-for="Postcode" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Addresscity" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Addresscity" class="form-control" />
-                <span asp-validation-for="Addresscity" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Address" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Addressdetail" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Addressdetail" class="form-control" />
-                <span asp-validation-for="Addressdetail" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Addresscity" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Addresscity" class="form-control" />
+                    <span asp-validation-for="Addresscity" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Addresstype" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Addresstype" class="form-control" />
-                <span asp-validation-for="Addresstype" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Addressdetail" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Addressdetail" class="form-control" />
+                    <span asp-validation-for="Addressdetail" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Biznum" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Biznum" class="form-control" />
-                <span asp-validation-for="Biznum" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Addresstype" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Addresstype" class="form-control" />
+                    <span asp-validation-for="Addresstype" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Founddate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Founddate" class="form-control" />
-                <span asp-validation-for="Founddate" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Biznum" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Biznum" class="form-control" />
+                    <span asp-validation-for="Biznum" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Detail" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Detail" class="form-control" />
-                <span asp-validation-for="Detail" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Founddate" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Founddate" class="form-control" />
+                    <span asp-validation-for="Founddate" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Createdate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Createdate" class="form-control" />
-                <span asp-validation-for="Createdate" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Detail" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Detail" class="form-control" />
+                    <span asp-validation-for="Detail" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Createuser" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Createuser" class="form-control" />
-                <span asp-validation-for="Createuser" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Createdate" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Createdate" class="form-control" />
+                    <span asp-validation-for="Createdate" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Modifydate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Modifydate" class="form-control" />
-                <span asp-validation-for="Modifydate" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Createuser" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Createuser" class="form-control" />
+                    <span asp-validation-for="Createuser" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Modifyuser" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Modifyuser" class="form-control" />
-                <span asp-validation-for="Modifyuser" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Modifydate" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Modifydate" class="form-control" />
+                    <span asp-validation-for="Modifydate" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <div class="checkbox">
-                    <input asp-for="Isdeleted" />
-                    <label asp-for="Isdeleted"></label>
+            <div class="form-group">
+                <label asp-for="Modifyuser" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Modifyuser" class="form-control" />
+                    <span asp-validation-for="Modifyuser" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <div class="checkbox">
+                        <input asp-for="Isdeleted" />
+                        <label asp-for="Isdeleted"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ownerid" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Ownerid" class="form-control" />
+                    <span asp-validation-for="Ownerid" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
                 </div>
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Ownerid" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Ownerid" class="form-control" />
-                <span asp-validation-for="Ownerid" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-</form>
+    </form>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>*@
 

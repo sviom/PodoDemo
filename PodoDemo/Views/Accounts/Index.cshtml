@@ -1,10 +1,33 @@
-@model string
+ï»¿@model string
 
 @{
     ViewData["Title"] = "Account";
 }
 <script type="text/javascript">
     $(document).ready(function () {
+        SetBasicElement();
+
+        $('#accountList').on('rowdoubleclick', function (event) {
+            var args = event.args;
+            // row's bound index.
+            var boundIndex = args.rowindex;
+            // row's visible index.
+            var visibleIndex = args.visibleindex;
+            // right click.
+            var rightclick = args.rightclick;
+            // original event.
+            var ev = args.originalEvent;
+            console.log("Row  ì •ë³´");
+            console.log(boundIndex);
+            var data = $('#accountList').jqxGrid('getrowdata', boundIndex);
+            console.log(data.Accountid);
+
+            location.href = "/Accounts/Edit/" + data.Accountid;
+        });
+    });
+
+    // ê¸°ë³¸ ì¶œë ¥ í•­ëª© í‘œì‹œ
+    function SetBasicElement() {
         var source =
             {
                 localdata: @Html.Raw(Model),
@@ -22,7 +45,7 @@
                     //{ name: 'SalesCount', type: 'number' },
                     //{ name: 'ServiceCount', type: 'number' },
                     //{ name: 'ActivityCount', type: 'number' },
-                    // Service¸¦ ÀÌ¿ëÇØ¼­ ¹Ş¾Æ¿À´Â °ªÀÇ Çü½Ä ¼³Á¤
+                    // Serviceë¥¼ ì´ìš©í•´ì„œ ë°›ì•„ì˜¤ëŠ” ê°’ì˜ í˜•ì‹ ì„¤ì •
                     //{ name: 'BizTypeText', type: 'string' },
                     //{ name: 'CustomerTypeText', type: 'string' }
                 ]
@@ -46,61 +69,61 @@
                 //showfilterrow: true,
                 filterable: true,
                 pagesize: 15,
-                //theme: "MetroCustom",//Å×¸¶¼³Á¤
-                columnsheight: '40px',//Çì´õ ³ôÀÌ ¼³Á¤
+                //theme: "MetroCustom",//í…Œë§ˆì„¤ì •
+                columnsheight: '40px',//í—¤ë” ë†’ì´ ì„¤ì •
                 //localization: getLocalization('ko-KR'),
                 columns: [
-                    //¹®ÀÚ·Î ³ª¿À´Â Ç×¸ñ
-                    { text: "Num", datafield: "Accountid", hidden: true, align: 'center', cellsalign: 'center' },
+                    //ë¬¸ìë¡œ ë‚˜ì˜¤ëŠ” í•­ëª©
+                    { text: "Accountid", datafield: "Accountid", hidden: true, align: 'center', cellsalign: 'center' },
                     { text: "Name", datafield: "Name", align: 'center', cellsalign: 'left', width: '95%' },
-                    //{ text: '»ç¾÷ÀÚ¹øÈ£', datafield: 'BizNum', align: 'center', cellsalign: 'center', width: 100 },
+                    //{ text: 'ì‚¬ì—…ìë²ˆí˜¸', datafield: 'BizNum', align: 'center', cellsalign: 'center', width: 100 },
                     { text: "Phone", datafield: "Phone", align: 'center', cellsalign: 'center', width: '5%' }
-                    //{ text: 'ÁÖ¼Ò', datafield: 'Address', align: 'center', cellsalign: 'center' }
+                    //{ text: 'ì£¼ì†Œ', datafield: 'Address', align: 'center', cellsalign: 'center' }
                     //{ text: 'Maker', datafield: 'MainProduct', align: 'center', cellsalign: 'center', width: 80 },
-                    // ¾÷Á¾ (¸ŞÀÎÆäÀÌÁö ¹× °Å·¡Ã³ ÆäÀÌÁö Áß´Ü GRID¿¡ Ç¥½ÃÇÔ)CustomerTypeText
-                    //{ text: '¾÷Á¾', datafield: 'CustomerTypeText', align: 'center', cellsalign: 'center', width: 70, cellsrenderer: countCellRenderer6 },
-                    // °í°´ Å¸ÀÔ (¸ŞÀÎÆäÀÌÁö ¹× °Å·¡Ã³ ÆäÀÌÁö Áß´Ü GRID¿¡ Ç¥½ÃÇÔ)BizTypeText
-                    //{ text: '°í°´Å¸ÀÔ', datafield: 'BizTypeText', align: 'center', cellsalign: 'center', width: 70, cellsrenderer: countCellRenderer7 },
+                    // ì—…ì¢… (ë©”ì¸í˜ì´ì§€ ë° ê±°ë˜ì²˜ í˜ì´ì§€ ì¤‘ë‹¨ GRIDì— í‘œì‹œí•¨)CustomerTypeText
+                    //{ text: 'ì—…ì¢…', datafield: 'CustomerTypeText', align: 'center', cellsalign: 'center', width: 70, cellsrenderer: countCellRenderer6 },
+                    // ê³ ê° íƒ€ì… (ë©”ì¸í˜ì´ì§€ ë° ê±°ë˜ì²˜ í˜ì´ì§€ ì¤‘ë‹¨ GRIDì— í‘œì‹œí•¨)BizTypeText
+                    //{ text: 'ê³ ê°íƒ€ì…', datafield: 'BizTypeText', align: 'center', cellsalign: 'center', width: 70, cellsrenderer: countCellRenderer7 },
 
-                    //¼ıÀÚ·Î ³ª¿À´Â Ç×¸ñ
-                    //{ text: '¿¬¶ôÃ³', datafield: 'ContactCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer1 },
-                    //{ text: '¿µ¾÷±âÈ¸', datafield: 'ProgressBusinessCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer2 },
-                    //{ text: '¿µ¾÷±âÈ¸(Á¾·á)', datafield: 'EndBusinessCount', align: 'center', cellsalign: 'center', width: 110, cellsrenderer: countCellRenderer3 },
-                    //{ text: 'OrderÁ¤º¸', datafield: 'SalesCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer3 },
-                    //{ text: '¼­ºñ½º', datafield: 'ServiceCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer4 },
-                    //{ text: 'È°µ¿', datafield: 'ActivityCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer5 }
+                    //ìˆ«ìë¡œ ë‚˜ì˜¤ëŠ” í•­ëª©
+                    //{ text: 'ì—°ë½ì²˜', datafield: 'ContactCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer1 },
+                    //{ text: 'ì˜ì—…ê¸°íšŒ', datafield: 'ProgressBusinessCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer2 },
+                    //{ text: 'ì˜ì—…ê¸°íšŒ(ì¢…ë£Œ)', datafield: 'EndBusinessCount', align: 'center', cellsalign: 'center', width: 110, cellsrenderer: countCellRenderer3 },
+                    //{ text: 'Orderì •ë³´', datafield: 'SalesCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer3 },
+                    //{ text: 'ì„œë¹„ìŠ¤', datafield: 'ServiceCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer4 },
+                    //{ text: 'í™œë™', datafield: 'ActivityCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer5 }
                 ]
             });
-    });
+    }
 </script>
 
 <div class="View">
     <div class="ViewTitle">
-        <span>Account List</span>
+        <span>ê±°ë˜ì²˜ ëª©ë¡</span>
     </div>
     <div class="SearchCondition">
         <table>
             <tr>
                 <td class="LabelTD">
-                    <span class="SearchLabel">Account Name</span>
+                    <span class="SearchLabel">íšŒì‚¬ëª…</span>
                 </td>
                 <td class="inputTD">
                     <input type="text" class="SearchInput" placeholder="Account Name" />
                 </td>
                 <td class="LabelTD">
-                    <span class="SearchLabel">Phone</span>
+                    <span class="SearchLabel">ì „í™”ë²ˆí˜¸</span>
                 </td>
                 <td class="inputTD">
                     <input type="text" class="SearchInput" placeholder="Account Phone" />
                 </td>
                 <td class="LabelTD">
-                    <span class="SearchLabel">CustomerType</span>
+                    <span class="SearchLabel">ê³ ê°íƒ€ì…</span>
                 </td>
                 <td class="inputTD">
                     <input type="text" class="SearchInput" />
                 </td>
                 <td class="LabelTD">
-                    <span class="SearchLabel">ETC</span>
+                    <span class="SearchLabel">ê¸°íƒ€</span>
                 </td>
                 <td class="inputTD">
                     <input type="text" class="SearchInput" />
@@ -109,7 +132,7 @@
 
             <tr>
                 <td colspan="8">
-                    <button type="button" class="SearchButton">Search</button>
+                    <button type="button" class="SearchButton">ê²€ìƒ‰</button>
                 </td>
             </tr>
         </table>
@@ -118,6 +141,6 @@
         <div id="accountList"></div>
     </div>
 
-    <a href="/Accounts/Create">Create</a>
+    <a href="/Accounts/Create">ìƒì„±</a>
 </div>
 

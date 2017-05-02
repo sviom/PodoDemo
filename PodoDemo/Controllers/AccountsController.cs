@@ -124,8 +124,8 @@ namespace PodoDemo.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Accountid,Name,Phone,Fax,Homepage,Ceo,Postcode,Address,Addresscity,Addressdetail,Addresstype,Biznum,Founddate,Detail,Createdate,Createuser,Modifydate,Modifyuser,Isdeleted,Ownerid")] Account account)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(long id, [Bind("Accountid,Name,Phone,Fax,Homepage,Ceo,Postcode,Address,Addresscity,Addressdetail,Addresstype,Biznum,Founddate,Detail,Ownerid,Createuser,Createdate,Modifydate,Modifyuser")] Account account)
         {
             if (id != account.Accountid)
             {
@@ -136,6 +136,9 @@ namespace PodoDemo.Controllers
             {
                 try
                 {
+                    account.Modifydate = DateTime.Now;
+                    account.Modifyuser = HttpContext.Session.GetString("userId");
+
                     _context.Update(account);
                     await _context.SaveChangesAsync();
                 }
