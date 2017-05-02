@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PodoDemo.Models
 {
@@ -10,6 +12,8 @@ namespace PodoDemo.Models
             Contact = new HashSet<Contact>();
         }
 
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Accountid { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }

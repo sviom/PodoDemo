@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Properties\PublishProfiles\PodoDemo - FTP.pubxml" />
+    <None Remove="Properties\PublishProfiles\PodoDemo - Web Deploy.pubxml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="wwwroot\css\Layout.css" />
     <Content Include="wwwroot\css\LoginPage.css" />
     <Content Include="wwwroot\css\Menu.css" />
@@ -14,6 +19,8 @@
     <Content Include="wwwroot\images\Login\login_logo.png" />
     <Content Include="wwwroot\images\Login\login_text.png" />
     <Content Include="wwwroot\images\Menu\logo.png" />
+    <Content Include="wwwroot\js\jqwidgets\styles\images\Menu.cshtml" />
+    <Content Include="wwwroot\js\Common.js" />
     <Content Include="wwwroot\js\jquery-3.2.1.min.js" />
     <Content Include="wwwroot\js\jqwidgets\globalization\globalize.culture.cs-CZ.js" />
     <Content Include="wwwroot\js\jqwidgets\globalization\globalize.culture.de-DE.js" />
@@ -267,7 +274,6 @@
     <Content Include="wwwroot\js\jqwidgets\styles\images\loader-small.gif" />
     <Content Include="wwwroot\js\jqwidgets\styles\images\loader.gif" />
     <Content Include="wwwroot\js\jqwidgets\styles\images\mail.png" />
-    <Content Include="wwwroot\js\jqwidgets\styles\images\Menu.cshtml" />
     <Content Include="wwwroot\js\jqwidgets\styles\images\menubutton.png" />
     <Content Include="wwwroot\js\jqwidgets\styles\images\metro-icon-down-white.png" />
     <Content Include="wwwroot\js\jqwidgets\styles\images\metro-icon-down.png" />
@@ -463,6 +469,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />

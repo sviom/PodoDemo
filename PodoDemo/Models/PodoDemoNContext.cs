@@ -26,9 +26,9 @@ namespace PodoDemo.Models
         {
             modelBuilder.Entity<Account>(entity =>
             {
-                entity.HasIndex(e => e.Biznum)
-                    .HasName("UK_Account")
-                    .IsUnique();
+                //entity.HasIndex(e => e.Biznum)
+                //    .HasName("UK_Account")
+                //    .IsUnique();
 
                 entity.Property(e => e.Accountid).HasColumnName("accountid");
 

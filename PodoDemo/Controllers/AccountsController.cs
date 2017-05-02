@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using PodoDemo.Models;
 using Newtonsoft.Json;
 using System.Reflection;
+using Microsoft.AspNetCore.Http;
 
 namespace PodoDemo.Controllers
 {
@@ -74,16 +75,33 @@ namespace PodoDemo.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Accountid,Name,Phone,Fax,Homepage,Ceo,Postcode,Address,Addresscity,Addressdetail,Addresstype,Biznum,Founddate,Detail,Createdate,Createuser,Modifydate,Modifyuser,Isdeleted,Ownerid")] Account account)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Account account)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(account);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                try
+                {
+                    account.Createdate = DateTime.Now;
+                    account.Createuser = HttpContext.Session.GetString("userId");
+                    account.Modifydate = DateTime.Now;
+                    account.Modifyuser = HttpContext.Session.GetString("userId");
+                    account.Isdeleted = false;
+                    account.Ownerid = HttpContext.Session.GetString("userId");
+                    
+                    _context.Add(account);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }
+                catch(Exception ex)
+                {
+                    // ·Î±× 
+                    string dd = ex.InnerException.Message;
+                    
+                    View();
+                }                
             }
-            return View(account);
+            return View();
         }
 
         // GET: Accounts/Edit/5

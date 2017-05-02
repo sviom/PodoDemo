@@ -1,4 +1,5 @@
-@model PodoDemo.Models.Account
+@*@model PodoDemo.Models.Account*@
+@model string
 
 @{
     ViewData["Title"] = "Create";
@@ -6,31 +7,102 @@
     List<string> propertyTypeList = ViewBag.AccountPropertyTypeList;
 }
 
+<script type="text/javascript">
+    $(document).ready(function () {
+        SetBasicElement();// 기본적으로 그리는 화면 내용
+    });
+
+    // 기본적으로 그리는 화면 내용
+    function SetBasicElement() {
+        $("#jqdatetimeinput_founddate").jqxDateTimeInput({ width: '80%', formatString: 'yyyy-MM-dd' });
+    }
+
+    // 폼이 입력될 때
+    function SubmitForm() {
+        // 유효성 검사 후 진행
+        if (ValidateForm()) {
+            $("#Founddate").val($('#jqdatetimeinput_founddate').jqxDateTimeInput('getText'));
+            $("#AccountCreateForm").submit();
+        }
+    }
+
+    // 입력한 값들에 대한 유효성 검사
+    function ValidateForm() {
+        var nameValue = $("#Name").val();
+        var phoneValue = $("#Phone").val();
+        var faxValue = $("#Fax").val();
+        var homepageValue = $("#Homepage").val();
+        var ceoValue = $("#Ceo").val();
+        var biznumValue = $("#Biznum").val();
+        var founddateValue = $("#jqdatetimeinput_founddate").jqxDateTimeInput('getText');
+        var detailValue = $("#Detail").val();
+
+        if (nameValue == "") {
+            alert("거래처 이름을 입력해주세요.");
+            return false;
+        }
+
+        if (phoneValue != "") {
+            if (!IsPhoneType(phoneValue)) {
+                alert("전화번호 형식을 00-000-0000 형식으로\n올바르게 입력해주세요.");
+                return false;
+            }
+        }
+
+        if (faxValue != "") {
+            if (!IsPhoneType(faxValue)) {
+                alert("팩스 형식을 00-000-0000 형식으로\n올바르게 입력해주세요.");
+                return false;
+            }
+        }
+
+        if (biznumValue != "") {
+            if (!IsBizNumType(biznumValue)) {
+                alert("사업자번호를 올바르게 입력해주세요.");
+                return false;
+            }
+        }
+
+        if (founddateValue != "") {
+            if (!IsDateType(founddateValue)) {
+                alert("날짜 형식을 올바르게 입력해주세요.");
+                return false;
+            }
+        }
+
+        return true;
+    }
+</script>
+
 <div class="View">
     <div class="ViewTitle">
         <span>Create Account</span>
     </div>
     <div class="ViewContent">
-        <form action="/Accounts/Create" method="post">
+        <span class="ViewSubTitle">> Basic Information</span>
+        <form id="AccountCreateForm" action="/Accounts/Create" method="post">
+            @*asp-action="Create"*@
             <table>
                 <tr>
                     <td class="tableLabelTD">
                         <span>CompanyName</span>
                     </td>
                     <td class="tableInputTD">
-                        <input type="text" class="inputType" />
+                        <input type="text" id="Name" name="Name" class="inputType" placeholder="거래처 이름" />
+                        @*<input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>*@
                     </td>
                     <td class="tableLabelTD">
                         <span>Tel</span>
                     </td>
                     <td class="tableInputTD">
-                        <input type="tel" class="inputType" />
+                        <input type="tel" id="Phone" name="Phone" class="inputType" />
                     </td>
                     <td class="tableLabelTD">
                         <span>Fax</span>
                     </td>
                     <td class="tableInputTD">
-                        <input type="tel" class="inputType" />
+                        <input type="tel" id="Fax" name="Fax" class="inputType" />
                     </td>
                 </tr>
                 <tr>
@@ -38,19 +110,19 @@
                         <span>HomePage</span>
                     </td>
                     <td class="tableInputTD">
-                        <input type="text" class="inputType" />
+                        <input type="text" id="Homepage" name="Homepage" class="inputType" />
                     </td>
                     <td class="tableLabelTD">
                         <span>CEO</span>
                     </td>
                     <td class="tableInputTD">
-                        <input type="text" class="inputType" />
+                        <input type="text" id="Ceo" name="Ceo" class="inputType" />
                     </td>
                     <td class="tableLabelTD">
                         <span>Biz No.</span>
                     </td>
                     <td class="tableInputTD">
-                        <input type="text" class="inputType" />
+                        <input type="text" id="Biznum" name="Biznum" class="inputType" />
                     </td>
                 </tr>
                 <tr>
@@ -58,18 +130,24 @@
                         <span>Founded Date</span>
                     </td>
                     <td class="tableInputTD">
-                        <input type="date" class="inputType" />
+                        @*<input type="date" id="Founddate" name="Founddate" class="inputType" />*@
+                        <div id="jqdatetimeinput_founddate"></div>
+                        <input type="hidden" id="Founddate" name="Founddate" />
                     </td>
                     <td class="tableLabelTD">
                         <span> Detail</span>
                     </td>
                     <td class="tableInputTD" colspan="3">
-                        <div class="inputDiv" contenteditable="true"></div>
+                        <div class="inputDiv" id="Detail" name="Detail" contenteditable="true"></div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="tableLabelTD"></td>
-                    <td class="tableInputTD"></td>
+                    <td class="tableLabelTD">
+                        <span>Owner</span>
+                    </td>
+                    <td class="tableInputTD">
+                        <input type="text" class="inputType" />
+                    </td>
                     <td class="tableLabelTD"></td>
                     <td class="tableInputTD"></td>
                     <td class="tableLabelTD"></td>
@@ -77,7 +155,7 @@
                 </tr>
             </table>
             <div class="ControlButtonArea">
-                <button type="submit">Create an Account</button>
+                <button type="button" id="CreateAccountButton" onclick="SubmitForm();">Create an Account</button>
                 <a href="/Accounts/Index">Back to List</a>
             </div>
         </form>
