@@ -34,7 +34,7 @@ namespace PodoDemo.ViewComponents
                                             && mm.Isused == true
                                             && sm.Isused == true
                                             && sm.Isdeleted == false
-                                            && ua.Read != "1-1"
+                                            //&& ua.Read != "1-1"
                                        orderby mm.Order ascending, sm.Order ascending
                                        select new MenuDisplay
                                        {

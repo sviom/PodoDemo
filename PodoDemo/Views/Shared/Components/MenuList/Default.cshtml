@@ -4,7 +4,7 @@
 
 <link href="~/css/Menu.css" rel="stylesheet" />
 <div class="menuList">
-    <img src="~/images/Menu/logo.png" class="menuLogo" width="150"/>
+    <img src="~/images/Menu/logo.png" class="menuLogo" width="150" />
     @*<div class="menuLogo">로고 150 * 60 px</div>*@
     <div class="menuBlock">
         @{
@@ -12,17 +12,25 @@
             <nav>
                 <ul>
                     @*오름차순으로 정렬하므로 맨 끝에 있는 대메뉴 번호(=메뉴개수) 만큼 출력한다.*@
-                    @for (int parentIndex = 0; parentIndex < MenuList[MenuList.Count - 1].ParentMenuId; parentIndex++)
+                    @for (int parentIndex = 1; parentIndex < MenuList[MenuList.Count - 1].ParentMenuId + 1; parentIndex++)
                     {
+                        int index = MenuList.FindIndex(m => m.ParentMenuId.Equals(MenuList[parentIndex - 1].ParentMenuId));
                         <li>
-                            <span>@MenuList[parentIndex].ParentMenuName</span>
+                            <span>
+                                @MenuList[index].ParentMenuName
+                                @*@MenuList[parentIndex].ParentMenuName*@
+                            </span>
                             <ul>
-
                                 @for (int i = 0; i < MenuList.Count; i++)
                                 {
+                                    @*@if (MenuList[parentIndex].ParentMenuId == MenuList[i].ParentMenuId)*@
                                     @if (MenuList[parentIndex].ParentMenuId == MenuList[i].ParentMenuId)
                                     {
-                                        <li>@MenuList[i].SubMenuName</li>
+                                        <li>
+                                            <a href="@MenuList[i].MenuUrl" style="text-decoration:none;">
+                                                @MenuList[i].SubMenuName
+                                            </a>
+                                        </li>
                                     }
                                 }
                             </ul>
