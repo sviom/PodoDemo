@@ -104,18 +104,20 @@ function MovePopupMenu(url) {
 //extraParam : callbackFnc에서 사용할 추가 파라미터
 //callbackFnc : 결과를 전달할 함수명
 //selval : 기본 선택값 필요시
-function GetOptionDDL(searchKey, extraParam, callbackFnc, selval) {
+function GetOptionDDL(searchKey, extraParam, callbackFnc, selval, isAll, isEmpty, auth) {
     $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
-        url: "/Service/CommonService.svc/GetOptionDDL",
+        url: window.location.origin + "/api/CommonAPI/GetOptionDDL",
         data: JSON.stringify({
-            "searchKey": searchKey
+            "SearchKey": searchKey
         }),
         async: false,
         dataType: "json",
         success: function (result) {
-            callbackFnc(extraParam, result, selval);
+            console.log("옵션결과");
+            console.log(result);
+            callbackFnc(extraParam, result, selval, isAll, isEmpty, auth);
         },
         error: function (data) {
             alert("[!ERROR]\n" + data.responseText);
@@ -169,6 +171,11 @@ function GetUserDDL(searchKey, userID, extraParam, callbackFnc, selval) {
     });
 }
 
+// Select Tag로 Binding
+function SetoptionTag(control, result, selval, isAll, isEmpty, auth) {
+    $("#" + control).html(ConvertToOptionTag(result, isAll, isEmpty, auth, selval));
+}
+
 //DropDownList 관련 배열을 option 태그로 변환합니다.
 //result: 드롭다운리스트 관련 배열
 //isAll : 전체 항목 추가시 true, 아닐 경우 false
@@ -189,23 +196,17 @@ function ConvertToOptionTag(result, isAll, isEmpty, isAuth, selval) {
     for (var i = 0; i < result.length; i++) {
 
         if (isAuth == "True") {
-            optionHTML += '<option value="' + result[i].Value + '">' + result[i].Text + '</option>';
+            optionHTML += '<option value="' + result[i].value + '">' + result[i].text + '</option>';
         } else {
-            if (result[i].Value === "13-2") {
+            if (result[i].value === "13-2") {
                 continue;
             } else if (selval == result[i].Text || selval == result[i].Value) {
-                optionHTML += '<option value="' + result[i].Value + '\" selected==\"selected\"">' + result[i].Text + '</option>';
+                optionHTML += '<option value="' + result[i].value + '\" selected==\"selected\"">' + result[i].text + '</option>';
             }
             else {
-                optionHTML += '<option value="' + result[i].Value + '">' + result[i].Text + '</option>';
+                optionHTML += '<option value="' + result[i].value + '">' + result[i].text + '</option>';
             }
         }
-
-        //if (selval == result[i].Text || selval == result[i].Value) {
-        //    optionHTML += '<option value="' + result[i].Value + '\" selected==\"selected\"">' + result[i].Text + '</option>';
-        //} else {
-        //    optionHTML += '<option value="' + result[i].Value + '">' + result[i].Text + '</option>';
-        //}
     }
     return optionHTML;
 }

@@ -1,7 +1,7 @@
 ﻿@model PodoDemo.Models.Account
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "수정";
 }
 
 <script type="text/javascript">
@@ -82,15 +82,13 @@
         <form id="AccountEditForm" action="/Accounts/Edit/@Model.Accountid" method="post">
             @*asp-action="Create"*@
             <input type="hidden" id="Accountid" name="Accountid" value="@Model.Accountid" />
-            <table>
+            <table class="ContentTable">
                 <tr>
                     <td class="tableLabelTD">
                         <span class="requireField">회사명</span>
                     </td>
                     <td class="tableInputTD">
                         <input type="text" id="Name" name="Name" class="inputType" value="@Model.Name" placeholder="거래처 이름" />
-                        @*<input asp-for="Name" class="form-control" />
-                            <span asp-validation-for="Name" class="text-danger"></span>*@
                     </td>
                     <td class="tableLabelTD">
                         <span>전화번호</span>
@@ -130,7 +128,6 @@
                         <span>설립일</span>
                     </td>
                     <td class="tableInputTD">
-                        @*<input type="date" id="Founddate" name="Founddate" class="inputType" />*@
                         <div id="jqdatetimeinput_founddate"></div>
                         <input type="hidden" id="Founddate" name="Founddate" />
                     </td>
@@ -155,40 +152,39 @@
                     <td class="tableInputTD"></td>
                 </tr>
             </table>
+            <br />
+            <br />
             <div class="ControlButtonArea">
                 <button type="button" id="EditAccountButton" onclick="SubmitForm();">저장</button>
                 <a href="/Accounts/Index">목록</a>
             </div>
-
+            <br />
+            <br />
             <span class="ViewSubTitle">> 이력 정보</span>
-            <table>
+            <table class="ContentTable">
                 <tr>
                     <td class="tableLabelTD"><span>생성일</span></td>
-                    <td class="tableInputTD">
-                        <label>@Model.Createdate</label>
+                    <td class="tableInputTD" colspan="2">
+                        <label class="inputLabel">@Model.Createdate</label>
                         <input type="hidden" asp-for="Createdate" value="@Model.Createdate" />
                     </td>
                     <td class="tableLabelTD"><span>생성자</span></td>
-                    <td class="tableInputTD">
-                        <label>@Model.Createuser</label>
+                    <td class="tableInputTD" colspan="2">
+                        <label class="inputLabel">@Model.Createuser</label>
                         <input type="hidden" id="Createuser" name="Createuser" value="@Model.Createuser" />
                     </td>
-                    <td class="tableLabelTD"></td>
-                    <td class="tableInputTD"></td>
                 </tr>
                 <tr>
                     <td class="tableLabelTD"><span>수정일</span></td>
-                    <td class="tableInputTD">
-                        <label>@Model.Modifydate</label>
+                    <td class="tableInputTD" colspan="2">
+                        <label class="inputLabel">@Model.Modifydate</label>
                         <input type="hidden" id="Modifydate" name="Modifydate" value="@Model.Modifydate" />
                     </td>
                     <td class="tableLabelTD"><span>수정자</span></td>
-                    <td class="tableInputTD">
-                        <label>@Model.Modifyuser</label>
+                    <td class="tableInputTD" colspan="2">
+                        <label class="inputLabel">@Model.Modifyuser</label>
                         <input type="hidden" id="Modifyuser" name="Modifyuser" value="@Model.Modifyuser" />
                     </td>
-                    <td class="tableLabelTD"></td>
-                    <td class="tableInputTD"></td>
                 </tr>
             </table>
         </form>

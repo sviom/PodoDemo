@@ -82,15 +82,13 @@
         <span class="ViewSubTitle">> 기본 정보</span>
         <form id="AccountCreateForm" action="/Accounts/Create" method="post">
             @*asp-action="Create"*@
-            <table>
+            <table class="ContentTable">
                 <tr>
                     <td class="tableLabelTD">
                         <span class="requireField">회사명</span>
                     </td>
                     <td class="tableInputTD">
                         <input type="text" id="Name" name="Name" class="inputType" placeholder="거래처 이름" />
-                        @*<input asp-for="Name" class="form-control" />
-                            <span asp-validation-for="Name" class="text-danger"></span>*@
                     </td>
                     <td class="tableLabelTD">
                         <span>전화번호</span>
@@ -130,7 +128,6 @@
                         <span>설립일</span>
                     </td>
                     <td class="tableInputTD">
-                        @*<input type="date" id="Founddate" name="Founddate" class="inputType" />*@
                         <div id="jqdatetimeinput_founddate"></div>
                         <input type="hidden" id="Founddate" name="Founddate" />
                     </td>
@@ -156,7 +153,7 @@
             </table>
             <div class="ControlButtonArea">
                 <button type="button" id="CreateAccountButton" onclick="SubmitForm();">저장</button>
-                <a href="/Accounts/Index">목록</a>                
+                <a href="/Accounts/Index">목록</a>
             </div>
         </form>
     </div>

@@ -6,6 +6,8 @@
 <script type="text/javascript">
     $(document).ready(function () {
         SetBasicElement();
+        // 검색 조건 키 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권한
+        GetOptionDDL('1', 'accountCustomerType', SetoptionTag, '', true, false, false);
 
         $('#accountList').on('rowdoubleclick', function (event) {
             var args = event.args;
@@ -107,29 +109,28 @@
                 <td class="LabelTD">
                     <span class="SearchLabel">회사명</span>
                 </td>
-                <td class="inputTD">
+                <td class="InputTD">
                     <input type="text" class="SearchInput" placeholder="Account Name" />
                 </td>
                 <td class="LabelTD">
                     <span class="SearchLabel">전화번호</span>
                 </td>
-                <td class="inputTD">
+                <td class="InputTD">
                     <input type="text" class="SearchInput" placeholder="Account Phone" />
                 </td>
                 <td class="LabelTD">
                     <span class="SearchLabel">고객타입</span>
                 </td>
-                <td class="inputTD">
-                    <input type="text" class="SearchInput" />
+                <td class="InputTD">
+                    <select id="accountCustomerType" class="SearchInput"></select>
                 </td>
                 <td class="LabelTD">
-                    <span class="SearchLabel">기타</span>
+                    <span class="SearchLabel">업종</span>
                 </td>
-                <td class="inputTD">
+                <td class="InputTD">
                     <input type="text" class="SearchInput" />
                 </td>
             </tr>
-
             <tr>
                 <td colspan="8">
                     <button type="button" class="SearchButton">검색</button>
@@ -141,6 +142,9 @@
         <div id="accountList"></div>
     </div>
 
-    <a href="/Accounts/Create">생성</a>
+    <div class="ControlButtonArea">
+        <a href="/Accounts/Create">생성</a>
+    </div>
+
 </div>
 
