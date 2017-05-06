@@ -34,19 +34,38 @@ namespace PodoDemo.ViewComponents
                                             && mm.Isused == true
                                             && sm.Isused == true
                                             && sm.Isdeleted == false
-                                            //&& ua.Read != "1-1"
-                                       orderby mm.Order ascending, sm.Order ascending
+                                       //&& ua.Read != "1-1"
+                                       //orderby mm.Order ascending, sm.Order ascending
+                                       group mm by new
+                                       {
+                                           mm.Id,
+                                           mm.Name
+                                       } into mmg
                                        select new MenuDisplay
                                        {
-                                           ParentMenuId = mm.Id,
-                                           ParentMenuName = mm.Name,
-                                           SubMenuId = sm.Id,
-                                           SubMenuName = sm.Name,
-                                           MenuOrder = mm.Order,
-                                           MenuUrl = sm.Menuurl
+                                           ParentMenuId = mmg.Key.Id,
+                                           ParentMenuName = mmg.Key.Name
+                                           //SubMenuId = sm.Id,
+                                           //SubMenuName = sm.Name,
+                                           //MenuOrder = mmg.Order
+                                           //MenuUrl = sm.Menuurl
                                        }).ToList<MenuDisplay>();
 
             ViewBag.UserName = HttpContext.Session.GetString("userName");
+
+            List<MenuDisplay> subMenuDisplay = (from ua in _context.UserAuth
+                                                 join sm in _context.SubMenu on ua.Submenuid equals sm.Id
+                                                 where ua.Userid == HttpContext.Session.GetString("userId")
+                                                 && sm.Isused == true
+                                                 select new MenuDisplay
+                                                 {
+                                                     SubMenuId = sm.Id,
+                                                     SubMenuName = sm.Name,
+                                                     MenuUrl = sm.Menuurl,
+                                                     ParentMenuId = sm.Mainmenuid
+                                                 }).ToList<MenuDisplay>();
+
+            ViewBag.SubMenuList = subMenuDisplay;
 
             return View(query);
         }
