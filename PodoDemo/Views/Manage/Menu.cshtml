@@ -1,0 +1,150 @@
+﻿@*@model string*@
+@using PodoDemo.Models;
+@{
+    ViewData["Title"] = "Menu";
+    //List<Menu> MainMenuList = ViewBag.MainMenuList;
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        SetBasicElement();
+
+        $('#mainMenuList').on('rowdoubleclick', function (event) {
+            var args = event.args;
+            // row's bound index.
+            var boundIndex = args.rowindex;
+            // row's visible index.
+            var visibleIndex = args.visibleindex;
+            // right click.
+            var rightclick = args.rightclick;
+            // original event.
+            var ev = args.originalEvent;
+            console.log("Row  정보");
+            console.log(boundIndex);
+            var data = $('#mainMenuList').jqxGrid('getrowdata', boundIndex);
+            console.log(data.Id);
+
+            //location.href = "/Manage/MenuEdit/" + data.Id;
+            WindowOpenScroll("/Manage/MenuEdit/" + data.Id, "", 300, 200, 100, 100);
+        });
+    });
+    // 기본 출력 항목 표시
+    function SetBasicElement() {
+        var source =
+            {
+                localdata: @Html.Raw(ViewBag.MainMenuList),
+                datatype: "json",
+                datafields:
+                [
+                    { name: 'Id', type: 'number' },
+                    { name: 'Name', type: 'string' },
+                    { name: 'Order', type: 'number' },
+                    { name: 'Isused', type: 'string' }
+                    //{ name: 'Address', type: 'string' }
+                    //{ name: 'ContactCount', type: 'number' },
+                    //{ name: 'ProgressBusinessCount', type: 'number' },
+                    //{ name: 'EndBusinessCount', type: 'number' },
+                    //{ name: 'SalesCount', type: 'number' },
+                    //{ name: 'ServiceCount', type: 'number' },
+                    //{ name: 'ActivityCount', type: 'number' },
+                    // Service를 이용해서 받아오는 값의 형식 설정
+                    //{ name: 'BizTypeText', type: 'string' },
+                    //{ name: 'CustomerTypeText', type: 'string' }
+                ]
+            };
+
+        var dataAdapter = new $.jqx.dataAdapter(source);
+
+        $("#mainMenuList").jqxGrid(
+            {
+                width: '100%',
+                source: dataAdapter,
+                pageable: true,
+                autoheight: true,
+                autorowheight: true,
+                sortable: true,
+                altrows: true,
+                enabletooltips: true,
+                editable: false,
+                selectionmode: 'singlerow',
+                pagesizeoptions: [10, 15, 20, 25, 30, 35, 40, 45, 50],
+                //showfilterrow: true,
+                filterable: true,
+                pagesize: 15,
+                //theme: "MetroCustom",//테마설정
+                columnsheight: '40px',//헤더 높이 설정
+                //localization: getLocalization('ko-KR'),
+                columns: [
+                    //문자로 나오는 항목
+                    { text: "ID", datafield: "Id", align: 'center', cellsalign: 'center', width: "10%" },
+                    { text: "이름", datafield: "Name", align: 'center', cellsalign: 'center', width: "40%" },
+                    { text: "순서", datafield: "Order", align: 'center', cellsalign: 'center', width: "10%" },
+                    { text: "사용여부", datafield: "Isused", align: 'center', cellsalign: 'center', width: "10%" }
+                    //{ text: '주소', datafield: 'Address', align: 'center', cellsalign: 'center' }
+                    //{ text: 'Maker', datafield: 'MainProduct', align: 'center', cellsalign: 'center', width: 80 },
+                    // 업종 (메인페이지 및 거래처 페이지 중단 GRID에 표시함)CustomerTypeText
+                    //{ text: '업종', datafield: 'CustomerTypeText', align: 'center', cellsalign: 'center', width: 70, cellsrenderer: countCellRenderer6 },
+                    // 고객 타입 (메인페이지 및 거래처 페이지 중단 GRID에 표시함)BizTypeText
+                    //{ text: '고객타입', datafield: 'BizTypeText', align: 'center', cellsalign: 'center', width: 70, cellsrenderer: countCellRenderer7 },
+
+                    //숫자로 나오는 항목
+                    //{ text: '연락처', datafield: 'ContactCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer1 },
+                    //{ text: '영업기회', datafield: 'ProgressBusinessCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer2 },
+                    //{ text: '영업기회(종료)', datafield: 'EndBusinessCount', align: 'center', cellsalign: 'center', width: 110, cellsrenderer: countCellRenderer3 },
+                    //{ text: 'Order정보', datafield: 'SalesCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer3 },
+                    //{ text: '서비스', datafield: 'ServiceCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer4 },
+                    //{ text: '활동', datafield: 'ActivityCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer5 }
+                ]
+            });
+    }
+</script>
+
+<div class="View">
+    <div class="ViewTitle">
+        <span>거래처 목록</span>
+    </div>
+    <div class="SearchCondition">
+        <table>
+            <tr>
+                <td class="LabelTD">
+                    <span class="SearchLabel">회사명</span>
+                </td>
+                <td class="InputTD">
+                    <input type="text" class="SearchInput" placeholder="Account Name" />
+                </td>
+                <td class="LabelTD">
+                    <span class="SearchLabel">전화번호</span>
+                </td>
+                <td class="InputTD">
+                    <input type="text" class="SearchInput" placeholder="Account Phone" />
+                </td>
+                <td class="LabelTD">
+                    <span class="SearchLabel">고객타입</span>
+                </td>
+                <td class="InputTD">
+                    <select id="accountCustomerType" class="SearchInput"></select>
+                </td>
+                <td class="LabelTD">
+                    <span class="SearchLabel">업종</span>
+                </td>
+                <td class="InputTD">
+                    <input type="text" class="SearchInput" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="8">
+                    <button type="button" class="SearchButton">검색</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="ViewContent">
+        <div id="mainMenuList"></div>
+    </div>
+
+    <div class="ControlButtonArea">
+        <a href="/Account/Index">생성</a>
+    </div>
+
+</div>
+
+
