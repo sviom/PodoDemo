@@ -105,9 +105,8 @@ namespace PodoDemo.Controllers
 
             return userCheckResult;
         }
-
-
-        public IActionResult Menu()
+        
+        public IActionResult Close()
         {
             return View();
         }

@@ -21,7 +21,7 @@
         //if (ValidateForm()) {
         //    $("#Founddate").val($('#jqdatetimeinput_founddate').jqxDateTimeInput('getText'));
         //    $("#Detail").val($("#tempDetail").html());
-            
+
         //}
 
         $("#MenuEditForm").submit();
@@ -48,5 +48,15 @@
     <input type="radio" id="Isused_T" name="Isused" />
     <input type="radio" id="Isused_F" name="Isused" />
 
+    <span>삭제여부</span>
+    <span>@Model.Isdeleted</span>
+    <input type="radio" id="Isdeleted_T" name="Isdeleted" />
+    <input type="radio" id="Isdeleted_F" name="Isdeleted" />
+
     <button type="button" onclick="SubmitForm();">수정</button>
+
+    <input type="hidden" id="Createdate" name="Createdate" value="@Model.Createdate" />
+    <input type="hidden" id="Createuser" name="Createuser" value="@Model.Createuser" />
+    <input type="hidden" id="Modifydate" name="Modifydate" value="@Model.Modifydate" />
+    <input type="hidden" id="Modifyuser" name="Modifyuser" value="@Model.Modifyuser" />
 </form>

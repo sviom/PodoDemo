@@ -58,7 +58,7 @@ namespace PodoDemo.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> MenuEdit(long? Id, Menu mainMenu)
+        public async Task<IActionResult> MenuEdit(long? Id,bool IsPop, Menu mainMenu)
         {
             if (Id != mainMenu.Id)
             {
@@ -88,6 +88,8 @@ namespace PodoDemo.Controllers
                 }
                 return RedirectToAction("Index");
             }
+
+            ViewBag.isPop = IsPop;
             return View(mainMenu);
         }
 
