@@ -1,5 +1,5 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html>
 <head>
     <meta charset="utf-8">
@@ -22,32 +22,10 @@
     @*커스텀 파일*@
     <link href="~/css/Layout.css" rel="stylesheet" />
     <script src="~/js/Common.js"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            SetRenderViewHeight();
-        });
-
-        // 화면 사이즈 변경될 때 마다 배경 색 다시 채우기
-        function SetRenderViewHeight() {
-            $("#RenderView").height(window.innerHeight - 60);
-        }
-    </script>
-
 </head>
-<body onresize="SetRenderViewHeight();">
-    @*
-        해당 사용자 권한에 맞는 메뉴 리스트 출력 View Component
-        BackEnd : /ViewsComponents/MenuList.cs
-        FrontEnd : /Views/Shared/Components/MenuList/Default.cshtml
-        기존의 PartialView / RenderPartial / RenderAction 과 동일한 기능
-    *@
-    @await Component.InvokeAsync("MenuList")
-
-
-    <div id="RenderView" class="RenderView">
+<body>
+    <div>
         @RenderBody()
     </div>
-
 </body>
 </html>

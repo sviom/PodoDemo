@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using PodoDemo.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace PodoDemo.Controllers
 {
@@ -37,7 +38,8 @@ namespace PodoDemo.Controllers
             }
         }
 
-        public async Task<IActionResult> MenuEdit(long? id)
+
+        public async Task<IActionResult> MenuEdit(long? id, [FromQuery]bool isPop)
         {
             if (id == null)
             {
@@ -49,7 +51,49 @@ namespace PodoDemo.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.isPop = isPop;
+
             return View(menu);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MenuEdit(long? Id, Menu mainMenu)
+        {
+            if (Id != mainMenu.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    mainMenu.Modifydate = DateTime.Now;
+                    mainMenu.Modifyuser = HttpContext.Session.GetString("userId");
+
+                    _context.Update(mainMenu);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MenuExists(mainMenu.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            return View(mainMenu);
+        }
+
+        private bool MenuExists(long id)
+        {
+            return _context.Menu.Any(e => e.Id == id);
         }
     }
 }

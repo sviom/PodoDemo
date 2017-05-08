@@ -1,18 +1,52 @@
 ﻿@model PodoDemo.Models.Menu
 
 @{
-    Layout = "";
+    //팝업일 경우 레이아웃은 팝업 전용으로 변경 아닐 경우 메뉴가 포함된 기본 레이아웃
+    if (ViewBag.isPop)
+    {
+        Layout = "~/Views/Shared/Popup_Layout.cshtml";
+    }
+
+    string isChecked = Model.Isused ? "Checked" : "";
 }
 
-<h2>메뉴 수정 창</h2>
+<script type="text/javascript">
+    $(document).ready(function () {
 
+    });
+
+    // 폼이 입력될 때
+    function SubmitForm() {
+        // 유효성 검사 후 진행
+        //if (ValidateForm()) {
+        //    $("#Founddate").val($('#jqdatetimeinput_founddate').jqxDateTimeInput('getText'));
+        //    $("#Detail").val($("#tempDetail").html());
+            
+        //}
+
+        $("#MenuEditForm").submit();
+    }
+</script>
+
+<h2>메뉴 수정 창</h2>
+<span>팝업여부 : @ViewBag.isPop</span>
+<span>사용여부 : @isChecked</span>
 <h4>@Model.Name</h4>
 
-<span>이름</span>
-<input type="text" id="Name" name="Name" value="@Model.Name" placeholder="대메뉴 이름"/>
+<form id="MenuEditForm" action="/Manage/MenuEdit" method="post">
+    <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+    <input type="hidden" id="IsPop" name="IsPop" value="@ViewBag.isPop" />
 
-<span>순서</span>
-<input type="number" id="Order" name="Order" value="@Model.Order" placeholder="대메뉴 순서" />
+    <span>이름</span>
+    <input type="text" id="Name" name="Name" value="@Model.Name" placeholder="대메뉴 이름" />
 
-<span>사용여부</span>
-<span>@Model.Isused</span>
+    <span>순서</span>
+    <input type="number" id="Order" name="Order" value="@Model.Order" placeholder="대메뉴 순서" />
+
+    <span>사용여부</span>
+    <span>@Model.Isused</span>
+    <input type="radio" id="Isused_T" name="Isused" />
+    <input type="radio" id="Isused_F" name="Isused" />
+
+    <button type="button" onclick="SubmitForm();">수정</button>
+</form>
