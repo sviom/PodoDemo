@@ -43,6 +43,58 @@ namespace PodoDemo.Controllers
         }
 
         /// <summary>
+        /// 대메뉴 생성 페이지로 이동
+        /// </summary>
+        /// <param name="isPop"></param>
+        /// <returns></returns>
+        public IActionResult MenuCreate([FromQuery]bool isPop)
+        {
+            ViewBag.isPop = isPop;
+            return View();
+        }
+
+        /// <summary>
+        /// 대메뉴 생성
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> MenuCreate(bool isPop, Menu mainMenu)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    mainMenu.Createdate = DateTime.Now;
+                    mainMenu.Createuser = HttpContext.Session.GetString("userId");
+                    mainMenu.Modifydate = DateTime.Now;
+                    mainMenu.Modifyuser = HttpContext.Session.GetString("userId");
+                    mainMenu.Isdeleted = false;
+
+                    // 메뉴 순서 바꾸기
+                    if(_context.Menu.Any(e => e.Order == mainMenu.Order))
+                    {
+                        Menu dd = _context.Menu.SingleOrDefault(x => x.Order == mainMenu.Order);
+                        int menuCount = _context.Menu.Count();                        
+                        dd.Order = menuCount + 1;                        
+                        _context.Update(dd);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    _context.Add(mainMenu);
+                    await _context.SaveChangesAsync();
+                    //return RedirectToAction("Menu");
+                    return View("Close", "Home");
+                }
+                catch (Exception ex)
+                {
+                    // 로그 
+                    string dd = ex.InnerException.Message;
+                    return View("Close", "Home");
+                }
+            }
+            return View("Close","Home");
+        }
+
+        /// <summary>
         /// 메뉴 수정 페이지로 이동
         /// </summary>
         /// <param name="id"></param>
@@ -110,25 +162,6 @@ namespace PodoDemo.Controllers
         }
 
         /// <summary>
-        /// 해당 메뉴가 존재하는지 검사
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        private bool MenuExists(long id)
-        {
-            return _context.Menu.Any(e => e.Id == id);
-        }
-        /// <summary>
-        /// 상세 메뉴 존재하는지 검사
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        private bool SubmenuExistst(string id)
-        {
-            return _context.SubMenu.Any(e => e.Id == id);
-        }
-
-        /// <summary>
         /// 메뉴 삭제(삭제 항목 업데이트)
         /// </summary>
         /// <param name="Id"></param>
@@ -136,7 +169,7 @@ namespace PodoDemo.Controllers
         /// <param name="mainMenu"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> DeleteMenu(long? Id, bool IsPop, [Bind("Id,Name,Order,Isused,Isdeleted,Createdate,Createuser,Modifydate,Modifyuser")] Menu mainMenu)
+        public async Task<IActionResult> MenuDelete(long? Id, bool IsPop, [Bind("Id,Name,Order,Isused,Isdeleted,Createdate,Createuser,Modifydate,Modifyuser")] Menu mainMenu)
         {
             //var menu = await _context.Menu.SingleOrDefaultAsync(m => m.Id == Id);
             //_context.Menu.Remove(menu);
@@ -216,10 +249,21 @@ namespace PodoDemo.Controllers
                     return JsonConvert.SerializeObject(query);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
-            }            
+            }
+        }
+
+        /// <summary>
+        /// 세부메뉴 생성 페이지로 이동
+        /// </summary>
+        /// <param name="isPop"></param>
+        /// <returns></returns>
+        public IActionResult SubmenuCreate([FromQuery]bool isPop)
+        {
+            ViewBag.isPop = isPop;
+            return View();
         }
 
         /// <summary>
@@ -287,6 +331,25 @@ namespace PodoDemo.Controllers
 
             ViewBag.isPop = true;
             return View(subMenu);
+        }
+
+        /// <summary>
+        /// 해당 메뉴가 존재하는지 검사
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private bool MenuExists(long id)
+        {
+            return _context.Menu.Any(e => e.Id == id);
+        }
+        /// <summary>
+        /// 상세 메뉴 존재하는지 검사
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private bool SubmenuExistst(string id)
+        {
+            return _context.SubMenu.Any(e => e.Id == id);
         }
     }
 }

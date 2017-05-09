@@ -1,9 +1,7 @@
-﻿@*@model string*@
-@using PodoDemo.Models;
-@{
+﻿@{
     ViewData["Title"] = "Menu";
-    //List<Menu> MainMenuList = ViewBag.MainMenuList;
 }
+
 <script type="text/javascript">
     $(document).ready(function () {
         SetMainmenulist();
@@ -98,8 +96,8 @@
                     { name: 'Id', type: 'string' },
                     { name: 'Name', type: 'string' },
                     { name: 'Order', type: 'number' },
-                    { name: 'Isused', type: 'number' }
-                    //{ name: 'Address', type: 'string' }
+                    { name: 'Isused', type: 'number' },
+                    { name: 'Mainmenuid', type: 'string' }
                 ]
             };
 
@@ -126,6 +124,7 @@
                 //localization: getLocalization('ko-KR'),
                 columns: [
                     //문자로 나오는 항목
+                    { text: "대메뉴아이디", datafield: "Mainmenuid", align: 'center', cellsalign: 'center' },
                     { text: "ID", datafield: "Id", align: 'center', cellsalign: 'center', width: "10%" },
                     { text: "이름", datafield: "Name", align: 'center', cellsalign: 'center', width: "40%" },
                     { text: "순서", datafield: "Order", align: 'center', cellsalign: 'center', width: "10%" },
@@ -141,6 +140,11 @@
                     }
                 ]
             });
+    }
+
+    // 세부메뉴생성 페이지로 이동
+    function SubmenuCreate() {
+        WindowOpenScroll('/Manage/SubmenuCreate?isPop=true&mainMenuid=', '', 350, 600, 100, 100);
     }
 </script>
 
@@ -159,7 +163,7 @@
                 </div>
                 <div id="mainMenuList"></div>
                 <br />
-                <a href="/Accounts/Index" class="btn custom-btn custom-btn-save">대메뉴 생성</a>
+                <button onclick="WindowOpenScroll('/Manage/MenuCreate?isPop=true', '', 350, 600, 100, 100);" class="btn custom-btn custom-btn-save">대메뉴 생성</button>
             </div>
             <div class="col-md-4">
                 <div class="custom-title">
@@ -167,10 +171,8 @@
                 </div>
                 <div id="subMenuList"></div>
                 <br />
-                <a href="/Accounts/Index" class="btn custom-btn custom-btn-save">세부메뉴 생성</a>
+                <button onclick="SubmenuCreate();" class="btn custom-btn custom-btn-save">세부메뉴 생성</button>
             </div>
         </div>
     </div>
 </div>
-
-
