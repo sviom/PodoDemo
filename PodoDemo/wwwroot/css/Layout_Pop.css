@@ -1,0 +1,68 @@
+﻿/*부트스트랩 container에 덮어쓰기*/
+.custom-container {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+
+/*부트스트랩 row에 덮어쓰기*/
+.row {
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-bottom: 10px;
+}
+
+/*부트스트랩 버튼 영역*/
+.custom-btn {
+    width: 100%;
+    color: white;
+}
+
+.custom-btn-save {
+    background-color: #2588EA;
+}
+
+    .custom-btn-save:hover {
+        color: orange;
+    }
+
+.custom-btn-delete {
+    background-color: #ea2526;
+}
+
+    .custom-btn-delete:hover {
+        color: #25eae9;
+    }
+
+.custom-btn-close {
+    background-color: #d1d1d1;
+}
+
+    .custom-btn-close:hover {
+        color: #d1d1d1;
+    }
+
+/*제목 부분*/
+.custom-header {
+    background-color: #474747;
+    color: white;
+    font-size: 30px;
+    width: 100%;
+    padding-left: 10px;
+}
+
+.custom-title {
+    background-color: #EEF7FF;
+    border: 1px solid #d1d1d1;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    margin-top: 10px;
+}
+
+/* 제목 옆 사용자 입력 부분 */
+.custom-input {
+    margin-top: 10px;
+}

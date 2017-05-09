@@ -38,7 +38,12 @@ namespace PodoDemo.Controllers
             }
         }
 
-
+        /// <summary>
+        /// 메뉴 수정 페이지로 이동
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="isPop"></param>
+        /// <returns></returns>
         public async Task<IActionResult> MenuEdit(long? id, [FromQuery]bool isPop)
         {
             if (id == null)
@@ -57,8 +62,15 @@ namespace PodoDemo.Controllers
             return View(menu);
         }
 
+        /// <summary>
+        /// 실제 메뉴 수정 기능 수행
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="IsPop"></param>
+        /// <param name="mainMenu"></param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> MenuEdit(long? Id,bool IsPop, Menu mainMenu)
+        public async Task<IActionResult> MenuEdit(long? Id, bool IsPop, [Bind("Id,Name,Order,Isused,Isdeleted,Createdate,Createuser,Modifydate,Modifyuser")] Menu mainMenu)
         {
             if (Id != mainMenu.Id)
             {
@@ -86,16 +98,74 @@ namespace PodoDemo.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Close", "Home");
             }
 
-            ViewBag.isPop = IsPop;
+            ViewBag.isPop = true;
             return View(mainMenu);
         }
 
+        /// <summary>
+        /// 해당 메뉴가 존재하는지 검사
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         private bool MenuExists(long id)
         {
             return _context.Menu.Any(e => e.Id == id);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteMenu(long? Id, bool IsPop, [Bind("Id,Name,Order,Isused,Isdeleted,Createdate,Createuser,Modifydate,Modifyuser")] Menu mainMenu)
+        {
+            //var menu = await _context.Menu.SingleOrDefaultAsync(m => m.Id == Id);
+            //_context.Menu.Remove(menu);
+            //await _context.SaveChangesAsync();
+            //return RedirectToAction("Close","Home");
+
+            if (Id != mainMenu.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    mainMenu.Isdeleted = true;
+                    mainMenu.Modifydate = DateTime.Now;
+                    mainMenu.Modifyuser = HttpContext.Session.GetString("userId");
+
+                    _context.Update(mainMenu);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MenuExists(mainMenu.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Close", "Home");
+            }
+
+            ViewBag.isPop = true;
+            return View(mainMenu);
+        }
+
+        // POST: Accounts/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(long id)
+        //{
+        //    var account = await _context.Account.SingleOrDefaultAsync(m => m.Accountid == id);
+        //    _context.Account.Remove(account);
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction("Index");
+        //}
     }
 }

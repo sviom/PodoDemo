@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PodoDemo.Models
 {
@@ -10,7 +12,10 @@ namespace PodoDemo.Models
             SubMenu = new HashSet<SubMenu>();
         }
 
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
+
         public long Order { get; set; }
         public bool Isdeleted { get; set; }
         public DateTime Createdate { get; set; }
