@@ -6,7 +6,7 @@
 }
 <script type="text/javascript">
     $(document).ready(function () {
-        SetBasicElement();
+        SetMainmenulist();
 
         $('#mainMenuList').on('rowdoubleclick', function (event) {
             var args = event.args;
@@ -18,17 +18,20 @@
             var rightclick = args.rightclick;
             // original event.
             var ev = args.originalEvent;
-            console.log("Row  정보");
-            console.log(boundIndex);
-            var data = $('#mainMenuList').jqxGrid('getrowdata', boundIndex);
-            console.log(data.Id);
 
-            //location.href = "/Manage/MenuEdit/" + data.Id;
-            WindowOpenScroll("/Manage/MenuEdit/" + data.Id + "?isPop=true", "", 350, 600, 100, 100);
+            var data = $('#mainMenuList').jqxGrid('getrowdata', boundIndex);
+            var dataId = new Object();
+            dataId.Id = data.Id;
+            var submenulist
+                = ExecuteAjax("POST", "/Manage/GetSubmenulist", "json", "application/json", JSON.stringify(data.Id));
+            //console.log("상세메뉴목록");
+            //console.log(submenulist);
+            SetSubmenulist(submenulist);
+
         });
     });
-    // 기본 출력 항목 표시
-    function SetBasicElement() {
+    // 대메뉴 표시
+    function SetMainmenulist() {
         var source =
             {
                 localdata: @Html.Raw(ViewBag.MainMenuList),
@@ -40,15 +43,6 @@
                     { name: 'Order', type: 'number' },
                     { name: 'Isused', type: 'string' }
                     //{ name: 'Address', type: 'string' }
-                    //{ name: 'ContactCount', type: 'number' },
-                    //{ name: 'ProgressBusinessCount', type: 'number' },
-                    //{ name: 'EndBusinessCount', type: 'number' },
-                    //{ name: 'SalesCount', type: 'number' },
-                    //{ name: 'ServiceCount', type: 'number' },
-                    //{ name: 'ActivityCount', type: 'number' },
-                    // Service를 이용해서 받아오는 값의 형식 설정
-                    //{ name: 'BizTypeText', type: 'string' },
-                    //{ name: 'CustomerTypeText', type: 'string' }
                 ]
             };
 
@@ -78,45 +72,105 @@
                     { text: "ID", datafield: "Id", align: 'center', cellsalign: 'center', width: "10%" },
                     { text: "이름", datafield: "Name", align: 'center', cellsalign: 'center', width: "40%" },
                     { text: "순서", datafield: "Order", align: 'center', cellsalign: 'center', width: "10%" },
-                    { text: "사용여부", datafield: "Isused", align: 'center', cellsalign: 'center', width: "10%" }
-                    //{ text: '주소', datafield: 'Address', align: 'center', cellsalign: 'center' }
-                    //{ text: 'Maker', datafield: 'MainProduct', align: 'center', cellsalign: 'center', width: 80 },
-                    // 업종 (메인페이지 및 거래처 페이지 중단 GRID에 표시함)CustomerTypeText
-                    //{ text: '업종', datafield: 'CustomerTypeText', align: 'center', cellsalign: 'center', width: 70, cellsrenderer: countCellRenderer6 },
-                    // 고객 타입 (메인페이지 및 거래처 페이지 중단 GRID에 표시함)BizTypeText
-                    //{ text: '고객타입', datafield: 'BizTypeText', align: 'center', cellsalign: 'center', width: 70, cellsrenderer: countCellRenderer7 },
+                    { text: "사용여부", datafield: "Isused", align: 'center', cellsalign: 'center', width: "20%" },
+                    {
+                        text: '수정', datafield: 'Address', align: 'center', cellsalign: 'center', width: '20%', columntype: 'button', cellsrenderer: function () {
+                            return "수정";
+                        }, buttonclick: function (row) {
+                            // get the clicked row's data and initialize the input fields.
+                            var dataRecord = $("#mainMenuList").jqxGrid('getrowdata', row);
+                            WindowOpenScroll("/Manage/MenuEdit/" + dataRecord.Id + "?isPop=true", "", 350, 600, 100, 100);
+                        }
+                    }
+                ]
+            });
+    }
 
-                    //숫자로 나오는 항목
-                    //{ text: '연락처', datafield: 'ContactCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer1 },
-                    //{ text: '영업기회', datafield: 'ProgressBusinessCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer2 },
-                    //{ text: '영업기회(종료)', datafield: 'EndBusinessCount', align: 'center', cellsalign: 'center', width: 110, cellsrenderer: countCellRenderer3 },
-                    //{ text: 'Order정보', datafield: 'SalesCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer3 },
-                    //{ text: '서비스', datafield: 'ServiceCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer4 },
-                    //{ text: '활동', datafield: 'ActivityCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer5 }
+    // 세부메뉴 수정
+    function SetSubmenulist(result) {
+        //$('#subMenuList').html("<div id='subMenuList'></div>");
+         var source =
+            {
+                localdata: result,
+                datatype: "Array",
+                datafields:
+                [
+                    { name: 'Id', type: 'number' },
+                    { name: 'Name', type: 'string' },
+                    { name: 'Order', type: 'number' },
+                    { name: 'Isused', type: 'string' }
+                    //{ name: 'Address', type: 'string' }
+                ]
+            };
+
+         var dataAdapter = new $.jqx.dataAdapter(source);
+
+        $("#subMenuList").jqxGrid(
+            {
+                width: '100%',
+                source: dataAdapter,
+                pageable: true,
+                autoheight: true,
+                autorowheight: true,
+                sortable: true,
+                altrows: true,
+                enabletooltips: true,
+                editable: false,
+                selectionmode: 'singlerow',
+                pagesizeoptions: [10, 15, 20, 25, 30, 35, 40, 45, 50],
+                //showfilterrow: true,
+                filterable: true,
+                pagesize: 15,
+                //theme: "MetroCustom",//테마설정
+                columnsheight: '40px',//헤더 높이 설정
+                //localization: getLocalization('ko-KR'),
+                columns: [
+                    //문자로 나오는 항목
+                    { text: "ID", datafield: "Id", align: 'center', cellsalign: 'center', width: "10%" },
+                    { text: "이름", datafield: "Name", align: 'center', cellsalign: 'center', width: "40%" },
+                    { text: "순서", datafield: "Order", align: 'center', cellsalign: 'center', width: "10%" },
+                    { text: "사용여부", datafield: "Isused", align: 'center', cellsalign: 'center', width: "20%" },
+                    {
+                        text: '수정', datafield: 'Address', align: 'center', cellsalign: 'center', width: '20%', columntype: 'button', cellsrenderer: function () {
+                            return "수정";
+                        }, buttonclick: function (row) {
+                            // get the clicked row's data and initialize the input fields.
+                            var dataRecord = $("#mainMenuList").jqxGrid('getrowdata', row);
+                            console.log("DD");
+                        }
+                    }
                 ]
             });
     }
 </script>
 
 <div class="View">
-    <div class="container custom-container">
-        <div class="col-md-12 custom-header">
-            <p class="text-left">메뉴 관리</p>
+    <div class="container-fluid custom-container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 custom-header">
+                <p class="text-left">메뉴 관리</p>
+            </div>
         </div>
-        
-    </div>
-    <div class="ViewTitle">
-        <span>메뉴 관리</span>
-    </div>
 
-    <div class="ViewContent">
-        <div id="mainMenuList"></div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-2">
+                <div class="custom-title">
+                    <span>대메뉴</span>
+                </div>
+                <div id="mainMenuList"></div>
+                <br />
+                <a href="/Accounts/Index" class="btn custom-btn custom-btn-save">대메뉴 생성</a>
+            </div>
+            <div class="col-md-4">
+                <div class="custom-title">
+                    <span>세부 메뉴</span>
+                </div>
+                <div id="subMenuList"></div>
+                <br />
+                <a href="/Accounts/Index" class="btn custom-btn custom-btn-save">세부메뉴 생성</a>
+            </div>
+        </div>
     </div>
-
-    <div class="ControlButtonArea">
-        <a href="/Account/Index">생성</a>
-    </div>
-
 </div>
 
 

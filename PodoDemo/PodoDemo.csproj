@@ -13,7 +13,6 @@
   <ItemGroup>
     <Content Include="wwwroot\css\Layout.css" />
     <Content Include="wwwroot\css\Layout_BootstrapCustom.css" />
-    <Content Include="wwwroot\css\Layout_Pop.css" />
     <Content Include="wwwroot\css\LoginPage.css" />
     <Content Include="wwwroot\css\Menu.css" />
     <Content Include="wwwroot\images\favicon.ico" />
@@ -35,6 +34,7 @@
     <Content Include="wwwroot\js\bootstrap332\js\bootstrap.js" />
     <Content Include="wwwroot\js\bootstrap332\js\bootstrap.min.js" />
     <Content Include="wwwroot\js\bootstrap332\js\npm.js" />
+    <Content Include="wwwroot\js\jqwidget-custom.js" />
     <Content Include="wwwroot\js\jqwidgets\styles\images\Menu.cshtml" />
     <Content Include="wwwroot\js\Common.js" />
     <Content Include="wwwroot\js\jquery-3.2.1.min.js" />

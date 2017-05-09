@@ -13,9 +13,9 @@ html, body {
 
 
 .View {
-    width: 1330px;
+    /*width: 1330px;*/
     background-color: white;
-    text-align: center;
+    /*text-align: center;*/
     margin-left: auto;
     margin-right: auto;
 }
@@ -174,3 +174,11 @@ html, body {
         .ControlButtonArea button:hover {
             cursor: pointer;
         }
+
+
+.custom-jqx-grid-btn {
+    height: 100%;
+    width: 100%;
+    border: none;
+    background-color: #EEF7FF;
+}

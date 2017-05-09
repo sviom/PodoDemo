@@ -157,6 +157,46 @@ namespace PodoDemo.Controllers
             return View(mainMenu);
         }
 
+        [HttpPost]
+        public string GetSubmenulist([FromBody]long Id)
+        {
+            try
+            {
+                if (!MenuExists(Id))
+                {
+                    return "";
+                }
+                else
+                {
+                    var query = (from sm in _context.SubMenu
+                                 where sm.Mainmenuid.Equals(Id)
+                                 select new SubMenu
+                                 {
+                                     Name = sm.Name,
+                                     Id = sm.Id,
+                                     Createdate = sm.Createdate,
+                                     Createuser = sm.Createuser,
+                                     Modifydate = sm.Modifydate,
+                                     Modifyuser = sm.Modifyuser,
+                                     Isdeleted = sm.Isdeleted,
+                                     Isused = sm.Isused,
+                                     Ismanager = sm.Ismanager,
+                                     Mainmenu = sm.Mainmenu,
+                                     Mainmenuid = sm.Mainmenuid,
+                                     Menuurl = sm.Menuurl,
+                                     Order = sm.Order,
+                                     UserAuth = sm.UserAuth
+                                 }).ToList<SubMenu>();
+
+                    return JsonConvert.SerializeObject(query);
+                }
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }            
+        }
+
         // POST: Accounts/Delete/5
         //[HttpPost, ActionName("Delete")]
         //[ValidateAntiForgeryToken]
