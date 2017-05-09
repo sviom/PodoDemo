@@ -95,10 +95,10 @@
                 datatype: "Array",
                 datafields:
                 [
-                    { name: 'Id', type: 'number' },
+                    { name: 'Id', type: 'string' },
                     { name: 'Name', type: 'string' },
                     { name: 'Order', type: 'number' },
-                    { name: 'Isused', type: 'string' }
+                    { name: 'Isused', type: 'number' }
                     //{ name: 'Address', type: 'string' }
                 ]
             };
@@ -135,8 +135,8 @@
                             return "수정";
                         }, buttonclick: function (row) {
                             // get the clicked row's data and initialize the input fields.
-                            var dataRecord = $("#mainMenuList").jqxGrid('getrowdata', row);
-                            console.log("DD");
+                            var dataRecord = $("#subMenuList").jqxGrid('getrowdata', row);
+                            WindowOpenScroll("/Manage/SubmenuEdit/" + dataRecord.Id + "?isPop=true", "", 800, 500, 100, 100);
                         }
                     }
                 ]

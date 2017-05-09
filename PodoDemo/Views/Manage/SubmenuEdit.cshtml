@@ -1,0 +1,164 @@
+﻿@model PodoDemo.Models.SubMenu
+
+@{
+    //팝업일 경우 레이아웃은 팝업 전용으로 변경 아닐 경우 메뉴가 포함된 기본 레이아웃
+    if (ViewBag.isPop)
+    {
+        Layout = "~/Views/Shared/Popup_Layout.cshtml";
+    }
+
+    string isUsedChecked_T = Model.Isused ? "checked" : "";
+    string isUsedChecked_F = Model.Isused ? "" : "checked";
+
+    string isDeletedChecked_T = Model.Isdeleted ? "checked" : "";
+    string isDeletedChecked_F = Model.Isdeleted ? "" : "checked";
+
+    string isManager_T = Model.Ismanager ? "checked" : "";
+    string isManager_F = Model.Ismanager ? "" : "checked";
+
+    bool isPop = ViewBag.isPop;
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#Isused_T").prop("checked", "@isUsedChecked_T");
+        $("#Isused_F").prop("checked", "@isUsedChecked_F");
+
+        $("#Isdeleted_T").prop("checked", "@isDeletedChecked_T");
+        $("#Isdeleted_F").prop("checked", "@isDeletedChecked_F");
+
+        $("#Ismanager_T").prop("checked", "@isManager_T");
+        $("#Ismanager_F").prop("checked", "@isManager_F");
+    });
+
+    // 메뉴 수정 내용 저장
+    function SubmitForm() {
+        // 유효성 검사 후 진행
+        //if (ValidateForm()) {
+        //    $("#Founddate").val($('#jqdatetimeinput_founddate').jqxDateTimeInput('getText'));
+        //    $("#Detail").val($("#tempDetail").html());
+        //}
+
+        $("#MenuEditForm").prop("action", "/Manage/MenuEdit");
+        $("#MenuEditForm").prop("method", "post");
+        $("#MenuEditForm").submit();
+    }
+
+    // 메뉴 삭제
+    function DeleteMenu() {
+        $("#MenuEditForm").prop("action", "/Manage/DeleteMenu");
+        $("#MenuEditForm").prop("method", "post");
+        $("#MenuEditForm").submit();
+    }
+</script>
+
+<div class="container custom-container">
+    <div class="custom-header">
+        <span>상세메뉴 수정</span>
+    </div>
+
+    <form id="MenuEditForm">
+        <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+        <input type="hidden" id="IsPop" name="IsPop" value="@Html.Raw(isPop)" />
+        <input type="hidden" id="Createdate" name="Createdate" value="@Model.Createdate" />
+        <input type="hidden" id="Createuser" name="Createuser" value="@Model.Createuser" />
+        <input type="hidden" id="Modifydate" name="Modifydate" value="@Model.Modifydate" />
+        <input type="hidden" id="Modifyuser" name="Modifyuser" value="@Model.Modifyuser" />
+
+        <div class="row">
+            <div class="col-sm-4 custom-title">
+                <span>이름</span>
+            </div>
+            <div class="col-sm-8 custom-input">
+                <input type="text" id="Name" name="Name"
+                       class="form-control"
+                       value="@Model.Name" placeholder="상세 메뉴 이름" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4 custom-title">
+                <span>순서</span>
+            </div>
+            <div class="col-sm-8 custom-input">
+                <input type="number" id="Order" name="Order"
+                       class="form-control"
+                       value="@Model.Order" placeholder="상세 메뉴 순서" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4 custom-title">
+                <span>사용여부</span>
+            </div>
+            <div class="col-sm-8 custom-input">
+                <label class="radio-inline">
+                    <input type="radio" id="Isused_T" name="Isused" value="true" />예
+                </label>
+
+                <label class="radio-inline">
+                    <input type="radio" id="Isused_F" name="Isused" value="false" />아니오
+                </label>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4 custom-title">
+                <span>삭제여부</span>
+            </div>
+            <div class="col-sm-8 custom-input">
+                <label class="radio-inline">
+                    <input type="radio" id="Isdeleted_T" name="Isdeleted" value="true" />예
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" id="Isdeleted_F" name="Isdeleted" value="false" />아니오
+                </label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4 custom-title">
+                <span>메뉴 URL</span>
+            </div>
+            <div class="col-sm-8 custom-input">
+                <input type="text" id="Menuurl" name="Menuurl"
+                       class="form-control"
+                       value="@Model.Menuurl" placeholder="세부 메뉴 URL" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4 custom-title">
+                <span>관리자 사용 여부</span>
+            </div>
+            <div class="col-sm-8 custom-input">
+                <label class="radio-inline">
+                    <input type="radio" id="Ismanager_T" name="Ismanager" value="true" />예
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" id="Ismanager_F" name="Ismanager" value="false" />아니오
+                </label>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+            <div class="col-sm-12">
+                <button type="button" class="btn custom-btn custom-btn-save" onclick="SubmitForm();">저장</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <button type="button" id="MenuDeleteButton" class="btn custom-btn custom-btn-delete" onclick="DeleteMenu();">삭제</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <button type="button" class="btn custom-btn custom-btn-close" onclick="window.close();">닫기</button>
+            </div>
+        </div>
+    </form>
+</div>

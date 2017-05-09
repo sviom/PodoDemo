@@ -19,6 +19,10 @@ namespace PodoDemo.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// 대메뉴 페이지 이동 및 불러오기
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Menu()
         {
             try
@@ -114,7 +118,23 @@ namespace PodoDemo.Controllers
         {
             return _context.Menu.Any(e => e.Id == id);
         }
+        /// <summary>
+        /// 상세 메뉴 존재하는지 검사
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private bool SubmenuExistst(string id)
+        {
+            return _context.SubMenu.Any(e => e.Id == id);
+        }
 
+        /// <summary>
+        /// 메뉴 삭제(삭제 항목 업데이트)
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="IsPop"></param>
+        /// <param name="mainMenu"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> DeleteMenu(long? Id, bool IsPop, [Bind("Id,Name,Order,Isused,Isdeleted,Createdate,Createuser,Modifydate,Modifyuser")] Menu mainMenu)
         {
@@ -157,6 +177,11 @@ namespace PodoDemo.Controllers
             return View(mainMenu);
         }
 
+        /// <summary>
+        /// 대메뉴 더블클릭할 때 상세 메뉴 목록 가져오기
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         [HttpPost]
         public string GetSubmenulist([FromBody]long Id)
         {
@@ -197,15 +222,71 @@ namespace PodoDemo.Controllers
             }            
         }
 
-        // POST: Accounts/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(long id)
-        //{
-        //    var account = await _context.Account.SingleOrDefaultAsync(m => m.Accountid == id);
-        //    _context.Account.Remove(account);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction("Index");
-        //}
+        /// <summary>
+        /// 상세 메뉴 정보 가져오기
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="isPop"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> SubmenuEdit(string id, [FromQuery]bool isPop)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var menu = await _context.SubMenu.SingleOrDefaultAsync(m => m.Id == id);
+            if (menu == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.isPop = isPop;
+
+            return View(menu);
+        }
+
+        /// <summary>
+        /// 실제 상세 메뉴 수정 기능 수행
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="IsPop"></param>
+        /// <param name="mainMenu"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> SubmenuEdit(string Id, bool IsPop, [Bind("Id,Name,Order,Isused,Isdeleted,Createdate,Createuser,Modifydate,Modifyuser,Menuurl")] SubMenu subMenu)
+        {
+            if (Id != subMenu.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    subMenu.Modifydate = DateTime.Now;
+                    subMenu.Modifyuser = HttpContext.Session.GetString("userId");
+
+                    _context.Update(subMenu);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!SubmenuExistst(subMenu.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Close", "Home");
+            }
+
+            ViewBag.isPop = true;
+            return View(subMenu);
+        }
     }
 }
