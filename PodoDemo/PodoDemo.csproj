@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Content Include="wwwroot\css\Layout.css" />
+    <Content Include="wwwroot\css\Layout_BootstrapCustom.css" />
     <Content Include="wwwroot\css\Layout_Pop.css" />
     <Content Include="wwwroot\css\LoginPage.css" />
     <Content Include="wwwroot\css\Menu.css" />
