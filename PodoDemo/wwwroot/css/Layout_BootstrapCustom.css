@@ -2,9 +2,17 @@
 .custom-container {
     padding-left: 0px;
     padding-right: 0px;
-    background-color: #f9f9f9;
+    background-color: white;
 }
 
+.custom-form {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.navbar {
+    margin-bottom: 0px;
+}
 
 /*부트스트랩 row에 덮어쓰기*/
 .row {
@@ -47,9 +55,7 @@
 .custom-header {
     background-color: #474747;
     color: white;
-    font-size: 30px;
-    /*width: 100%;*/
-    padding-left: 10px;
+    font-size: 25px;
 }
 
 .custom-title {
@@ -66,4 +72,11 @@
 /* 제목 옆 사용자 입력 부분 */
 .custom-input {
     margin-top: 10px;
+}
+
+/* 텍스트 부분*/
+.text-center, .text-left {
+    margin: 0;
+    padding-bottom:10px;
+    padding-top:10px;
 }

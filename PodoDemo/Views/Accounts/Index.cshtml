@@ -100,30 +100,62 @@
 </script>
 
 <div class="View">
-    <div class="ViewTitle">
+    <div class="container-fluid custom-container">
+        <div class="row">
+            <div class="col-md-12 custom-header">
+                <p class="text-left">거래처 목록</p>
+            </div>
+        </div>
+
+        <form class="form-horizontal custom-form">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">회사명</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control" placeholder="회사명" />
+                </div>
+
+                <label class="col-sm-2 control-label">전화번호</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control" placeholder="전화번호" />
+                </div>
+
+                <label class="col-sm-2 control-label">고객타입</label>
+                <div class="col-sm-2">
+                    <select id="accountCustomerType" class="form-control"></select>
+                </div>
+            </div>
+        </form>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="custom-title">
+                    <span>상세 내용</span>
+                </div>
+                <div id="accountList"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-offset-10 col-md-2">
+                <a href="/Accounts/Create" class="btn custom-btn custom-btn-save">거래처 생성</a>
+            </div>
+        </div>
+    </div>
+
+
+
+    @*<div class="ViewTitle">
         <span>거래처 목록</span>
     </div>
     <div class="SearchCondition">
         <table>
             <tr>
-                <td class="LabelTD">
-                    <span class="SearchLabel">회사명</span>
-                </td>
-                <td class="InputTD">
-                    <input type="text" class="SearchInput" placeholder="Account Name" />
-                </td>
-                <td class="LabelTD">
-                    <span class="SearchLabel">전화번호</span>
-                </td>
-                <td class="InputTD">
-                    <input type="text" class="SearchInput" placeholder="Account Phone" />
-                </td>
-                <td class="LabelTD">
-                    <span class="SearchLabel">고객타입</span>
-                </td>
-                <td class="InputTD">
-                    <select id="accountCustomerType" class="SearchInput"></select>
-                </td>
+                <td class="LabelTD"></td>
+                <td class="InputTD"></td>
+                <td class="LabelTD"></td>
+                <td class="InputTD"></td>
+                <td class="LabelTD"></td>
+                <td class="InputTD"></td>
                 <td class="LabelTD">
                     <span class="SearchLabel">업종</span>
                 </td>
@@ -144,7 +176,7 @@
 
     <div class="ControlButtonArea">
         <a href="/Accounts/Create">생성</a>
-    </div>
+    </div>*@
 
 </div>
 

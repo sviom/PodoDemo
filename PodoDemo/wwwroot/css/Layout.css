@@ -14,7 +14,7 @@ html, body {
 
 .View {
     /*width: 1330px;*/
-    background-color: white;
+    background-color: #f9f9f9;
     /*text-align: center;*/
     margin-left: auto;
     margin-right: auto;
@@ -43,9 +43,9 @@ html, body {
         }
 
 .LabelTD {
-    width: 12.5%;
     background-color: #474747;
     color: white;
+    font-size:15px;
 }
 
 
