@@ -1,7 +1,8 @@
-//
+﻿//
 // Navbars
 // --------------------------------------------------
 
+@import "variables";
 
 // Wrapper and base class
 //
@@ -13,12 +14,11 @@
   min-height: @navbar-height; // Ensure a navbar always shows (e.g., without a .navbar-brand in collapsed mode)
   margin-bottom: @navbar-margin-bottom;
   border: 1px solid transparent;
-
   // Prevent floats from breaking the navbar
   &:extend(.clearfix all);
 
   @media (min-width: @grid-float-breakpoint) {
-    border-radius: @navbar-border-radius;
+    border-radius: @navbar-border-radius;    
   }
 }
 
@@ -407,6 +407,7 @@
   }
 
   .navbar-text {
+    /*color: @navbar-default-color;*/
     color: @navbar-default-color;
   }
 
@@ -533,6 +534,7 @@
 
   .navbar-brand {
     color: @navbar-inverse-brand-color;
+
     &:hover,
     &:focus {
       color: @navbar-inverse-brand-hover-color;
@@ -554,6 +556,7 @@
         background-color: @navbar-inverse-link-hover-bg;
       }
     }
+
     > .active > a {
       &,
       &:hover,
@@ -562,6 +565,7 @@
         background-color: @navbar-inverse-link-active-bg;
       }
     }
+
     > .disabled > a {
       &,
       &:hover,
@@ -571,14 +575,15 @@
       }
     }
   }
-
   // Darken the responsive nav toggle
   .navbar-toggle {
     border-color: @navbar-inverse-toggle-border-color;
+
     &:hover,
     &:focus {
       background-color: @navbar-inverse-toggle-hover-bg;
     }
+
     .icon-bar {
       background-color: @navbar-inverse-toggle-icon-bar-bg;
     }
@@ -588,7 +593,6 @@
   .navbar-form {
     border-color: darken(@navbar-inverse-bg, 7%);
   }
-
   // Dropdowns
   .navbar-nav {
     > .open > a {
@@ -606,17 +610,21 @@
         > .dropdown-header {
           border-color: @navbar-inverse-border;
         }
+
         .divider {
           background-color: @navbar-inverse-border;
         }
+
         > li > a {
           color: @navbar-inverse-link-color;
+
           &:hover,
           &:focus {
             color: @navbar-inverse-link-hover-color;
             background-color: @navbar-inverse-link-hover-bg;
           }
         }
+
         > .active > a {
           &,
           &:hover,
@@ -625,6 +633,7 @@
             background-color: @navbar-inverse-link-active-bg;
           }
         }
+
         > .disabled > a {
           &,
           &:hover,
@@ -639,6 +648,7 @@
 
   .navbar-link {
     color: @navbar-inverse-link-color;
+
     &:hover {
       color: @navbar-inverse-link-hover-color;
     }
@@ -646,10 +656,12 @@
 
   .btn-link {
     color: @navbar-inverse-link-color;
+
     &:hover,
     &:focus {
       color: @navbar-inverse-link-hover-color;
     }
+
     &[disabled],
     fieldset[disabled] & {
       &:hover,
