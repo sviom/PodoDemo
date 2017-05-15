@@ -107,29 +107,51 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-md-12">
+                <div class="custom-title">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                    <span>검색</span>                    
+                </div>
+            </div>
+        </div>
+
         <form class="form-horizontal custom-form">
             <div class="form-group">
-                <label class="col-sm-2 control-label">회사명</label>
-                <div class="col-sm-2">
+                <label class="col-md-1 control-label">회사명</label>
+                <div class="col-md-2">
                     <input type="text" class="form-control" placeholder="회사명" />
                 </div>
 
-                <label class="col-sm-2 control-label">전화번호</label>
-                <div class="col-sm-2">
+                <label class="col-md-1 control-label">전화번호</label>
+                <div class="col-md-2">
                     <input type="text" class="form-control" placeholder="전화번호" />
                 </div>
 
-                <label class="col-sm-2 control-label">고객타입</label>
-                <div class="col-sm-2">
+                <label class="col-md-1 control-label">고객타입</label>
+                <div class="col-md-2">
                     <select id="accountCustomerType" class="form-control"></select>
+                </div>
+
+                <label class="col-md-1 control-label">검색조건</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" placeholder="검색조건" />
                 </div>
             </div>
         </form>
 
         <div class="row">
+            <div class="col-md-offset-10 col-md-2">
+                <button type="button" class="btn custom-btn custom-btn-save">검색</button>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-md-12">
                 <div class="custom-title">
-                    <span>상세 내용</span>
+                    <hr />
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    <span>상세 내용</span>                    
                 </div>
                 <div id="accountList"></div>
             </div>
@@ -137,7 +159,10 @@
 
         <div class="row">
             <div class="col-md-offset-10 col-md-2">
-                <a href="/Accounts/Create" class="btn custom-btn custom-btn-save">거래처 생성</a>
+                <a href="/Accounts/Create" class="btn custom-btn custom-btn-save">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    거래처 생성
+                </a>
             </div>
         </div>
     </div>
@@ -145,38 +170,38 @@
 
 
     @*<div class="ViewTitle">
-        <span>거래처 목록</span>
-    </div>
-    <div class="SearchCondition">
-        <table>
-            <tr>
-                <td class="LabelTD"></td>
-                <td class="InputTD"></td>
-                <td class="LabelTD"></td>
-                <td class="InputTD"></td>
-                <td class="LabelTD"></td>
-                <td class="InputTD"></td>
-                <td class="LabelTD">
-                    <span class="SearchLabel">업종</span>
-                </td>
-                <td class="InputTD">
-                    <input type="text" class="SearchInput" />
-                </td>
-            </tr>
-            <tr>
-                <td colspan="8">
-                    <button type="button" class="SearchButton">검색</button>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div class="ViewContent">
-        <div id="accountList"></div>
-    </div>
+            <span>거래처 목록</span>
+        </div>
+        <div class="SearchCondition">
+            <table>
+                <tr>
+                    <td class="LabelTD"></td>
+                    <td class="InputTD"></td>
+                    <td class="LabelTD"></td>
+                    <td class="InputTD"></td>
+                    <td class="LabelTD"></td>
+                    <td class="InputTD"></td>
+                    <td class="LabelTD">
+                        <span class="SearchLabel">업종</span>
+                    </td>
+                    <td class="InputTD">
+                        <input type="text" class="SearchInput" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="8">
+                        <button type="button" class="SearchButton">검색</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="ViewContent">
+            <div id="accountList"></div>
+        </div>
 
-    <div class="ControlButtonArea">
-        <a href="/Accounts/Create">생성</a>
-    </div>*@
+        <div class="ControlButtonArea">
+            <a href="/Accounts/Create">생성</a>
+        </div>*@
 
 </div>
 
