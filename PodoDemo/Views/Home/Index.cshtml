@@ -11,8 +11,14 @@
     <meta name="viewport" content="width=device-width" />
     <title>포도CRM</title>
     <link rel="shortcut icon" type="image/x-icon" href="~/images/favicon.ico" />
+
     <script src="~/js/jquery-3.2.1.min.js"></script>
     <link href="~/css/LoginPage.css" rel="stylesheet" />
+
+    @*부트 스트랩*@
+    <script src="~/js/bootstrap332/js/bootstrap.js"></script>
+    <link href="~/js/bootstrap332/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/Layout_BootstrapCustom.css" rel="stylesheet" />
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -45,43 +51,57 @@
     </script>
 </head>
 <body>
-    <form id="loginForm" class="loginForm">
-        <div class="loginLogo">
-            <img src="~/images/Login/login_logo.png" />
-        </div>
-        <div class="logindiv">
-            <div class="logintab">
-                <div class="mainImage">
-                    <img src="~/images/Login/login_img.png" />
-                </div>
-                <div class="userInput">
-                    <img src="~/images/Login/login_text.png" />
-                    <br />
-                    <input type="text" id="userID" name="useriD" class="inputbox1" placeholder="아이디" onkeydown="OnKeyDown(this.id)" />
-                    <br />
-                    <input type="password" id="userPW" name="userPW" class="inputbox2" placeholder="비밀번호" onkeydown="OnKeyDown(this.id)" />
-                    <br />
-                    <br />
-                    <button type="button" id="LoginButton" class="loginButton">로그인</button>
-                </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <img src="~/images/Login/login_logo.png" class="img-responsive center-block" alt="로고" />
             </div>
         </div>
 
-        <!-- bottom -->
-        <div class="bottom">
-            <br />
-            상호명 : 트루인포 | 사업자등록번호 : 119-86-17769 |
-            대표자 : 신수원 | 전화번호 : 070-8231-4590 | 팩스번호 : 02-6008-3199
-            <br />
-            주소 :
-            서울특별시 금천구 서부샛길 606, 디폴리스 B동 1309호
-            <br />
-            <br />
-            Copyrights(c) @DateTime.Now.Year
-            trueinfo.All rights reserved.
-            <br />
-            <br />
-        </div>
-    </form>
+        <form id="loginForm" class="form-horizontal loginForm">
+            <div class="form-group">
+                <label class="col-md-2 control-label">조직</label>
+                <div class="col-md-10">
+                    <input type="text" id="org" name="org" class="form-control" placeholder="조직" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label">이메일</label>
+                <div class="col-md-10">
+                    <input type="text" id="userID" name="useriD" class="form-control" placeholder="아이디" onkeydown="OnKeyDown(this.id)" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label">비밀번호</label>
+                <div class="col-md-10">
+                    <input type="password" id="userPW" name="userPW" class="form-control" placeholder="비밀번호" onkeydown="OnKeyDown(this.id)" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" id="LoginButton" class="btn custom-btn loginButton">로그인</button>
+                </div>
+            </div>
+        </form>
+
+        @*<div class="row">
+            <div class="col-md-3">
+                상호명 : 트루인포 | 사업자등록번호 : 119-86-17769 |
+            </div>
+            <div class="col-md-3">                
+                대표자 : 신수원 | 전화번호 : 070-8231-4590 | 팩스번호 : 02-6008-3199
+            </div>
+            <div class="col-md-3">
+                주소 : 서울특별시 금천구 서부샛길 606, 디폴리스 B동 1309호
+            </div>
+            <div class="col-md-3">
+                Copyrights(c) @DateTime.Now.Year, trueinfo.All rights reserved.
+            </div>
+        </div>*@
+    </div>
 </body>
 </html>
