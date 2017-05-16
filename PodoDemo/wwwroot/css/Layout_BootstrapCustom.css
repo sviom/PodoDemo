@@ -72,14 +72,6 @@
         color: orange;
     }
 
-.custom-btn-toggle {
-    border-color: white;
-}
-
-    .custom-btn-toggle .icon-bar {
-        color: white;
-        background-color: white;
-    }
 /*제목 부분*/
 .custom-header {
     background-color: #474747;

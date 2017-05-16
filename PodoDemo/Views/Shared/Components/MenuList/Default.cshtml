@@ -7,13 +7,28 @@
     List<MenuDisplay> MenuList = Model.ToList<MenuDisplay>();
 }
 
-<link href="~/css/Menu.css" rel="stylesheet" />
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        // 로그 아웃 버튼 클릭 시
+        $("#logoutBtn").click(function () {
+
+        });
+    });
+</script>
 
 <nav class="navbar navbar-default">
     <div class="container-fluid">
+
+        @*
+            CSS 수정 시 variables.less / dropdowns.less / navbar.less 수정
+            NPM CMD로 부트스트랩 폴더 까지 들어가서(Grunt.js 있는 곳)
+            GRUNT WATCH 명령어 치면 태스크 돌면서 변경 시 자동으로 컴파일
+        *@
+
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed custom-btn-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -22,7 +37,6 @@
             <a class="navbar-brand" href="#">PodoCRM</a>
         </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
 
@@ -47,7 +61,7 @@
                 }
             </ul>
             <form class="navbar-form navbar-left" role="search">
-                <button type="button" class="btn custom-btn custom-btn-menubtn">로그아웃</button>
+                <button type="button" id="logoutBtn" class="btn custom-btn custom-btn-menubtn">로그아웃</button>
             </form>
 
         </div><!-- /.navbar-collapse -->
