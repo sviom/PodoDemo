@@ -1552,10 +1552,13 @@ pre code {
   overflow-y: scroll;
 }
 .container {
+  background-color: #FFFFFF;
   margin-right: auto;
   margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
+  /*padding-left: (@gutter / 2);
+  padding-right: (@gutter / 2);*/
+  padding-left: 0px;
+  padding-right: 0px;
 }
 @media (min-width: 768px) {
   .container {
@@ -1572,13 +1575,40 @@ pre code {
     width: 1170px;
   }
 }
+.container-nav {
+  background-color: #2588EA;
+  margin-right: auto;
+  margin-left: auto;
+  /*padding-left: (@gutter / 2);
+  padding-right: (@gutter / 2);*/
+  padding-left: 0px;
+  padding-right: 0px;
+}
+@media (min-width: 768px) {
+  .container-nav {
+    width: 750px;
+  }
+}
+@media (min-width: 992px) {
+  .container-nav {
+    width: 970px;
+  }
+}
+@media (min-width: 1200px) {
+  .container-nav {
+    width: 1170px;
+  }
+}
 .container-fluid {
   margin-right: auto;
   margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
+  /*padding-left: (@gutter / 2);
+  padding-right: (@gutter / 2);*/
+  padding-left: 0px;
+  padding-right: 0px;
 }
 .row {
+  margin-bottom: 10px;
   margin-left: 0;
   margin-right: 0;
   /*margin-left: (@gutter / -2);
@@ -2940,7 +2970,8 @@ select[multiple].form-group-lg .form-control {
 }
 @media (min-width: 768px) {
   .form-horizontal .control-label {
-    text-align: right;
+    /*text-align: right;*/
+    text-align: center;
     margin-bottom: 0;
     padding-top: 7px;
   }
@@ -4041,7 +4072,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar {
   position: relative;
   min-height: 50px;
-  margin-bottom: 20px;
+  /*margin-bottom: @navbar-margin-bottom;*/
+  margin-bottom: 0;
   border: 1px solid transparent;
 }
 @media (min-width: 768px) {
@@ -6253,6 +6285,8 @@ button.close {
 .dl-horizontal dd:after,
 .container:before,
 .container:after,
+.container-nav:before,
+.container-nav:after,
 .container-fluid:before,
 .container-fluid:after,
 .row:before,
@@ -6283,6 +6317,7 @@ button.close {
 .clearfix:after,
 .dl-horizontal dd:after,
 .container:after,
+.container-nav:after,
 .container-fluid:after,
 .row:after,
 .form-horizontal .form-group:after,
