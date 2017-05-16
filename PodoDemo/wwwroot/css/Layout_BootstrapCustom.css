@@ -1,76 +1,9 @@
-﻿/*부트스트랩 container에 덮어쓰기*/
-.custom-container {
-    padding-left: 0px;
-    padding-right: 0px;
-    background-color: white;
+﻿
+/* 그리드 시스템 버튼용(버튼 여러개) */
+.custom-row-btn-margin{
+    margin-bottom:10px;
 }
 
-.custom-form {
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
-.navbar {
-    margin-bottom: 0px;
-}
-
-.navbar-custom {
-    background-color: #2588EA;
-    color: white;
-    border-color: #2588EA;
-    border-radius: 0;
-}
-
-    .navbar-custom a {
-        color: white;
-    }
-
-/*부트스트랩 row에 덮어쓰기*/
-.row {
-    margin-left: 0px;
-    margin-right: 0px;
-    margin-bottom: 10px;
-}
-
-/*부트스트랩 버튼 영역*/
-.custom-btn {
-    width: 100%;
-    color: white;
-}
-
-.custom-btn-save {
-    background-color: #2588EA;
-}
-
-    .custom-btn-save:hover {
-        color: orange;
-    }
-
-.custom-btn-delete {
-    background-color: #ea2526;
-}
-
-    .custom-btn-delete:hover {
-        color: #25eae9;
-    }
-
-.custom-btn-close {
-    background-color: #d1d1d1;
-}
-
-    .custom-btn-close:hover {
-        color: #d1d1d1;
-    }
-
-.custom-btn-menubtn {
-    color: white;
-    border-color: white;
-    background-color: #2588EA;
-}
-
-    .custom-btn-menubtn:hover {
-        color: orange;
-    }
 
 /*제목 부분*/
 .custom-header {

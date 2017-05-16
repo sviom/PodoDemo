@@ -1,3 +1,4 @@
+/*@btn-default-color:              #333;*/
 /*@dropdown-bg:                    #fff;*/
 /*@dropdown-link-color:            @gray-dark;*/
 /*@dropdown-link-hover-color:      darken(@gray-dark, 5%);*/
@@ -41,30 +42,30 @@
   background-image: none;
 }
 .btn-default {
-  background-image: -webkit-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
-  background-image: -o-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
-  background-image: linear-gradient(to bottom, #ffffff 0%, #e0e0e0 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe0e0e0', GradientType=0);
+  background-image: -webkit-linear-gradient(top, #2588ea 0%, #1269bf 100%);
+  background-image: -o-linear-gradient(top, #2588ea 0%, #1269bf 100%);
+  background-image: linear-gradient(to bottom, #2588ea 0%, #1269bf 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff2588ea', endColorstr='#ff1269bf', GradientType=0);
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   background-repeat: repeat-x;
-  border-color: #dbdbdb;
+  border-color: #1264b6;
   text-shadow: 0 1px 0 #fff;
   border-color: #ccc;
 }
 .btn-default:hover,
 .btn-default:focus {
-  background-color: #e0e0e0;
+  background-color: #1269bf;
   background-position: 0 -15px;
 }
 .btn-default:active,
 .btn-default.active {
-  background-color: #e0e0e0;
-  border-color: #dbdbdb;
+  background-color: #1269bf;
+  border-color: #1264b6;
 }
 .btn-default.disabled,
 .btn-default:disabled,
 .btn-default[disabled] {
-  background-color: #e0e0e0;
+  background-color: #1269bf;
   background-image: none;
 }
 .btn-primary {

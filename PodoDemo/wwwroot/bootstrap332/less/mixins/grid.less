@@ -1,6 +1,7 @@
-// Grid system
+﻿// Grid system
 //
 // Generate semantic grid columns with these mixins.
+@import "../variables";
 
 // Centered container element
 .container-fixed(@gutter: @grid-gutter-width) {
@@ -13,8 +14,10 @@
 
 // Creates a wrapper for a series of columns
 .make-row(@gutter: @grid-gutter-width) {
-  margin-left:  (@gutter / -2);
-  margin-right: (@gutter / -2);
+  margin-left: 0;
+  margin-right: 0;
+  /*margin-left: (@gutter / -2);
+  margin-right: (@gutter / -2);*/
   &:extend(.clearfix all);
 }
 

@@ -1,8 +1,8 @@
-//
+﻿//
 // Forms
 // --------------------------------------------------
-
-
+@import "variables";
+@import "mixins";
 // Normalize non-controls
 //
 // Restyle and baseline non-control form elements.
@@ -503,7 +503,6 @@ input[type="checkbox"] {
 // labels on the left and inputs on the right.
 
 .form-horizontal {
-
   // Consistent vertical alignment of radios and checkboxes
   //
   // Labels also get some reset styles, but that is scoped to a media query below.
@@ -521,12 +520,10 @@ input[type="checkbox"] {
   .checkbox {
     min-height: (@line-height-computed + (@padding-base-vertical + 1));
   }
-
   // Make form groups behave like rows
   .form-group {
     .make-row();
   }
-
   // Reset spacing and right align labels, but scope to media queries so that
   // labels on narrow viewports stack the same as a default form example.
   @media (min-width: @screen-sm-min) {
@@ -536,7 +533,6 @@ input[type="checkbox"] {
       padding-top: (@padding-base-vertical + 1); // Default padding plus a border
     }
   }
-
   // Validation states
   //
   // Reposition the icon because it's now within a grid column and columns have
@@ -544,7 +540,6 @@ input[type="checkbox"] {
   .has-feedback .form-control-feedback {
     right: (@grid-gutter-width / 2);
   }
-
   // Form group sizes
   //
   // Quick utility class for applying `.input-lg` and `.input-sm` styles to the
@@ -556,6 +551,7 @@ input[type="checkbox"] {
       }
     }
   }
+
   .form-group-sm {
     @media (min-width: @screen-sm-min) {
       .control-label {

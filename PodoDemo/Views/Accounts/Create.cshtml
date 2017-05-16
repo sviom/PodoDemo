@@ -75,12 +75,85 @@
 </script>
 
 <div class="View">
+    <div class="container custom-container">
+        <div class="row">
+            <div class="col-md-12 custom-header">
+                <p class="text-left">거래처 생성</p>
+            </div>
+        </div>
+
+        <form class="form-horizontal" id="AccountCreateForm" action="/Accounts/Create" method="post">
+            <div class="form-group">
+                <label class="col-md-1 control-label requireField">회사명</label>
+                <div class="col-md-2">
+                    <input type="text" id="Name" name="Name" class="form-control" placeholder="거래처 이름" />
+                </div>
+
+                <label class="col-md-1 control-label">전화번호</label>
+                <div class="col-md-2">
+                    <input type="tel" id="Phone" name="Phone" class="form-control" placeholder="전화번호[00-000-0000]" />
+                </div>
+
+                <label class="col-md-1 control-label">FAX</label>
+                <div class="col-md-2">
+                    <input type="tel" id="Fax" name="Fax" class="form-control" placeholder="팩스[00-000-0000]" />
+                </div>
+
+                <label class="col-md-1 control-label">홈페이지</label>
+                <div class="col-md-2">
+                    <input type="text" id="Homepage" name="Homepage" class="form-control" placeholder="홈페이지 주소" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-1 control-label requireField">CEO</label>
+                <div class="col-md-2">
+                    <input type="text" id="Ceo" name="Ceo" class="form-control" placeholder="대표/사장 성함" />
+                </div>
+
+                <label class="col-md-1 control-label">사업자번호</label>
+                <div class="col-md-2">
+                    <input type="text" id="Biznum" name="Biznum" class="form-control" placeholder="사업자번호" />
+                </div>
+
+                <label class="col-md-1 control-label">비고</label>
+                <div class="col-md-2">
+                    <textarea class="form-control" id="Detail" name="Detail" rows="3"></textarea>
+                </div>
+
+                <label class="col-md-1 control-label">설립일</label>
+                <div class="col-md-2">
+                    <div id="jqdatetimeinput_founddate"></div>
+                    <input type="hidden" id="Founddate" name="Founddate" />
+                </div>
+            </div>
+        </form>
+
+        <div class="row"></div>
+
+        <div class="row"></div>
+
+        <div class="row">
+            <div class="col-md-offset-10 col-md-1 custom-row-btn-margin">
+                <button type="button" id="CreateAccountButton" class="btn btn-default" onclick="SubmitForm();">
+                    <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+                    저장
+                </button>
+            </div>
+            <div class="col-md-1 custom-row-btn-margin">
+                <a href="/Accounts/Index" class="btn btn-default">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    목록
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div class="ViewTitle">
         <span>거래처 생성</span>
     </div>
     <div class="ViewContent">
         <span class="ViewSubTitle">> 기본 정보</span>
-        <form id="AccountCreateForm" action="/Accounts/Create" method="post">
+        <form>
             @*asp-action="Create"*@
             <table class="ContentTable">
                 <tr>
@@ -88,55 +161,40 @@
                         <span class="requireField">회사명</span>
                     </td>
                     <td class="tableInputTD">
-                        <input type="text" id="Name" name="Name" class="inputType" placeholder="거래처 이름" />
+                        @*<input type="text" id="Name" name="Name" class="inputType" placeholder="거래처 이름" />*@
                     </td>
                     <td class="tableLabelTD">
                         <span>전화번호</span>
                     </td>
-                    <td class="tableInputTD">
-                        <input type="tel" id="Phone" name="Phone" class="inputType" placeholder="전화번호[00-000-0000]" />
-                    </td>
+                    <td class="tableInputTD"></td>
                     <td class="tableLabelTD">
                         <span>팩스</span>
                     </td>
-                    <td class="tableInputTD">
-                        <input type="tel" id="Fax" name="Fax" class="inputType" placeholder="팩스[00-000-0000]" />
-                    </td>
+                    <td class="tableInputTD"></td>
                 </tr>
                 <tr>
                     <td class="tableLabelTD">
                         <span>홈페이지</span>
                     </td>
-                    <td class="tableInputTD">
-                        <input type="text" id="Homepage" name="Homepage" class="inputType" placeholder="홈페이지 주소" />
-                    </td>
+                    <td class="tableInputTD"></td>
                     <td class="tableLabelTD">
                         <span>CEO</span>
                     </td>
-                    <td class="tableInputTD">
-                        <input type="text" id="Ceo" name="Ceo" class="inputType" placeholder="대표/사장 성함" />
-                    </td>
+                    <td class="tableInputTD"></td>
                     <td class="tableLabelTD">
                         <span>사업자번호</span>
                     </td>
-                    <td class="tableInputTD">
-                        <input type="text" id="Biznum" name="Biznum" class="inputType" placeholder="사업자번호" />
-                    </td>
+                    <td class="tableInputTD"></td>
                 </tr>
                 <tr>
                     <td class="tableLabelTD">
                         <span>설립일</span>
                     </td>
-                    <td class="tableInputTD">
-                        <div id="jqdatetimeinput_founddate"></div>
-                        <input type="hidden" id="Founddate" name="Founddate" />
-                    </td>
+                    <td class="tableInputTD"></td>
                     <td class="tableLabelTD">
                         <span>비고</span>
                     </td>
-                    <td class="tableInputTD" colspan="3">
-                        <div class="inputDiv" id="Detail" name="Detail" contenteditable="true">상세 설명을 입력하세요.</div>
-                    </td>
+                    <td class="tableInputTD" colspan="3"></td>
                 </tr>
                 <tr>
                     <td class="tableLabelTD">
@@ -152,8 +210,7 @@
                 </tr>
             </table>
             <div class="ControlButtonArea">
-                <button type="button" id="CreateAccountButton" onclick="SubmitForm();">저장</button>
-                <a href="/Accounts/Index">목록</a>
+
             </div>
         </form>
     </div>

@@ -1,7 +1,8 @@
-//
+﻿//
 // Buttons
 // --------------------------------------------------
-
+@import "variables";
+@import "mixins";
 
 // Base styles
 // --------------------------------------------------
@@ -56,8 +57,9 @@
 
 // Alternate buttons
 // --------------------------------------------------
-
+// mixins - buttons.less
 .btn-default {
+  width:100%;
   .button-variant(@btn-default-color; @btn-default-bg; @btn-default-border);
 }
 .btn-primary {
