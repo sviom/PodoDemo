@@ -1,12 +1,14 @@
 ﻿@model PodoDemo.Models.Account
 
 @{
-    ViewData["Title"] = "수정";
+    ViewData["Title"] = "거래처수정";
 }
 
 <script type="text/javascript">
     $(document).ready(function () {
         SetBasicElement();// 기본적으로 그리는 화면 내용
+        // 부서값 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권한
+        GetUserDDL('1-1', '@Model.Ownerid', 'Ownerid', SetoptionTag, '@Model.Ownerid', false, false, false);
     });
 
     // 기본적으로 그리는 화면 내용
@@ -137,7 +139,7 @@
 
                 <label class="col-md-1 control-label">담당자</label>
                 <div class="col-md-3">
-                    <input type="text" id="Ownerid" name="Ownerid" class="form-control" value="@Model.Ownerid" />
+                    <select id="Ownerid" name="Ownerid" class="form-control"></select>
                 </div>
             </div>
 
@@ -156,13 +158,13 @@
 
         <div class="row">
             <div class="col-md-offset-6 col-md-2 custom-row-btn-margin">
-                <button type="button" id="EditAccountButton" class="btn btn-default" onclick="SubmitForm();">
+                <button type="button" id="EditButton" class="btn btn-default" onclick="SubmitForm();">
                     <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
                     저장
                 </button>
             </div>
             <div class="col-md-2 custom-row-btn-margin">
-                <button type="button" id="DeleteAccountButton" class="btn btn-default btn-danger">
+                <button type="button" id="DeleteButton" class="btn btn-default btn-danger">
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                     삭제
                 </button>
@@ -224,14 +226,5 @@
                 <div id="contactList"></div>
             </div>
         </div>
-
-        @*<div class="row">
-            <div class="col-md-12">
-                <div class="custom-title">
-                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-                    <span>상세 내용</span>
-                </div>                
-            </div>
-        </div>*@
     </div>
 </div>

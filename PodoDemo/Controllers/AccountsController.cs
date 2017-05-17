@@ -25,6 +25,7 @@ namespace PodoDemo.Controllers
         public async Task<IActionResult> Index()
         {
             List<Account> accountList = await _context.Account.ToListAsync();
+            ViewBag.UserId = HttpContext.Session.GetString("userId");
             return View((Object)JsonConvert.SerializeObject(accountList));
         }
 

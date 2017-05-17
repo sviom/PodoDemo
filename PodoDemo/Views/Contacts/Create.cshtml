@@ -1,7 +1,7 @@
 ﻿@model PodoDemo.Models.Contact
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "연락처생성";
 }
 <script type="text/javascript">
     $(document).ready(function () {
@@ -17,54 +17,34 @@
     function SubmitForm() {
         // 유효성 검사 후 진행
         if (ValidateForm()) {
-            $("#Founddate").val($('#jqdatetimeinput_founddate').jqxDateTimeInput('getText'));
-            $("#AccountCreateForm").submit();
+            $("#ContactsCreateForm").submit();
         }
     }
 
     // 입력한 값들에 대한 유효성 검사
     function ValidateForm() {
         var nameValue = $("#Name").val();
-        var phoneValue = $("#Phone").val();
-        var faxValue = $("#Fax").val();
-        var homepageValue = $("#Homepage").val();
-        var ceoValue = $("#Ceo").val();
-        var biznumValue = $("#Biznum").val();
-        var founddateValue = $("#jqdatetimeinput_founddate").jqxDateTimeInput('getText');
-        var detailValue = $("#Detail").val();
+        //var phoneValue = $("#Phone").val();
+        //var founddateValue = $("#jqdatetimeinput_founddate").jqxDateTimeInput('getText');
 
         if (nameValue == "") {
-            alert("거래처 이름을 입력해주세요.");
+            alert("이름을 입력해주세요.");
             return false;
         }
 
-        if (phoneValue != "") {
-            if (!IsPhoneType(phoneValue)) {
-                alert("전화번호 형식을 00-000-0000 형식으로\n올바르게 입력해주세요.");
-                return false;
-            }
-        }
+        //if (phoneValue != "") {
+        //    if (!IsPhoneType(phoneValue)) {
+        //        alert("전화번호 형식을 00-000-0000 형식으로\n올바르게 입력해주세요.");
+        //        return false;
+        //    }
+        //}
 
-        if (faxValue != "") {
-            if (!IsPhoneType(faxValue)) {
-                alert("팩스 형식을 00-000-0000 형식으로\n올바르게 입력해주세요.");
-                return false;
-            }
-        }
-
-        if (biznumValue != "") {
-            if (!IsBizNumType(biznumValue)) {
-                alert("사업자번호를 올바르게 입력해주세요.");
-                return false;
-            }
-        }
-
-        if (founddateValue != "") {
-            if (!IsDateType(founddateValue)) {
-                alert("날짜 형식을 올바르게 입력해주세요.");
-                return false;
-            }
-        }
+        //if (founddateValue != "") {
+        //    if (!IsDateType(founddateValue)) {
+        //        alert("날짜 형식을 올바르게 입력해주세요.");
+        //        return false;
+        //    }
+        //}
 
         return true;
     }
@@ -87,7 +67,7 @@
             </div>
         </div>
 
-        <form class="form-horizontal" id="AccountCreateForm" action="/Accounts/Create" method="post">
+        <form class="form-horizontal" id="ContactsCreateForm" action="/Contacts/Create" method="post">
             <div class="form-group">
                 <label class="col-md-1 control-label requireField">성명</label>
                 <div class="col-md-3">
@@ -101,8 +81,6 @@
                 <label class="col-md-1 control-label">이메일</label>
                 <div class="col-md-3">
                     <input type="email" id="Email" name="Email" class="form-control" placeholder="이메일@이메일"/>
-                    @*<div id="jqdatetimeinput_founddate"></div>
-                    <input type="hidden" id="Founddate" name="Founddate" />*@
                 </div>
             </div>
 

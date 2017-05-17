@@ -586,6 +586,7 @@
     <Content Include="wwwroot\js\jqwidgets\styles\jqx.highcontrast.css" />
     <Content Include="wwwroot\js\jqwidgets\styles\jqx.light.css" />
     <Content Include="wwwroot\js\jqwidgets\styles\jqx.metro.css" />
+    <Content Include="wwwroot\js\jqwidgets\styles\jqx.metroCustom.css" />
     <Content Include="wwwroot\js\jqwidgets\styles\jqx.metrodark.css" />
     <Content Include="wwwroot\js\jqwidgets\styles\jqx.mobile.css" />
     <Content Include="wwwroot\js\jqwidgets\styles\jqx.office.css" />

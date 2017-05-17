@@ -21,12 +21,9 @@
             var rightclick = args.rightclick;
             // original event.
             var ev = args.originalEvent;
-            console.log("Row  정보");
-            console.log(boundIndex);
-            var data = $('#accountList').jqxGrid('getrowdata', boundIndex);
-            console.log(data.Accountid);
-
-            location.href = "/Accounts/Edit/" + data.Accountid;
+            
+            var data = $('#contactList').jqxGrid('getrowdata', boundIndex);
+            location.href = "/Contacts/Edit/" + data.Contactid;
         });
     });
 
@@ -82,7 +79,6 @@
                     { text: '부서', datafield: 'Deparement', align: 'center', cellsalign: 'left', width: 80 },
                     { text: "직급", datafield: "Title", align: 'center', cellsalign: 'left', width: 80 },
                     { text: '회사명', datafield: 'CompanyName', align: 'center', cellsalign: 'left' },
-                    { text: "Maker", datafield: "Maker", align: 'center', cellsalign: 'center', width: 80 },
                     { text: 'E-Mail', datafield: 'Email', align: 'center', cellsalign: 'left', width: '160px' },
                     { text: '전화번호', datafield: 'Phone', align: 'center', cellsalign: 'center', width: '130px' },
                     { text: '휴대전화', datafield: 'Mobile', align: 'center', cellsalign: 'center', width: '130px' }//,

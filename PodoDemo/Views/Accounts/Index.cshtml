@@ -8,6 +8,7 @@
         SetBasicElement();
         // 검색 조건 키 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권한
         GetOptionDDL('1', 'accountCustomerType', SetoptionTag, '', true, false, false);
+        GetUserDDL('1-1', '@ViewBag.UserId', 'Ownerid', SetoptionTag, '', true, false, false); // 담당자
 
         $('#accountList').on('rowdoubleclick', function (event) {
             var args = event.args;
@@ -40,16 +41,8 @@
                     { name: 'Name', type: 'string' },
                     { name: 'BizNum', type: 'string' },
                     { name: 'Phone', type: 'string' },
-                    { name: 'Address', type: 'string' }
-                    //{ name: 'ContactCount', type: 'number' },
-                    //{ name: 'ProgressBusinessCount', type: 'number' },
-                    //{ name: 'EndBusinessCount', type: 'number' },
-                    //{ name: 'SalesCount', type: 'number' },
-                    //{ name: 'ServiceCount', type: 'number' },
-                    //{ name: 'ActivityCount', type: 'number' },
-                    // Service를 이용해서 받아오는 값의 형식 설정
-                    //{ name: 'BizTypeText', type: 'string' },
-                    //{ name: 'CustomerTypeText', type: 'string' }
+                    { name: 'Address', type: 'string' },
+                    { name: 'Ownerid', type: 'string' },
                 ]
             };
 
@@ -71,21 +64,21 @@
                 //showfilterrow: true,
                 filterable: true,
                 pagesize: 15,
-                //theme: "MetroCustom",//테마설정
-                columnsheight: '40px',//헤더 높이 설정
-                //localization: getLocalization('ko-KR'),
+                theme: "metroCustom",//테마설정
+                //columnsheight: '40px',//헤더 높이 설정
+                localization: GetLocalizationString(),
                 columns: [
                     //문자로 나오는 항목
-                    { text: "Accountid", datafield: "Accountid", hidden: true, align: 'center', cellsalign: 'center' },
-                    { text: "Name", datafield: "Name", align: 'center', cellsalign: 'left', width: '95%' },
-                    //{ text: '사업자번호', datafield: 'BizNum', align: 'center', cellsalign: 'center', width: 100 },
-                    { text: "Phone", datafield: "Phone", align: 'center', cellsalign: 'center', width: '5%' }
+                    { text: "Accountid", datafield: "Accountid", hidden: true },
+                    { text: "이름", datafield: "Name", align: 'center', cellsalign: 'left', width: '40%', minwidth: '100px' },
+                    { text: '사업자번호', datafield: 'BizNum', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
+                    { text: "전화번호", datafield: "Phone", align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
                     //{ text: '주소', datafield: 'Address', align: 'center', cellsalign: 'center' }
                     //{ text: 'Maker', datafield: 'MainProduct', align: 'center', cellsalign: 'center', width: 80 },
                     // 업종 (메인페이지 및 거래처 페이지 중단 GRID에 표시함)CustomerTypeText
                     //{ text: '업종', datafield: 'CustomerTypeText', align: 'center', cellsalign: 'center', width: 70, cellsrenderer: countCellRenderer6 },
                     // 고객 타입 (메인페이지 및 거래처 페이지 중단 GRID에 표시함)BizTypeText
-                    //{ text: '고객타입', datafield: 'BizTypeText', align: 'center', cellsalign: 'center', width: 70, cellsrenderer: countCellRenderer7 },
+                    { text: '담당자', datafield: 'Ownerid', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
 
                     //숫자로 나오는 항목
                     //{ text: '연락처', datafield: 'ContactCount', align: 'center', cellsalign: 'center', width: 80, cellsrenderer: countCellRenderer1 },
@@ -103,6 +96,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 custom-header">
+                @*<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>*@
                 <p class="text-left">거래처 목록</p>
             </div>
         </div>
@@ -132,9 +126,9 @@
                     <select id="accountCustomerType" class="form-control"></select>
                 </div>
 
-                <label class="col-md-1 control-label">검색조건</label>
+                <label class="col-md-1 control-label">담당자</label>
                 <div class="col-md-2">
-                    <input type="text" class="form-control" placeholder="검색조건" />
+                    <select id="Ownerid" name="Ownerid" class="form-control"></select>
                 </div>
             </div>
         </form>

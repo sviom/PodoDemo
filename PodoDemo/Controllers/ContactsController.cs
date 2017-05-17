@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PodoDemo.Models;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace PodoDemo.Controllers
 {
@@ -59,17 +60,29 @@ namespace PodoDemo.Controllers
         // POST: Contacts/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// 연락처 생성
+        /// </summary>
+        /// <param name="contact"></param>
+        /// <returns></returns>
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Contactid,Name,Department,Accountid,Email,Phone,Mobile,Detail,Bossid,Createdate,Createuser,Modifydate,Modifyuser,Isdeleted,Ownerid")] Contact contact)
         {
             if (ModelState.IsValid)
             {
+                contact.Createdate = DateTime.Now;
+                contact.Createuser = HttpContext.Session.GetString("userId");
+                contact.Modifydate = DateTime.Now;
+                contact.Modifyuser = HttpContext.Session.GetString("userId");
+                contact.Isdeleted = false;
+                contact.Ownerid = HttpContext.Session.GetString("userId");
+
                 _context.Add(contact);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewData["Accountid"] = new SelectList(_context.Account, "Accountid", "Biznum", contact.Accountid);
+            //ViewData["Accountid"] = new SelectList(_context.Account, "Accountid", "Biznum", contact.Accountid);
             return View(contact);
         }
 
@@ -87,6 +100,7 @@ namespace PodoDemo.Controllers
                 return NotFound();
             }
             ViewData["Accountid"] = new SelectList(_context.Account, "Accountid", "Biznum", contact.Accountid);
+            ViewData["userId"] = HttpContext.Session.GetString("userId");
             return View(contact);
         }
 
@@ -94,7 +108,7 @@ namespace PodoDemo.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Contactid,Name,Department,Accountid,Email,Phone,Mobile,Detail,Bossid,Createdate,Createuser,Modifydate,Modifyuser,Isdeleted,Ownerid")] Contact contact)
         {
             if (id != contact.Contactid)
@@ -106,6 +120,9 @@ namespace PodoDemo.Controllers
             {
                 try
                 {
+                    contact.Modifydate = DateTime.Now;
+                    contact.Modifyuser = HttpContext.Session.GetString("userId");
+
                     _context.Update(contact);
                     await _context.SaveChangesAsync();
                 }

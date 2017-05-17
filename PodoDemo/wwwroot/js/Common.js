@@ -151,19 +151,20 @@ function GetMenuOptionDDL(extraParam, callbackFnc, selval) {
 //extraParam: callbackFnc에서 사용할 추가 파라미터(여러개일 경우 배열로)
 //callbakFnc: 결과값을 전달할 함수
 //selval: 기본 선택값 필요시 
-function GetUserDDL(searchKey, userID, extraParam, callbackFnc, selval) {
+function GetUserDDL(searchKey, userID, extraParam, callbackFnc, selval, isAll, isEmpty, auth) {
     $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
-        url: "/Service/CommonService.svc/GetAllUserDDL",
+        //url: "/Service/CommonService.svc/GetJoinedUserDDL",
+        url: window.location.origin + "/api/CommonAPI/GetJoinedUserDDL",
         data: JSON.stringify({
-            "searchKey": searchKey
-            , "userid": userID
+            "SearchKey": searchKey
+            , "Userid": userID
         }),
         async: false,
         dataType: "json",
         success: function (result) {
-            callbackFnc(extraParam, result, selval);
+            callbackFnc(extraParam, result, selval, isAll, isEmpty, auth);
         },
         error: function (data) {
             alert("[!ERROR]\n" + data.responseText);
@@ -527,4 +528,60 @@ function ExecuteAjax(type, url, datatype, contentType, data) {
     }
 
     return returnData;
+}
+
+
+// JQWidget 한글화
+var GetLocalizationString = function GetLocalizationString() {
+    // 상세 내용 한글로 변경
+    var localizationobj = {};
+    localizationobj.pagergotopagestring = "페이지 이동: ";
+    localizationobj.pagershowrowsstring = "보여질 행: ";
+    localizationobj.pagerrangestring = " 의 ";
+    localizationobj.pagernextbuttonstring = "다음";
+    localizationobj.pagerpreviousbuttonstring = "이전";
+    localizationobj.emptydatastring = "데이터가 존재하지 않습니다. Data does not exist.";
+
+    localizationobj.groupsheaderstring = "행을 드래그해서 해당 열을 기준으로 여기에 놓으세요.";
+    localizationobj.sortascendingstring = "오름차순 정렬";
+    localizationobj.sortdescendingstring = "내림차순 정렬";
+    localizationobj.sortremovestring = "정렬 제거";
+    localizationobj.groupbystring = "이 행을 기준으로 그룹화";
+    localizationobj.groupremovestring = "그룹으로부터 제거";
+    localizationobj.filterclearstring = "초기화";
+    localizationobj.filterstring = "필터링";
+    localizationobj.filtershowrowstring = "행이여기에보여집니다:";
+    localizationobj.filtershowrowdatestring = "Show rows where date:";
+    localizationobj.filterorconditionstring = "OR";
+    localizationobj.filterandconditionstring = "AND";
+    localizationobj.filterselectallstring = "(전체선택)";
+    localizationobj.filterchoosestring = "선택하세요=";
+    localizationobj.filterstringcomparisonoperators = ['empty', 'not empty', 'contains', 'contains(match case)',
+        'does not contain', 'does not contain(match case)', 'starts with', 'starts with(match case)',
+        'ends with', 'ends with(match case)', 'equal', 'equal(match case)', 'null', 'not null'];
+    localizationobj.filternumericcomparisonoperators = ['equal', 'not equal', 'less than', 'less than or equal', 'greater than', 'greater than or equal', 'null', 'not null'];
+    localizationobj.filterdatecomparisonoperators = ['equal', 'not equal', 'less than', 'less than or equal', 'greater than', 'greater than or equal', 'null', 'not null'];
+    localizationobj.filterbooleancomparisonoperators = ['equal', 'not equal'];
+    localizationobj.validationstring = "올바르지 않은 값";
+    localizationobj.filterselectstring = "필터를 선택하세요";
+    localizationobj.loadtext = "Loading...";
+    localizationobj.clearstring = "초기화";
+    localizationobj.todaystring = "오늘";
+    var days = {
+        // full day names
+        names: ["일", "월", "화", "수", "목", "금", "토"],
+        // abbreviated day names
+        namesAbbr: ["일", "월", "화", "수", "목", "금", "토"],
+        // shortest day names
+        namesShort: ["일", "월", "화", "수", "목", "금", "토"]
+    };
+    localizationobj.days = days;
+    var months = {
+        // full month names (13 months for lunar calendards -- 13th month should be "" if not lunar)
+        names: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월", ""],
+        // abbreviated month names
+        namesAbbr: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월", ""]
+    };
+    localizationobj.months = months;
+    return localizationobj;
 }

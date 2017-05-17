@@ -1,125 +1,210 @@
-@model PodoDemo.Models.Contact
+﻿@model PodoDemo.Models.Contact
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "연락처수정";
 }
 
-<h2>Edit</h2>
 
-<form asp-action="Edit">
-    <div class="form-horizontal">
-        <h4>Contact</h4>
-        <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="Contactid" />
-        <div class="form-group">
-            <label asp-for="Name" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+<script type="text/javascript">
+    $(document).ready(function () {
+        SetBasicElement();// 기본적으로 그리는 화면 내용
+        // 부서값 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권한
+        GetUserDDL('1-1', '@Model.Ownerid', 'Ownerid', SetoptionTag, '@Model.Ownerid', false, false, false);
+    });
+
+    // 기본적으로 그리는 화면 내용
+    function SetBasicElement() {
+        //$("#jqdatetimeinput_founddate").jqxDateTimeInput({ width: '100%', formatString: 'yyyy-MM-dd' });
+    }
+
+    // 폼이 입력될 때
+    function SubmitForm() {
+        // 유효성 검사 후 진행
+        if (ValidateForm()) {
+            $("#ContactsEditForm").submit();
+        }
+    }
+
+    // 입력한 값들에 대한 유효성 검사
+    function ValidateForm() {
+        var nameValue = $("#Name").val();
+        //var phoneValue = $("#Phone").val();
+        //var founddateValue = $("#jqdatetimeinput_founddate").jqxDateTimeInput('getText');
+
+        if (nameValue == "") {
+            alert("이름을 입력해주세요.");
+            return false;
+        }
+
+        //if (phoneValue != "") {
+        //    if (!IsPhoneType(phoneValue)) {
+        //        alert("전화번호 형식을 00-000-0000 형식으로\n올바르게 입력해주세요.");
+        //        return false;
+        //    }
+        //}
+
+        //if (founddateValue != "") {
+        //    if (!IsDateType(founddateValue)) {
+        //        alert("날짜 형식을 올바르게 입력해주세요.");
+        //        return false;
+        //    }
+        //}
+
+        return true;
+    }
+
+</script>
+
+<div class="View">
+    <div class="container custom-container">
+        <div class="row">
+            <div class="col-md-12 custom-header">
+                <p class="text-left">연락처 정보</p>
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Department" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Department" class="form-control" />
-                <span asp-validation-for="Department" class="text-danger"></span>
+
+        <div class="col-md-12">
+            <div class="custom-title">
+                <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                <span>기본 정보</span>
+                <hr />
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Accountid" class="control-label col-md-2"></label>
-            <div class="col-md-10">
-                <select asp-for="Accountid" class="form-control" asp-items="ViewBag.Accountid"></select>
-                <span asp-validation-for="Accountid" class="text-danger"></span>
+
+        <form class="form-horizontal" id="ContactsEditForm" action="/Contacts/Edit/@Model.Contactid" method="post">
+            <input type="hidden" id="Contactid" name="Contactid" value="@Model.Contactid" />
+            <input type="hidden" asp-for="Createdate" value="@Model.Createdate" />
+            <input type="hidden" id="Createuser" name="Createuser" value="@Model.Createuser" />
+            <input type="hidden" id="Modifydate" name="Modifydate" value="@Model.Modifydate" />
+            <input type="hidden" id="Modifyuser" name="Modifyuser" value="@Model.Modifyuser" />
+
+            <div class="form-group">
+                <label class="col-md-1 control-label requireField">성명</label>
+                <div class="col-md-3">
+                    <input type="text" id="Name" name="Name" class="form-control" value="@Model.Name" placeholder="이름" />
+                </div>
+
+                <label class="col-md-1 control-label">부서</label>
+                <div class="col-md-3">
+                    <input type="tel" id="Department" name="Department" class="form-control" value="@Model.Department" placeholder="부서" />
+                </div>
+                <label class="col-md-1 control-label">이메일</label>
+                <div class="col-md-3">
+                    <input type="email" id="Email" name="Email" class="form-control" value="@Model.Email" placeholder="이메일@이메일" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-1 control-label">전화</label>
+                <div class="col-md-3">
+                    <input type="tel" id="Phone" name="Phone" class="form-control" value="@Model.Phone" placeholder="유선전화" />
+                </div>
+
+                <label class="col-md-1 control-label">휴대전화</label>
+                <div class="col-md-3">
+                    <input type="tel" id="Mobile" name="Mobile" class="form-control" value="@Model.Mobile" placeholder="휴대폰" />
+                </div>
+                <label class="col-md-1 control-label">상사</label>
+                <div class="col-md-3">
+                    <input type="text" id="Bossid" name="Bossid" class="form-control" placeholder="상사" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-1 control-label">회사명</label>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input type="text" id="Accountid" name="Accountid" class="form-control"
+                               placeholder="선택된 거래처가 표시됩니다." aria-describedby="account name" readonly="readonly">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+
+                <label class="col-md-1 control-label">담당자</label>
+                <div class="col-md-3">
+                    @*<input type="text" id="Ownerid" name="Ownerid" class="form-control" value="@Model.Ownerid" />*@
+                    <select id="Ownerid" name="Ownerid" class="form-control"></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-1 control-label">설명</label>
+                <div class="col-md-11">
+                    <textarea class="form-control" id="Detail" name="Detail" rows="3">@Model.Detail</textarea>
+                </div>
+            </div>
+        </form>
+
+        <div class="row">
+            <div class="col-md-offset-6 col-md-2 custom-row-btn-margin">
+                <button type="button" id="EditButton" class="btn btn-default" onclick="SubmitForm();">
+                    <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+                    저장
+                </button>
+            </div>
+            <div class="col-md-2 custom-row-btn-margin">
+                <button type="button" id="DeleteButton" class="btn btn-default btn-danger">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    삭제
+                </button>
+            </div>
+            <div class="col-md-2 custom-row-btn-margin">
+                <a href="/Contacts/Index" class="btn btn-default">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    목록
+                </a>
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Email" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Phone" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Mobile" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Mobile" class="form-control" />
-                <span asp-validation-for="Mobile" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Detail" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Detail" class="form-control" />
-                <span asp-validation-for="Detail" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Bossid" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Bossid" class="form-control" />
-                <span asp-validation-for="Bossid" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Createdate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Createdate" class="form-control" />
-                <span asp-validation-for="Createdate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Createuser" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Createuser" class="form-control" />
-                <span asp-validation-for="Createuser" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Modifydate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Modifydate" class="form-control" />
-                <span asp-validation-for="Modifydate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Modifyuser" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Modifyuser" class="form-control" />
-                <span asp-validation-for="Modifyuser" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <div class="checkbox">
-                    <input asp-for="Isdeleted" />
-                    <label asp-for="Isdeleted"></label>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="custom-title">
+                    <hr />
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    <span>이력정보</span>
                 </div>
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Ownerid" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Ownerid" class="form-control" />
-                <span asp-validation-for="Ownerid" class="text-danger"></span>
+        <div class="row">
+            <div class="col-md-1">
+                <p class="text-nowrap">생성일</p>
             </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+            <div class="col-md-2">
+                <p class="text-nowrap">@Model.Createdate.ToString("yyyy-MM-dd")</p>
+
+            </div>
+            <div class="col-md-1">
+                <p class="text-nowrap">생성자</p>
+            </div>
+            <div class="col-md-2">
+                <p class="text-nowrap">@Model.Createuser</p>
+
+            </div>
+            <div class="col-md-1">
+                <p class="text-nowrap">수정일</p>
+            </div>
+            <div class="col-md-2">
+                <p class="text-nowrap">@Model.Modifydate.ToString("yyyy-MM-dd")</p>
+
+            </div>
+            <div class="col-md-1">
+                <p class="text-nowrap">수정자</p>
+            </div>
+            <div class="col-md-2">
+                <p class="text-nowrap">@Model.Modifyuser</p>
             </div>
         </div>
     </div>
-</form>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
+
+
+<form asp-action="Edit">
+    <div class="form-horizontal">
+
+    </div>
+</form>
 
