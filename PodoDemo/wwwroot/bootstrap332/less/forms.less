@@ -427,7 +427,6 @@ input[type="checkbox"] {
 // Heads up! This is mixin-ed into `.navbar-form` in navbars.less.
 
 .form-inline {
-
   // Kick in the inline
   @media (min-width: @screen-sm-min) {
     // Inline-block all the things for "inline"
@@ -436,14 +435,12 @@ input[type="checkbox"] {
       margin-bottom: 0;
       vertical-align: middle;
     }
-
     // In navbar-form, allow folks to *not* use `.form-group`
     .form-control {
       display: inline-block;
       width: auto; // Prevent labels from stacking above inputs in `.form-group`
       vertical-align: middle;
     }
-
     // Make static controls behave like regular ones
     .form-control-static {
       display: inline-block;
@@ -459,7 +456,6 @@ input[type="checkbox"] {
         width: auto;
       }
     }
-
     // Input groups need that 100% width though
     .input-group > .form-control {
       width: 100%;
@@ -469,7 +465,6 @@ input[type="checkbox"] {
       margin-bottom: 0;
       vertical-align: middle;
     }
-
     // Remove default margin on radios/checkboxes that were used for stacking, and
     // then undo the floating of radios and checkboxes to match.
     .radio,
@@ -483,12 +478,12 @@ input[type="checkbox"] {
         padding-left: 0;
       }
     }
+
     .radio input[type="radio"],
     .checkbox input[type="checkbox"] {
       position: relative;
       margin-left: 0;
     }
-
     // Re-override the feedback icon.
     .has-feedback .form-control-feedback {
       top: 0;
@@ -523,6 +518,10 @@ input[type="checkbox"] {
   // Make form groups behave like rows
   .form-group {
     .make-row();
+  }
+
+  .control-label {
+    font-size:13px;
   }
   // Reset spacing and right align labels, but scope to media queries so that
   // labels on narrow viewports stack the same as a default form example.

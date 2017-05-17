@@ -1,8 +1,8 @@
-//
+﻿//
 // Scaffolding
 // --------------------------------------------------
-
-
+@import "variables";
+@import "mixins";
 // Reset the box-sizing
 //
 // Heads up! This reset may cause conflicts with some third-party widgets.
@@ -111,7 +111,9 @@ img {
 // Horizontal rules
 
 hr {
-  margin-top:    @line-height-computed;
+  /*margin-top: @line-height-computed;
+  margin-bottom: @line-height-computed;*/
+  margin-top: 10px;
   margin-bottom: @line-height-computed;
   border: 0;
   border-top: 1px solid @hr-border;

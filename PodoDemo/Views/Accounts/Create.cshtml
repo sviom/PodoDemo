@@ -82,45 +82,26 @@
             </div>
         </div>
 
+        <div class="col-md-12">
+            <div class="custom-title">
+                <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                <span>기본 정보</span>
+                <hr />
+            </div>
+        </div>
+
         <form class="form-horizontal" id="AccountCreateForm" action="/Accounts/Create" method="post">
             <div class="form-group">
-                <label class="col-md-2 control-label requireField">회사명</label>
+                <label class="col-md-1 control-label requireField">회사명</label>
                 <div class="col-md-3">
                     <input type="text" id="Name" name="Name" class="form-control" placeholder="거래처 이름" />
                 </div>
 
-                <label class="col-md-2 control-label">전화번호</label>
+                <label class="col-md-1 control-label requireField">전화번호</label>
                 <div class="col-md-3">
                     <input type="tel" id="Phone" name="Phone" class="form-control" placeholder="전화번호[00-000-0000]" />
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-2 control-label">FAX</label>
-                <div class="col-md-3">
-                    <input type="tel" id="Fax" name="Fax" class="form-control" placeholder="팩스[00-000-0000]" />
-                </div>
-
-                <label class="col-md-2 control-label requireField">CEO</label>
-                <div class="col-md-3">
-                    <input type="text" id="Ceo" name="Ceo" class="form-control" placeholder="대표/사장 성함" />
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-2 control-label">홈페이지</label>
-                <div class="col-md-3">
-                    <input type="text" id="Homepage" name="Homepage" class="form-control" placeholder="홈페이지 주소" />
-                </div>
-
-                <label class="col-md-2 control-label">사업자번호</label>
-                <div class="col-md-3">
-                    <input type="text" id="Biznum" name="Biznum" class="form-control" placeholder="사업자번호" />
-                </div>                
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-2 control-label">설립일</label>
+                <label class="col-md-1 control-label">설립일</label>
                 <div class="col-md-3">
                     <div id="jqdatetimeinput_founddate"></div>
                     <input type="hidden" id="Founddate" name="Founddate" />
@@ -128,8 +109,37 @@
             </div>
 
             <div class="form-group">
-                <label class="col-md-2 control-label">비고</label>
-                <div class="col-md-8">
+                <label class="col-md-1 control-label">FAX</label>
+                <div class="col-md-3">
+                    <input type="tel" id="Fax" name="Fax" class="form-control" placeholder="팩스[00-000-0000]" />
+                </div>
+
+                <label class="col-md-1 control-label requireField">CEO</label>
+                <div class="col-md-3">
+                    <input type="text" id="Ceo" name="Ceo" class="form-control" placeholder="대표/사장 성함" />
+                </div>
+                <label class="col-md-1 control-label">홈페이지</label>
+                <div class="col-md-3">
+                    <input type="text" id="Homepage" name="Homepage" class="form-control" placeholder="홈페이지 주소" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                
+
+                <label class="col-md-1 control-label">사업자번호</label>
+                <div class="col-md-3">
+                    <input type="text" id="Biznum" name="Biznum" class="form-control" placeholder="사업자번호" />
+                </div>                
+            </div>
+
+            <div class="form-group">
+                
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-1 control-label">비고</label>
+                <div class="col-md-11">
                     <textarea class="form-control" id="Detail" name="Detail" rows="3"></textarea>
                 </div>
             </div>
@@ -137,10 +147,10 @@
 
         <div class="row"></div>
 
-        <div class="row"></div>
+        
 
         <div class="row">
-            <div class="col-md-offset-6 col-md-2 custom-row-btn-margin">
+            <div class="col-md-offset-8 col-md-2 custom-row-btn-margin">
                 <button type="button" id="CreateAccountButton" class="btn btn-default" onclick="SubmitForm();">
                     <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
                     저장
@@ -153,15 +163,25 @@
                 </a>
             </div>
         </div>
+
+        @*<div class="row">
+            <div class="col-md-12">
+                <div class="custom-title">
+                    <hr />
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    <span>연결된 연락처</span>
+                </div>
+            </div>
+        </div>*@
     </div>
 
-    <div class="ViewTitle">
+    @*<div class="ViewTitle">
         <span>거래처 생성</span>
     </div>
     <div class="ViewContent">
         <span class="ViewSubTitle">> 기본 정보</span>
         <form>
-            @*asp-action="Create"*@
+
             <table class="ContentTable">
                 <tr>
                     <td class="tableLabelTD">
@@ -219,5 +239,5 @@
 
             </div>
         </form>
-    </div>
+    </div>*@
 </div>

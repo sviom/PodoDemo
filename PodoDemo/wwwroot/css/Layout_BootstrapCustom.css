@@ -1,11 +1,9 @@
-﻿
-/* 그리드 시스템 버튼용(버튼 여러개) */
-.custom-row-btn-margin{
-    margin-bottom:10px;
+﻿/* 그리드 시스템 버튼용(버튼 여러개) */
+.custom-row-btn-margin {
+    margin-bottom: 10px;
 }
 
-
-/*제목 부분*/
+/* 제목 부분 */
 .custom-header {
     background-color: #474747;
     color: white;
@@ -13,23 +11,11 @@
 }
 
 .custom-title {
-    /*background-color: #EEF7FF;*/
-    /*border: 1px solid #d1d1d1;*/
     border: none;
-    /*height: 34px;
-    padding: 6px 12px;*/
     padding-left: 5px;
     margin-bottom: 5px;
     font-weight: bold;
     font-size: 15px;
-    /*line-height: 1.42857143;*/
-    /*color: #555;*/
-    /*margin-top: 10px;*/
-}
-
-/* 제목 옆 사용자 입력 부분 */
-.custom-input {
-    margin-top: 10px;
 }
 
 /* 텍스트 부분*/
@@ -38,3 +24,5 @@
     padding-bottom: 10px;
     padding-top: 10px;
 }
+
+
