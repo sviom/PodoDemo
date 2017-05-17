@@ -1,12 +1,8 @@
-﻿@*@model PodoDemo.Models.Account*@
-@model string
+﻿@model PodoDemo.Models.Contact
 
 @{
     ViewData["Title"] = "Create";
-    List<string> propertyList = ViewBag.AccountPropertyList;
-    List<string> propertyTypeList = ViewBag.AccountPropertyTypeList;
 }
-
 <script type="text/javascript">
     $(document).ready(function () {
         SetBasicElement();// 기본적으로 그리는 화면 내용
@@ -14,7 +10,7 @@
 
     // 기본적으로 그리는 화면 내용
     function SetBasicElement() {
-        $("#jqdatetimeinput_founddate").jqxDateTimeInput({ width: '100%', formatString: 'yyyy-MM-dd' });
+        //$("#jqdatetimeinput_founddate").jqxDateTimeInput({ width: '100%', formatString: 'yyyy-MM-dd' });
     }
 
     // 폼이 입력될 때
@@ -72,13 +68,14 @@
 
         return true;
     }
+
 </script>
 
 <div class="View">
     <div class="container custom-container">
         <div class="row">
             <div class="col-md-12 custom-header">
-                <p class="text-left">거래처 생성</p>
+                <p class="text-left">연락처 생성</p>
             </div>
         </div>
 
@@ -92,62 +89,61 @@
 
         <form class="form-horizontal" id="AccountCreateForm" action="/Accounts/Create" method="post">
             <div class="form-group">
-                <label class="col-md-1 control-label requireField">회사명</label>
+                <label class="col-md-1 control-label requireField">성명</label>
                 <div class="col-md-3">
-                    <input type="text" id="Name" name="Name" class="form-control" placeholder="거래처 이름" />
+                    <input type="text" id="Name" name="Name" class="form-control" placeholder="이름" />
                 </div>
 
-                <label class="col-md-1 control-label requireField">전화번호</label>
+                <label class="col-md-1 control-label">부서</label>
                 <div class="col-md-3">
-                    <input type="tel" id="Phone" name="Phone" class="form-control" placeholder="전화번호[00-000-0000]" />
+                    <input type="tel" id="Department" name="Department" class="form-control" placeholder="부서" />
                 </div>
-                <label class="col-md-1 control-label">설립일</label>
+                <label class="col-md-1 control-label">이메일</label>
                 <div class="col-md-3">
-                    <div id="jqdatetimeinput_founddate"></div>
-                    <input type="hidden" id="Founddate" name="Founddate" />
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-1 control-label">FAX</label>
-                <div class="col-md-3">
-                    <input type="tel" id="Fax" name="Fax" class="form-control" placeholder="팩스[00-000-0000]" />
-                </div>
-
-                <label class="col-md-1 control-label requireField">CEO</label>
-                <div class="col-md-3">
-                    <input type="text" id="Ceo" name="Ceo" class="form-control" placeholder="대표/사장 성함" />
-                </div>
-                <label class="col-md-1 control-label">홈페이지</label>
-                <div class="col-md-3">
-                    <input type="text" id="Homepage" name="Homepage" class="form-control" placeholder="홈페이지 주소" />
+                    <input type="email" id="Email" name="Email" class="form-control" placeholder="이메일@이메일"/>
+                    @*<div id="jqdatetimeinput_founddate"></div>
+                    <input type="hidden" id="Founddate" name="Founddate" />*@
                 </div>
             </div>
 
             <div class="form-group">
-                
-
-                <label class="col-md-1 control-label">사업자번호</label>
+                <label class="col-md-1 control-label">전화</label>
                 <div class="col-md-3">
-                    <input type="text" id="Biznum" name="Biznum" class="form-control" placeholder="사업자번호" />
-                </div>                
+                    <input type="tel" id="Phone" name="Phone" class="form-control" placeholder="유선전화" />
+                </div>
+
+                <label class="col-md-1 control-label">휴대전화</label>
+                <div class="col-md-3">
+                    <input type="tel" id="Mobile" name="Mobile" class="form-control" placeholder="휴대폰" />
+                </div>
+                <label class="col-md-1 control-label">상사</label>
+                <div class="col-md-3">
+                    <input type="text" id="Bossid" name="Bossid" class="form-control" placeholder="상사" />
+                </div>
             </div>
 
             <div class="form-group">
-                
+                <label class="col-md-1 control-label">회사명</label>
+                <div class="col-md-3">
+                    <div class="input-group">                        
+                        <input type="text" id="Accountid" name="Accountid" class="form-control" 
+                               placeholder="선택된 거래처가 표시됩니다." aria-describedby="account name" readonly="readonly">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
-                <label class="col-md-1 control-label">비고</label>
+                <label class="col-md-1 control-label">설명</label>
                 <div class="col-md-11">
                     <textarea class="form-control" id="Detail" name="Detail" rows="3"></textarea>
                 </div>
             </div>
         </form>
-
-        <div class="row"></div>
-
-        
 
         <div class="row">
             <div class="col-md-offset-8 col-md-2 custom-row-btn-margin">

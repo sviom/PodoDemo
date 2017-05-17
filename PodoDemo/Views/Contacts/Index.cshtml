@@ -1,0 +1,156 @@
+﻿@*@model IEnumerable<PodoDemo.Models.Contact>*@
+@model string
+
+@{
+    ViewData["Title"] = "연락처";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        SetBasicElement();
+        // 검색 조건 키 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권한
+        GetOptionDDL('1', 'accountCustomerType', SetoptionTag, '', true, false, false);
+
+        $('#contactList').on('rowdoubleclick', function (event) {
+            var args = event.args;
+            // row's bound index.
+            var boundIndex = args.rowindex;
+            // row's visible index.
+            var visibleIndex = args.visibleindex;
+            // right click.
+            var rightclick = args.rightclick;
+            // original event.
+            var ev = args.originalEvent;
+            console.log("Row  정보");
+            console.log(boundIndex);
+            var data = $('#accountList').jqxGrid('getrowdata', boundIndex);
+            console.log(data.Accountid);
+
+            location.href = "/Accounts/Edit/" + data.Accountid;
+        });
+    });
+
+    // 기본 출력 항목 표시
+    function SetBasicElement() {
+        var source =
+            {
+                localdata: @Html.Raw(Model),
+                datatype: "json",
+                datafields:
+                [
+                    { name: 'Contactid', type: 'number' },
+                    { name: 'Name', type: 'string' },
+                    { name: 'Deparement', type: 'string' },
+                    { name: 'Title', type: 'string' },
+                    { name: 'CompanyName', type: 'string' },
+                    { name: 'Email', type: 'string' },
+                    { name: 'Phone', type: 'string' },
+                    { name: 'Mobile', type: 'string' },
+                    { name: 'Detail', type: 'string' },
+                    { name: 'Bossid', type: 'number' },
+                    { name: 'BossName', type: 'string' }
+                ]
+            };
+
+        var dataAdapter = new $.jqx.dataAdapter(source);
+
+        $("#contactList").jqxGrid(
+            {
+                //width: 1000,
+                width: '100%',
+                source: dataAdapter,
+                pageable: true,
+                autoheight: true,
+                autorowheight: true,
+                sortable: true,
+                altrows: true,
+                enabletooltips: true,
+                editable: false,
+                selectionmode: 'singlerow',
+                pagesizeoptions: [10, 15, 20, 25, 30, 35, 40, 45, 50],
+                //showfilterrow: true,
+                filterable: true,
+                pagesize: 15,
+                //theme: "MetroCustom",//테마설정
+                //columnsheight: '40px',//헤더 높이 설정
+                //localization: getLocalization('ko-KR'),
+                //virtualmode: true,      // 목록이 매우 많을 경우 일부분만 렌더링해서 보여주고 다른 페이지를 불러올 떄마다 렌더링한다.
+                //rendergridrows: rendergridrows,
+                columns: [
+                    { text: "ContactID", datafield: "Contactid", hidden: true, align: 'center', cellsalign: 'center' },
+                    { text: "이름", datafield: "Name", align: 'center', cellsalign: 'left' },
+                    { text: '부서', datafield: 'Deparement', align: 'center', cellsalign: 'left', width: 80 },
+                    { text: "직급", datafield: "Title", align: 'center', cellsalign: 'left', width: 80 },
+                    { text: '회사명', datafield: 'CompanyName', align: 'center', cellsalign: 'left' },
+                    { text: "Maker", datafield: "Maker", align: 'center', cellsalign: 'center', width: 80 },
+                    { text: 'E-Mail', datafield: 'Email', align: 'center', cellsalign: 'left', width: '160px' },
+                    { text: '전화번호', datafield: 'Phone', align: 'center', cellsalign: 'center', width: '130px' },
+                    { text: '휴대전화', datafield: 'Mobile', align: 'center', cellsalign: 'center', width: '130px' }//,
+                    //{ text: '설명', datafield: 'Detail', align: 'center', cellsalign: 'center', width: 50 },
+                    //{ text: '상사', datafield: 'BossName', align: 'center', cellsalign: 'center', width: 40 },
+                    //{ text: '주소', datafield: 'Address', align: 'center', cellsalign: 'center', width: 40 }
+                ]
+            });
+    }
+</script>
+
+<div class="View">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 custom-header">
+                <p class="text-left">연락처 목록</p>
+            </div>
+        </div>
+
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <div class="custom-title">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        <span>검색</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-1 control-label">회사명</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" placeholder="회사명" />
+                </div>
+
+                <label class="col-md-1 control-label">전화번호</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" placeholder="전화번호" />
+                </div>
+            </div>
+        </form>
+
+        <div class="row">
+            <div class="col-md-offset-10 col-md-2">
+                <button type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                    검색
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="custom-title">
+                    <hr />
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    <span>상세 내용</span>
+                </div>
+                <div id="contactList"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-offset-10 col-md-2">
+                <a href="/Contacts/Create" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    연락처 생성
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

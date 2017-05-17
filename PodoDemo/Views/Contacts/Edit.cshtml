@@ -1,0 +1,125 @@
+@model PodoDemo.Models.Contact
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<form asp-action="Edit">
+    <div class="form-horizontal">
+        <h4>Contact</h4>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Contactid" />
+        <div class="form-group">
+            <label asp-for="Name" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Department" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Department" class="form-control" />
+                <span asp-validation-for="Department" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Accountid" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <select asp-for="Accountid" class="form-control" asp-items="ViewBag.Accountid"></select>
+                <span asp-validation-for="Accountid" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Email" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Phone" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Mobile" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Mobile" class="form-control" />
+                <span asp-validation-for="Mobile" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Detail" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Detail" class="form-control" />
+                <span asp-validation-for="Detail" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Bossid" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Bossid" class="form-control" />
+                <span asp-validation-for="Bossid" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Createdate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Createdate" class="form-control" />
+                <span asp-validation-for="Createdate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Createuser" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Createuser" class="form-control" />
+                <span asp-validation-for="Createuser" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Modifydate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Modifydate" class="form-control" />
+                <span asp-validation-for="Modifydate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Modifyuser" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Modifyuser" class="form-control" />
+                <span asp-validation-for="Modifyuser" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input asp-for="Isdeleted" />
+                    <label asp-for="Isdeleted"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Ownerid" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Ownerid" class="form-control" />
+                <span asp-validation-for="Ownerid" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
