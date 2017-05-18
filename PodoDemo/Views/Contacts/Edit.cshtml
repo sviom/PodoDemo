@@ -53,8 +53,11 @@
         return true;
     }
 
-    function Pop() {
+    function AccountsSearchPop() {
         WindowOpenScroll("/Accounts/Index?isPop=true", "", 350, 600, 100, 100);
+    }
+    function ContactsSearchPop() {
+        WindowOpenScroll("/Contacts/Index?isPop=true", "", 350, 600, 100, 100);
     }
 
     function SetAccountsInfo(accountId, accountName) {
@@ -62,6 +65,10 @@
         $("#Accountid").val(accountId);
     }
 
+    function SetContactsInfo(contactId, contactName) {
+        $("#Bossname").val(contactName);
+        $("#Bossid").val(contactId);
+    }
 </script>
 
 <div class="View">
@@ -115,7 +122,16 @@
                 </div>
                 <label class="col-md-1 control-label">상사</label>
                 <div class="col-md-3">
-                    <input type="text" id="Bossid" name="Bossid" class="form-control" placeholder="상사" />
+                    <div class="input-group">
+                        <input type="hidden" id="Bossid" name="Bossid" />
+                        <input type="text" id="Bossname" name="Bossname" class="form-control"
+                               placeholder="선택된 연락처가 표시됩니다." aria-describedby="contact name" readonly="readonly" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" onclick="ContactsSearchPop();">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -123,9 +139,11 @@
                 <label class="col-md-1 control-label">회사명</label>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <input type="hidden" id="Accountid" name="Accountid" />
+                        <input type="hidden" id="Accountid" name="Accountid" value="@Model.Accountid"/>
                         <input type="text" id="Accountname" name="Accountname" class="form-control"
-                               placeholder="선택된 거래처가 표시됩니다." aria-describedby="account name" readonly="readonly">
+                               placeholder="선택된 거래처가 표시됩니다." aria-describedby="account name"
+                               value="@ViewData["Accountname"]"
+                               readonly="readonly">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" onclick="Pop();">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
@@ -136,7 +154,6 @@
 
                 <label class="col-md-1 control-label">담당자</label>
                 <div class="col-md-3">
-                    @*<input type="text" id="Ownerid" name="Ownerid" class="form-control" value="@Model.Ownerid" />*@
                     <select id="Ownerid" name="Ownerid" class="form-control"></select>
                 </div>
             </div>
@@ -210,11 +227,3 @@
         </div>
     </div>
 </div>
-
-
-<form asp-action="Edit">
-    <div class="form-horizontal">
-
-    </div>
-</form>
-

@@ -3,13 +3,19 @@
 
 @{
     ViewData["Title"] = "연락처";
+    // 팝업 여부 확인
+    if (ViewBag.isPop)
+    {
+        Layout = "~/Views/Shared/Popup_Layout.cshtml";
+    }
 }
 
 <script type="text/javascript">
     $(document).ready(function () {
-        SetBasicElement();
+        SetBasicElement(@Html.Raw(Model));
         // 검색 조건 키 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권한
         GetOptionDDL('1', 'accountCustomerType', SetoptionTag, '', true, false, false);
+        GetUserDDL('1-1', '@ViewBag.UserId', 'Ownerid', SetoptionTag, '', true, false, false); // 담당자
 
         $('#contactList').on('rowdoubleclick', function (event) {
             var args = event.args;
@@ -21,17 +27,37 @@
             var rightclick = args.rightclick;
             // original event.
             var ev = args.originalEvent;
-            
+
             var data = $('#contactList').jqxGrid('getrowdata', boundIndex);
+
+            @*
+                팝업 여부에 따라 팝업이면 기본적으로 거래처 검색 페이지라고 생각해야 한다.
+            *@
+            @if (ViewBag.isPop)
+            {
+            <text>
+            window.opener.SetContactsInfo(data.Contactid, data.Name);
+            window.close();
+            </text>
+            }else
+            {
+            <text>
             location.href = "/Contacts/Edit/" + data.Contactid;
+            </text>
+            }
+        });
+
+        // 담당자 변경 시 마다 연락처 재검색
+        $("#Ownerid").change(function () {
+            SearchContacts();
         });
     });
 
     // 기본 출력 항목 표시
-    function SetBasicElement() {
+    function SetBasicElement(contactListRaw) {
         var source =
             {
-                localdata: @Html.Raw(Model),
+                localdata: contactListRaw,
                 datatype: "json",
                 datafields:
                 [
@@ -39,7 +65,7 @@
                     { name: 'Name', type: 'string' },
                     { name: 'Department', type: 'string' },
                     { name: 'Title', type: 'string' },
-                    { name: 'CompanyName', type: 'string' },
+                    { name: 'Account', type: 'string', map: 'Account>Name' },
                     { name: 'Email', type: 'string' },
                     { name: 'Phone', type: 'string' },
                     { name: 'Mobile', type: 'string' },
@@ -78,12 +104,30 @@
                     { text: "이름", datafield: "Name", align: 'center', cellsalign: 'left', width: '20%', minwidth: '100px' },
                     { text: '부서', datafield: 'Department', align: 'center', cellsalign: 'center', width: '10%', minwidth: '80px' },
                     { text: "직급", datafield: "Title", align: 'center', cellsalign: 'center', width: '10%', minwidth: '80px' },
-                    { text: '회사명', datafield: 'CompanyName', align: 'center', cellsalign: 'left', width: '15%', minwidth: '100px'},
+                    { text: '회사명', datafield: 'Account', align: 'center', cellsalign: 'center', width: '15%', minwidth: '100px'},
                     { text: 'E-Mail', datafield: 'Email', align: 'center', cellsalign: 'left', width: '15%', minwidth: '100px' },
                     { text: '전화번호', datafield: 'Phone', align: 'center', cellsalign: 'center', width: '15%', minwidth: '100px' },
                     { text: '휴대전화', datafield: 'Mobile', align: 'center', cellsalign: 'center', width: '15%', minwidth: '100px'}
                 ]
             });
+    }
+
+    // 연락처 검색 후 반영
+    function SearchContacts() {
+        var SearchInfo = new Object();
+        SearchInfo.Name = $("#Name").val();
+        SearchInfo.IsPop = $("#IsPop").val();
+        SearchInfo.Phone = $("#Phone").val();
+        SearchInfo.Ownerid = $("#Ownerid").val();
+        SearchInfo.Accountname = $("#Accountname").val();
+
+        var contactListRaw
+            = ExecuteAjax("POST", "/Contacts/Search", "json", "application/json", JSON.stringify(SearchInfo));
+
+        console.log(contactListRaw);
+
+        // 리스트에 반영
+        SetBasicElement(contactListRaw);
     }
 </script>
 
@@ -96,6 +140,8 @@
         </div>
 
         <form class="form-horizontal">
+            <input type="hidden" id="IsPop" name="IsPop" value="@Html.Raw(ViewBag.isPop)" />
+
             <div class="form-group">
                 <div class="col-md-12">
                     <div class="custom-title">
@@ -107,24 +153,31 @@
             <div class="form-group">
                 <label class="col-md-1 control-label">회사명</label>
                 <div class="col-md-2">
-                    <input type="text" class="form-control" placeholder="회사명" />
+                    <input type="text" id="Accountname" name="Accountname" class="form-control" placeholder="회사명" onkeypress="ExecuteEnterkey(SearchContacts);" />
                 </div>
-
+                <label class="col-md-1 control-label">이름</label>
+                <div class="col-md-2">
+                    <input type="text" id="Name" name="Name" class="form-control" placeholder="이름" onkeypress="ExecuteEnterkey(SearchContacts);" />
+                </div>
                 <label class="col-md-1 control-label">전화번호</label>
                 <div class="col-md-2">
-                    <input type="text" class="form-control" placeholder="전화번호" />
+                    <input type="text" id="Phone" name="Phone" class="form-control" placeholder="전화번호" onkeypress="ExecuteEnterkey(SearchContacts);" />
+                </div>
+                <label class="col-md-1 control-label">담당자</label>
+                <div class="col-md-2">
+                    <select id="Ownerid" name="Ownerid" class="form-control"></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-10 col-md-2">
+                    <button type="button" class="btn btn-default" onclick="SearchContacts();">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        검색
+                    </button>
                 </div>
             </div>
         </form>
-
-        <div class="row">
-            <div class="col-md-offset-10 col-md-2">
-                <button type="button" class="btn btn-default">
-                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                    검색
-                </button>
-            </div>
-        </div>
 
         <div class="row">
             <div class="col-md-12">
@@ -137,13 +190,28 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-offset-10 col-md-2">
-                <a href="/Contacts/Create" class="btn btn-default">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    연락처 생성
-                </a>
+        @if (ViewBag.isPop)
+        {
+            <div class="row">
+                <div class="col-md-offset-10 col-md-2">
+                    <button type="button" class="btn btn-default" onclick="window.close();">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        닫기
+                    </button>
+                </div>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-offset-10 col-md-2">
+                    <a href="/Contacts/Create" class="btn btn-default">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        연락처 생성
+                    </a>
+                </div>
+            </div>
+        }
+
     </div>
 </div>

@@ -23,4 +23,13 @@ namespace PodoDemo.Models
 
         public virtual Account Account { get; set; }
     }
+
+    public class ContactSearch
+    {
+        public bool IsPop { get; set; }
+        public string Name { get; set; }
+        public string Accountname { get; set; }
+        public string Phone { get; set; }
+        public string Ownerid { get; set; }
+    }
 }

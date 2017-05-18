@@ -17,18 +17,45 @@ namespace PodoDemo.Controllers
 
         public ContactsController(PodoDemoNContext context)
         {
-            _context = context;    
+            _context = context;
         }
 
         // GET: Contacts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool? isPop)
         {
-            //var podoDemoNContext = _context.Contact.Include(c => c.Account);
-            List<Contact> contactList = await _context.Contact.ToListAsync();
-            //List<Account> accountList = await _context.Account.ToListAsync();
-            return View((Object)JsonConvert.SerializeObject(contactList));
+            if (isPop == null)
+            {
+                ViewBag.isPop = false;
+            }
+            else
+            {
+                ViewBag.isPop = isPop;
+            }
 
-            //return View(await podoDemoNContext.ToListAsync());
+            ViewBag.UserId = HttpContext.Session.GetString("userId");
+
+            List<Contact> contactList = await _context.Contact.Include(a => a.Account).ToListAsync();
+            return View((Object)JsonConvert.SerializeObject(contactList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
+        }
+
+        /// <summary>
+        /// 연락처 검색
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public string Search([FromBody]ContactSearch info)
+        {
+            var query = (from cc in _context.Contact
+                         join ca in _context.Account on cc.Accountid equals ca.Accountid
+                         where (cc.Name.Contains(info.Name) || cc.Name.Equals(""))
+                         && (cc.Ownerid.Contains(info.Ownerid) || cc.Ownerid.Equals(""))
+                         && (cc.Phone.Contains(info.Phone) || cc.Phone.Equals(""))
+                         select cc
+                         )
+                         .Include(a => a.Account)
+                         .ToList<Contact>();
+            return JsonConvert.SerializeObject(query, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
         }
 
         // GET: Contacts/Details/5
@@ -87,6 +114,11 @@ namespace PodoDemo.Controllers
         }
 
         // GET: Contacts/Edit/5
+        /// <summary>
+        /// 연락처 수정페이지로 이동
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -99,7 +131,11 @@ namespace PodoDemo.Controllers
             {
                 return NotFound();
             }
-            ViewData["Accountid"] = new SelectList(_context.Account, "Accountid", "Biznum", contact.Accountid);
+
+            // 거래처 아이디로 거래처 이름 포함 가져오기
+            ViewData["Accountid"]
+                = new SelectList(_context.Account, "Accountid", "Biznum", contact.Accountid).SelectedValue;
+            ViewData["Accountname"] = _context.Account.SingleOrDefault(a => a.Accountid == contact.Accountid).Name;
             ViewData["userId"] = HttpContext.Session.GetString("userId");
             return View(contact);
         }
@@ -107,6 +143,12 @@ namespace PodoDemo.Controllers
         // POST: Contacts/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// 실제 연락처 수정
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="contact"></param>
+        /// <returns></returns>
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Contactid,Name,Department,Accountid,Email,Phone,Mobile,Detail,Bossid,Createdate,Createuser,Modifydate,Modifyuser,Isdeleted,Ownerid")] Contact contact)
