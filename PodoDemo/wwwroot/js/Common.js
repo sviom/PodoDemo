@@ -585,3 +585,10 @@ var GetLocalizationString = function GetLocalizationString() {
     localizationobj.months = months;
     return localizationobj;
 }
+
+// 엔터 키 받으면 전달받은 함수 실행
+function ExecuteEnterkey(callbackFunction) {
+    if (event.keyCode == 13) {
+        callbackFunction();
+    }
+}

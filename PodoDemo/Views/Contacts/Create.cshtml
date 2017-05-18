@@ -49,6 +49,15 @@
         return true;
     }
 
+    function Pop() {
+        WindowOpenScroll("/Accounts/Index?isPop=true", "", 350, 600, 100, 100);
+    }
+
+    function SetAccountsInfo(accountId, accountName) {
+        $("#Accountname").val(accountName);
+        $("#Accountid").val(accountId);
+    }
+
 </script>
 
 <div class="View">
@@ -104,10 +113,11 @@
                 <label class="col-md-1 control-label">회사명</label>
                 <div class="col-md-3">
                     <div class="input-group">                        
-                        <input type="text" id="Accountid" name="Accountid" class="form-control" 
+                        <input type="hidden" id="Accountid" name="Accountid" />
+                        <input type="text" id="Accountname" name="Accountname" class="form-control" 
                                placeholder="선택된 거래처가 표시됩니다." aria-describedby="account name" readonly="readonly">
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-default">
+                            <button type="button" class="btn btn-default" onclick="Pop();">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                             </button>
                         </span>

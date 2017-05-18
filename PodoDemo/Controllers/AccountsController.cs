@@ -22,29 +22,38 @@ namespace PodoDemo.Controllers
         }
 
         // GET: Accounts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool? isPop)
         {
-            List<Account> accountList = await _context.Account.ToListAsync();
+            if(isPop == null)
+            {
+                ViewBag.isPop = false;
+            }
+            else
+            {
+                ViewBag.isPop = isPop;
+            }
+
             ViewBag.UserId = HttpContext.Session.GetString("userId");
+
+            List<Account> accountList = await _context.Account.ToListAsync();            
             return View((Object)JsonConvert.SerializeObject(accountList));
         }
 
-        // GET: Accounts/Details/5
-        public async Task<IActionResult> Details(long? id)
+        /// <summary>
+        /// 거래처 검색
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public string Search([FromBody]AccountSearch info)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var account = await _context.Account
-                .SingleOrDefaultAsync(m => m.Accountid == id);
-            if (account == null)
-            {
-                return NotFound();
-            }
-
-            return View(account);
+            var query = (from ac in _context.Account
+                         where (ac.Name.Contains(info.Name) || ac.Name.Equals(""))
+                         && (ac.Ownerid.Contains(info.Ownerid) || ac.Ownerid.Equals(""))
+                         && (ac.Phone.Contains(info.Phone) || ac.Phone.Equals(""))
+                         select ac
+                         ).ToList<Account>();
+            return JsonConvert.SerializeObject(query);
         }
 
         // GET: Accounts/Create
@@ -159,23 +168,7 @@ namespace PodoDemo.Controllers
             return View(account);
         }
 
-        // GET: Accounts/Delete/5
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var account = await _context.Account
-                .SingleOrDefaultAsync(m => m.Accountid == id);
-            if (account == null)
-            {
-                return NotFound();
-            }
-
-            return View(account);
-        }
 
         // POST: Accounts/Delete/5
         [HttpPost, ActionName("Delete")]

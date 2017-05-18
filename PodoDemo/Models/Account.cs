@@ -37,4 +37,13 @@ namespace PodoDemo.Models
 
         public virtual ICollection<Contact> Contact { get; set; }
     }
+
+    public class AccountSearch
+    {
+        public bool IsPop { get; set; }
+        public string Name { get; set; }
+        public string Ownerid { get; set; }
+        public string AccountCustomerType { get; set; }
+        public string Phone { get; set; }
+    }
 }

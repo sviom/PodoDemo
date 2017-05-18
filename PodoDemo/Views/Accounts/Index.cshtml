@@ -2,12 +2,18 @@
 
 @{
     ViewData["Title"] = "거래처";
+    // 팝업 여부 확인
+    if (ViewBag.isPop)
+    {
+        Layout = "~/Views/Shared/Popup_Layout.cshtml";
+    }
 }
 <script type="text/javascript">
     $(document).ready(function () {
-        SetBasicElement();
+        SetBasicElement(@Html.Raw(Model));
+
         // 검색 조건 키 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권한
-        GetOptionDDL('1', 'accountCustomerType', SetoptionTag, '', true, false, false);
+        GetOptionDDL('1', 'AccountCustomerType', SetoptionTag, '', true, false, false);
         GetUserDDL('1-1', '@ViewBag.UserId', 'Ownerid', SetoptionTag, '', true, false, false); // 담당자
 
         $('#accountList').on('rowdoubleclick', function (event) {
@@ -20,20 +26,39 @@
             var rightclick = args.rightclick;
             // original event.
             var ev = args.originalEvent;
-            console.log("Row  정보");
-            console.log(boundIndex);
-            var data = $('#accountList').jqxGrid('getrowdata', boundIndex);
-            console.log(data.Accountid);
 
+            var data = $('#accountList').jqxGrid('getrowdata', boundIndex);
+
+            @*
+                팝업 여부에 따라 팝업이면 기본적으로 거래처 검색 페이지라고 생각해야 한다.
+            *@
+            @if (ViewBag.isPop)
+            {
+            <text>
+            window.opener.SetAccountsInfo(data.Accountid, data.Name);
+            window.close();
+            </text>
+            }
+            else
+            {
+            <text>
             location.href = "/Accounts/Edit/" + data.Accountid;
+            </text>
+            }
+        });
+
+        // 고객타입, 담당자 변경 시 마다 거래처 재검색
+        $("#AccountCustomerType, #Ownerid").change(function () {
+            SearchAccounts();
         });
     });
 
     // 기본 출력 항목 표시
-    function SetBasicElement() {
+    function SetBasicElement(accountListRaw) {
+
         var source =
             {
-                localdata: @Html.Raw(Model),
+                localdata: accountListRaw,
                 datatype: "json",
                 datafields:
                 [
@@ -90,40 +115,58 @@
                 ]
             });
     }
+
+    // 거래처 검색 후 반영
+    function SearchAccounts() {
+        var SearchInfo = new Object();
+        SearchInfo.Name = $("#Name").val();
+        SearchInfo.IsPop = $("#IsPop").val();
+        SearchInfo.Phone = $("#Phone").val();
+        SearchInfo.AccountCustomerType = $("#AccountCustomerType").val();
+        SearchInfo.Ownerid = $("#Ownerid").val();
+
+        var accountListRaw
+            = ExecuteAjax("POST", "/Accounts/Search", "json", "application/json", JSON.stringify(SearchInfo));
+        // 리스트에 반영
+        SetBasicElement(accountListRaw);
+    }
 </script>
 
 <div class="View">
     <div class="container">
         <div class="row">
             <div class="col-md-12 custom-header">
-                @*<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>*@
-                <p class="text-left">거래처 목록</p>
+                <p class="text-left">
+                    거래처 목록
+                </p>
             </div>
         </div>
 
-        <form class="form-horizontal">
+        <form class="form-horizontal" id="SearchAccountsForm">
+            <input type="hidden" id="IsPop" name="IsPop" value="@Html.Raw(ViewBag.isPop)" />
+
             <div class="form-group">
                 <div class="col-md-12">
                     <div class="custom-title">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                         <span>검색</span>
-                    </div>                    
+                    </div>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-1 control-label">회사명</label>
                 <div class="col-md-2">
-                    <input type="text" class="form-control" placeholder="회사명" />
+                    <input type="text" id="Name" name="Name" class="form-control" placeholder="회사명" onkeypress="ExecuteEnterkey(SearchAccounts);" />
                 </div>
 
                 <label class="col-md-1 control-label">전화번호</label>
                 <div class="col-md-2">
-                    <input type="text" class="form-control" placeholder="전화번호" />
+                    <input type="text" id="Phone" name="Phone" class="form-control" placeholder="전화번호" onkeypress="ExecuteEnterkey(SearchAccounts);" />
                 </div>
 
                 <label class="col-md-1 control-label">고객타입</label>
                 <div class="col-md-2">
-                    <select id="accountCustomerType" class="form-control"></select>
+                    <select id="AccountCustomerType" name="AccountCustomerType" class="form-control"></select>
                 </div>
 
                 <label class="col-md-1 control-label">담당자</label>
@@ -131,16 +174,16 @@
                     <select id="Ownerid" name="Ownerid" class="form-control"></select>
                 </div>
             </div>
-        </form>
 
-        <div class="row">
-            <div class="col-md-offset-10 col-md-2">
-                <button type="button" class="btn btn-default">
-                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                    검색
-                </button>
+            <div class="form-group">
+                <div class="col-md-offset-10 col-md-2">
+                    <button type="button" class="btn btn-default" onclick="SearchAccounts();">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        검색
+                    </button>
+                </div>
             </div>
-        </div>
+        </form>
 
         <div class="row">
             <div class="col-md-12">
@@ -153,14 +196,28 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-offset-10 col-md-2">
-                <a href="/Accounts/Create" class="btn btn-default">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    거래처 생성
-                </a>
+        @if (ViewBag.isPop)
+        {
+            <div class="row">
+                <div class="col-md-offset-10 col-md-2">
+                    <button type="button" class="btn btn-default" onclick="window.close();">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        닫기
+                    </button>
+                </div>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-offset-10 col-md-2">
+                    <a href="/Accounts/Create" class="btn btn-default">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        거래처 생성
+                    </a>
+                </div>
+            </div>
+
+        }
     </div>
 </div>
-
