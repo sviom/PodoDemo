@@ -123,9 +123,11 @@
                 <label class="col-md-1 control-label">상사</label>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <input type="hidden" id="Bossid" name="Bossid" />
+                        <input type="hidden" id="Bossid" name="Bossid" value="@Model.Bossid" />
                         <input type="text" id="Bossname" name="Bossname" class="form-control"
-                               placeholder="선택된 연락처가 표시됩니다." aria-describedby="contact name" readonly="readonly" />
+                               placeholder="선택된 연락처가 표시됩니다." aria-describedby="contact name"
+                               value="@ViewData["Bossname"]"
+                               readonly="readonly" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" onclick="ContactsSearchPop();">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
@@ -145,7 +147,7 @@
                                value="@ViewData["Accountname"]"
                                readonly="readonly">
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" onclick="Pop();">
+                            <button type="button" class="btn btn-default" onclick="AccountsSearchPop();">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                             </button>
                         </span>

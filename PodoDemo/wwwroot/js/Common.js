@@ -540,7 +540,7 @@ var GetLocalizationString = function GetLocalizationString() {
     localizationobj.pagerrangestring = " 의 ";
     localizationobj.pagernextbuttonstring = "다음";
     localizationobj.pagerpreviousbuttonstring = "이전";
-    localizationobj.emptydatastring = "데이터가 존재하지 않습니다. Data does not exist.";
+    localizationobj.emptydatastring = "데이터가 존재하지 않습니다.";
 
     localizationobj.groupsheaderstring = "행을 드래그해서 해당 열을 기준으로 여기에 놓으세요.";
     localizationobj.sortascendingstring = "오름차순 정렬";

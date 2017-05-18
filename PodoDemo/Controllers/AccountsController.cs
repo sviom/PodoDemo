@@ -18,13 +18,13 @@ namespace PodoDemo.Controllers
 
         public AccountsController(PodoDemoNContext context)
         {
-            _context = context;    
+            _context = context;
         }
 
         // GET: Accounts
         public async Task<IActionResult> Index(bool? isPop)
         {
-            if(isPop == null)
+            if (isPop == null)
             {
                 ViewBag.isPop = false;
             }
@@ -35,7 +35,7 @@ namespace PodoDemo.Controllers
 
             ViewBag.UserId = HttpContext.Session.GetString("userId");
 
-            List<Account> accountList = await _context.Account.ToListAsync();            
+            List<Account> accountList = await _context.Account.ToListAsync();
             return View((Object)JsonConvert.SerializeObject(accountList));
         }
 
@@ -98,18 +98,18 @@ namespace PodoDemo.Controllers
                     account.Modifyuser = HttpContext.Session.GetString("userId");
                     account.Isdeleted = false;
                     account.Ownerid = HttpContext.Session.GetString("userId");
-                    
+
                     _context.Add(account);
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Index");
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     // ·Î±× 
                     string dd = ex.InnerException.Message;
-                    
+
                     View();
-                }                
+                }
             }
             return View();
         }
@@ -123,6 +123,17 @@ namespace PodoDemo.Controllers
             }
 
             var account = await _context.Account.SingleOrDefaultAsync(m => m.Accountid == id);
+            List<Contact> connContactslist = _context.Contact.Where(x => x.Accountid == account.Accountid).ToList();
+            if (connContactslist.Count > 0)
+            {
+                ViewData["connctedContactList"]
+                    = JsonConvert.SerializeObject(connContactslist, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            }
+            else
+            {
+                ViewData["connctedContactList"] = "";
+            }
+
             if (account == null)
             {
                 return NotFound();
@@ -167,8 +178,6 @@ namespace PodoDemo.Controllers
             }
             return View(account);
         }
-
-
 
         // POST: Accounts/Delete/5
         [HttpPost, ActionName("Delete")]

@@ -136,6 +136,8 @@ namespace PodoDemo.Controllers
             ViewData["Accountid"]
                 = new SelectList(_context.Account, "Accountid", "Biznum", contact.Accountid).SelectedValue;
             ViewData["Accountname"] = _context.Account.SingleOrDefault(a => a.Accountid == contact.Accountid).Name;
+            ViewData["Bossname"] = _context.Contact.SingleOrDefault(c => c.Contactid == contact.Bossid).Name;
+
             ViewData["userId"] = HttpContext.Session.GetString("userId");
             return View(contact);
         }

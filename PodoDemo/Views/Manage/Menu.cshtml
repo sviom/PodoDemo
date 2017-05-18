@@ -62,9 +62,9 @@
                 //showfilterrow: true,
                 filterable: true,
                 pagesize: 15,
-                //theme: "MetroCustom",//테마설정
-                columnsheight: '40px',//헤더 높이 설정
-                //localization: getLocalization('ko-KR'),
+                theme: "metroCustom",//테마설정
+                //columnsheight: '40px',//헤더 높이 설정
+                localization: GetLocalizationString(),
                 columns: [
                     //문자로 나오는 항목
                     { text: "ID", datafield: "Id", align: 'center', cellsalign: 'center', width: "10%" },
@@ -119,9 +119,9 @@
                 //showfilterrow: true,
                 filterable: true,
                 pagesize: 15,
-                //theme: "MetroCustom",//테마설정
-                columnsheight: '40px',//헤더 높이 설정
-                //localization: getLocalization('ko-KR'),
+                theme: "metroCustom",//테마설정
+                //columnsheight: '40px',//헤더 높이 설정
+                localization: GetLocalizationString(),
                 columns: [
                     //문자로 나오는 항목
                     { text: "대메뉴아이디", datafield: "Mainmenuid", align: 'center', cellsalign: 'center' },
@@ -149,29 +149,39 @@
 </script>
 
 <div class="View">
-    <div class="container-fluid custom-container">
+    <div class="container">
         <div class="row">
-            <div class="col-md-8 col-md-offset-2 custom-header">
-                <p class="text-left">메뉴 관리</p>
+            <div class="col-md-12 custom-header">
+                <p class="text-left">
+                    메뉴 관리
+                </p>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-md-4 col-md-offset-2">
+            <div class="col-md-6">
                 <div class="custom-title">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
                     <span>대메뉴</span>
                 </div>
                 <div id="mainMenuList"></div>
                 <br />
-                <button onclick="WindowOpenScroll('/Manage/MenuCreate?isPop=true', '', 350, 600, 100, 100);" class="btn custom-btn custom-btn-save">대메뉴 생성</button>
+                <button onclick="WindowOpenScroll('/Manage/MenuCreate?isPop=true', '', 350, 600, 100, 100);" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    대메뉴 생성
+                </button>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="custom-title">
-                    <span>세부 메뉴</span>
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    <span>세부 설정</span>
                 </div>
                 <div id="subMenuList"></div>
                 <br />
-                <button onclick="SubmenuCreate();" class="btn custom-btn custom-btn-save">세부메뉴 생성</button>
+                <button onclick="SubmenuCreate();" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    세부메뉴 생성
+                </button>
             </div>
         </div>
     </div>

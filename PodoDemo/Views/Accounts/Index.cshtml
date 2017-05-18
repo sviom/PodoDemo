@@ -34,16 +34,16 @@
             *@
             @if (ViewBag.isPop)
             {
-            <text>
-            window.opener.SetAccountsInfo(data.Accountid, data.Name);
-            window.close();
-            </text>
+                <text>
+                window.opener.SetAccountsInfo(data.Accountid, data.Name);
+                window.close();
+                </text>
             }
             else
             {
-            <text>
-            location.href = "/Accounts/Edit/" + data.Accountid;
-            </text>
+                <text>
+                location.href = "/Accounts/Edit/" + data.Accountid;
+                </text>
             }
         });
 
