@@ -260,10 +260,56 @@ namespace PodoDemo.Controllers
         /// </summary>
         /// <param name="isPop"></param>
         /// <returns></returns>
-        public IActionResult SubmenuCreate([FromQuery]bool isPop)
+        public IActionResult SubmenuCreate([FromQuery]bool isPop, int mainMenuid)
         {
-            ViewBag.isPop = isPop;
+            ViewBag.isPop = isPop;                  // 팝업여부
+            ViewData["mainMenuid"] = mainMenuid;    // 메인 메뉴 고유값
             return View();
+        }
+
+        /// <summary>
+        /// 상세메뉴 생성
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> SubmenuCreate(bool isPop, SubMenu subMenu)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    subMenu.Createdate = DateTime.Now;
+                    subMenu.Createuser = HttpContext.Session.GetString("userId");
+                    subMenu.Modifydate = DateTime.Now;
+                    subMenu.Modifyuser = HttpContext.Session.GetString("userId");
+                    subMenu.Isdeleted = false;
+
+                    // 기존의 순서가 존재하면 메뉴 순서 바꾸기
+                    var sub = _context.SubMenu.Where(x => x.Mainmenuid == subMenu.Mainmenuid);
+                    int menuCount = sub.Count();
+                    // 존재하면
+                    if (sub.Any(e => e.Order == subMenu.Order))
+                    {
+                        SubMenu exist = sub.SingleOrDefault(x => x.Order == subMenu.Order);
+                        exist.Order = menuCount + 1;
+                        _context.Update(exist);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    subMenu.Id = subMenu.Mainmenuid + "-" + (menuCount + 1);
+
+                    _context.Add(subMenu);
+                    await _context.SaveChangesAsync();
+                    //return RedirectToAction("Menu");
+                    return RedirectToAction("Close", "Home");
+                }
+                catch (Exception ex)
+                {
+                    // 로그 
+                    string dd = ex.InnerException.Message;
+                    return View("Close", "Home");
+                }
+            }
+            return RedirectToAction("Close", "Home");
         }
 
         /// <summary>
@@ -272,7 +318,7 @@ namespace PodoDemo.Controllers
         /// <param name="id"></param>
         /// <param name="isPop"></param>
         /// <returns></returns>
-        public async Task<IActionResult> SubmenuEdit(string id, [FromQuery]bool isPop)
+        public async Task<IActionResult> SubmenuEdit(string id, [FromQuery]bool isPop, int mainMenuid)
         {
             if (id == null)
             {
@@ -284,7 +330,8 @@ namespace PodoDemo.Controllers
             {
                 return NotFound();
             }
-
+            
+            ViewData["mainMenuid"] = mainMenuid;    // 메인 메뉴 고유값
             ViewBag.isPop = isPop;
 
             return View(menu);
@@ -298,7 +345,7 @@ namespace PodoDemo.Controllers
         /// <param name="mainMenu"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> SubmenuEdit(string Id, bool IsPop, [Bind("Id,Name,Order,Isused,Isdeleted,Createdate,Createuser,Modifydate,Modifyuser,Menuurl")] SubMenu subMenu)
+        public async Task<IActionResult> SubmenuEdit(string Id, bool IsPop, [Bind("Id,Name,Order,Isused,Isdeleted,Createdate,Createuser,Modifydate,Modifyuser,Menuurl,Mainmenuid")] SubMenu subMenu)
         {
             if (Id != subMenu.Id)
             {
@@ -312,7 +359,29 @@ namespace PodoDemo.Controllers
                     subMenu.Modifydate = DateTime.Now;
                     subMenu.Modifyuser = HttpContext.Session.GetString("userId");
 
+                    List<SubMenu> updateList = new List<SubMenu>();
+                    var sub = _context.SubMenu.Where(x => x.Mainmenuid == subMenu.Mainmenuid);
+                    int oldOrder = sub.SingleOrDefault(x => x.Id == subMenu.Id).Order;
+                    if (sub.Any(e => e.Order == subMenu.Order))
+                    {
+                        SubMenu exist = sub.SingleOrDefault(x => x.Order == subMenu.Order);
+                        
+                        exist.Order = oldOrder;
+
+                        _context.Update(exist);
+                        //_context.UpdateRange(exist);
+                        //updateList.Add(exist);
+                        _context.SaveChanges();
+
+                        _context.Entry(exist).State = EntityState.Modified;
+                    }
+
+                    //updateList.Add(subMenu);
+                    
+
                     _context.Update(subMenu);
+                    //_context.UpdateRange(updateList);
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

@@ -32,15 +32,12 @@
 
     // 메뉴 수정 내용 저장
     function SubmitForm() {
-        // 유효성 검사 후 진행
-        //if (ValidateForm()) {
-        //    $("#Founddate").val($('#jqdatetimeinput_founddate').jqxDateTimeInput('getText'));
-        //    $("#Detail").val($("#tempDetail").html());
-        //}
-
-        $("#MenuEditForm").prop("action", "/Manage/MenuEdit");
-        $("#MenuEditForm").prop("method", "post");
-        $("#MenuEditForm").submit();
+        //유효성 검사 후 진행
+        if (ValidateForm()) {
+            $("#SubmenuEditForm").prop("action", "/Manage/SubmenuEdit");
+            $("#SubmenuEditForm").prop("method", "post");
+            $("#SubmenuEditForm").submit();
+        }     
     }
 
     // 메뉴 삭제
@@ -48,6 +45,37 @@
         $("#MenuEditForm").prop("action", "/Manage/DeleteMenu");
         $("#MenuEditForm").prop("method", "post");
         $("#MenuEditForm").submit();
+    }
+
+    // 입력한 값들에 대한 유효성 검사
+    function ValidateForm() {
+        var name = $("#Name").val();
+        var order = $("#Order").val();
+        var menuurl = $("#Menuurl").val();
+        var mainmenuid = $("#Mainmenuid").val();
+        //var ceoValue = $("#Ceo").val();
+        //var biznumValue = $("#Biznum").val();
+
+        if (name == "") {
+            alert("상세 메뉴 이름을 입력해주세요.");
+            return false;
+        }
+
+        if (order == "") {
+            alert("순서를 입력해주세요.");
+            return false;
+        }
+
+        if (menuurl == "") {
+            alert("상세 메뉴의 접속 URL을 입력해주세요.");
+            return false;
+        }
+
+        if (mainmenuid == "") {
+            alert("연결된 메뉴 ID가 존재하지 않습니다.\n처음부터 다시 시도해주세요.");
+            return false;
+        }
+        return true;
     }
 </script>
 <div class="View">
@@ -58,8 +86,9 @@
             </div>
         </div>
 
-        <form id="MenuEditForm" class="form-horizontal">
+        <form id="SubmenuEditForm" class="form-horizontal">
             <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+            <input type="hidden" id="Mainmenuid" name="Mainmenuid" value="@ViewData["mainMenuid"]" />
             <input type="hidden" id="IsPop" name="IsPop" value="@Html.Raw(isPop)" />
             <input type="hidden" id="Createdate" name="Createdate" value="@Model.Createdate" />
             <input type="hidden" id="Createuser" name="Createuser" value="@Model.Createuser" />

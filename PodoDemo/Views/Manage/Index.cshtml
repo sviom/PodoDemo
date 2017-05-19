@@ -3,6 +3,8 @@
 }
 
 <script type="text/javascript">
+    var mainmenuId = -1;
+
     $(document).ready(function () {
         SetMainmenulist();
         $("#SubmenuArea").hide();
@@ -21,8 +23,9 @@
             $("#SubmenuArea").show();
 
             var data = $('#mainMenuList').jqxGrid('getrowdata', boundIndex);
-            var dataId = new Object();
-            dataId.Id = data.Id;
+
+            mainmenuId = data.Id;
+
             var submenulist
                 = ExecuteAjax("POST", "/Manage/GetSubmenulist", "json", "application/json", JSON.stringify(data.Id));
             SetSubmenulist(submenulist);
@@ -135,7 +138,7 @@
                             // get the clicked row's data and initialize the input fields.
                             var dataRecord = $("#subMenuList").jqxGrid('getrowdata', row);
                             // 버튼 클릭 시 상세 메뉴 수정으로 이동
-                            WindowOpenScroll("/Manage/SubmenuEdit/" + dataRecord.Id + "?isPop=true", "", 350, 700, 100, 100);
+                            WindowOpenScroll("/Manage/SubmenuEdit/" + dataRecord.Id + "?isPop=true&mainMenuid=" + mainmenuId, "", 350, 700, 100, 100);
                         }
                     }
                 ]
@@ -144,7 +147,7 @@
 
     // 생성 페이지 
     function SubmenuCreate() {
-        WindowOpenScroll('/Manage/SubmenuCreate?isPop=true&mainMenuid=', '', 350, 600, 100, 100);
+        WindowOpenScroll('/Manage/SubmenuCreate?isPop=true&mainMenuid=' + mainmenuId, '', 350, 600, 100, 100);
     }
     function MenuCreate() {
         WindowOpenScroll('/Manage/MenuCreate?isPop=true', '', 350, 600, 100, 100);

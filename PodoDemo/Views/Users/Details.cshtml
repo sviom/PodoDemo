@@ -1,0 +1,120 @@
+@model PodoDemo.Models.User
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>User</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Pw)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Pw)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Engname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Engname)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Phone)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Mobile)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Mobile)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Position)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Position)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Ismaster)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Ismaster)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Token)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Token)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Keybox)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Keybox)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Excelauth)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Excelauth)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Level)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Level)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Createdate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Createdate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Createuser)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Createuser)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Modifydate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Modifydate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Modifyuser)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Modifyuser)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DepartmentNavigation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DepartmentNavigation.Optionid)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

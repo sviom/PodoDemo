@@ -1,0 +1,147 @@
+@model PodoDemo.Models.User
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<form asp-action="Edit">
+    <div class="form-horizontal">
+        <h4>User</h4>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label asp-for="Pw" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Pw" class="form-control" />
+                <span asp-validation-for="Pw" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Name" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Engname" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Engname" class="form-control" />
+                <span asp-validation-for="Engname" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Email" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Phone" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Mobile" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Mobile" class="form-control" />
+                <span asp-validation-for="Mobile" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Department" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <select asp-for="Department" class="form-control" asp-items="ViewBag.Department"></select>
+                <span asp-validation-for="Department" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Position" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Position" class="form-control" />
+                <span asp-validation-for="Position" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input asp-for="Ismaster" />
+                    <label asp-for="Ismaster"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Token" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Token" class="form-control" />
+                <span asp-validation-for="Token" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Keybox" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Keybox" class="form-control" />
+                <span asp-validation-for="Keybox" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input asp-for="Excelauth" />
+                    <label asp-for="Excelauth"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Level" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Level" class="form-control" />
+                <span asp-validation-for="Level" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Createdate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Createdate" class="form-control" />
+                <span asp-validation-for="Createdate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Createuser" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Createuser" class="form-control" />
+                <span asp-validation-for="Createuser" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Modifydate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Modifydate" class="form-control" />
+                <span asp-validation-for="Modifydate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Modifyuser" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Modifyuser" class="form-control" />
+                <span asp-validation-for="Modifyuser" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

@@ -15,16 +15,44 @@
 
     // 메뉴 수정 내용 저장
     function SubmitForm() {
-        // 유효성 검사 후 진행
-        //if (ValidateForm()) {
-        //    $("#Founddate").val($('#jqdatetimeinput_founddate').jqxDateTimeInput('getText'));
-        //    $("#Detail").val($("#tempDetail").html());
-        //}
+        //유효성 검사 후 진행
+        if (ValidateForm()) {
+            $("#SubmenuCreateForm").prop("action", "/Manage/SubmenuCreate");
+            $("#SubmenuCreateForm").prop("method", "post");
+            $("#SubmenuCreateForm").submit();
+        }        
+    }
 
-        $("#MenuEditForm").prop("action", "/Manage/MenuEdit");
-        $("#MenuEditForm").prop("method", "post");
-        $("#MenuEditForm").submit();
-    }    
+    // 입력한 값들에 대한 유효성 검사
+    function ValidateForm() {
+        var name = $("#Name").val();
+        var order = $("#Order").val();
+        var menuurl = $("#Menuurl").val();
+        var mainmenuid = $("#Mainmenuid").val();
+        //var ceoValue = $("#Ceo").val();
+        //var biznumValue = $("#Biznum").val();
+
+        if (name == "") {
+            alert("상세 메뉴 이름을 입력해주세요.");
+            return false;
+        }
+
+        if (order == "") {
+            alert("순서를 입력해주세요.");
+            return false;
+        }
+
+        if (menuurl == "") {
+            alert("상세 메뉴의 접속 URL을 입력해주세요.");
+            return false;
+        }
+
+        if (mainmenuid == "") {
+            alert("연결된 메뉴 ID가 존재하지 않습니다.\n처음부터 다시 시도해주세요.");
+            return false;
+        }
+        return true;
+    }
 </script>
 <div class="View">
     <div class="container">
@@ -34,8 +62,9 @@
             </div>
         </div>
 
-        <form id="MenuEditForm" class="form-horizontal">
+        <form id="SubmenuCreateForm" class="form-horizontal">
             <input type="hidden" id="IsPop" name="IsPop" value="@Html.Raw(isPop)" />
+            <input type="hidden" id="Mainmenuid" name="Mainmenuid" value="@ViewData["mainMenuid"]" />
 
             <div class="form-group">
                 <label class="col-md-4 control-label">이름</label>
@@ -59,7 +88,7 @@
                 <label class="col-md-4 control-label">사용여부</label>
                 <div class="col-md-8 custom-input">
                     <label class="radio-inline">
-                        <input type="radio" id="Isused_T" name="Isused" value="true" />예
+                        <input type="radio" id="Isused_T" name="Isused" value="true" checked="checked"/>예
                     </label>
 
                     <label class="radio-inline">
@@ -76,7 +105,7 @@
                         <input type="radio" id="Isdeleted_T" name="Isdeleted" value="true" />예
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" id="Isdeleted_F" name="Isdeleted" value="false" />아니오
+                        <input type="radio" id="Isdeleted_F" name="Isdeleted" value="false" checked="checked" />아니오
                     </label>
                 </div>
             </div>
@@ -97,7 +126,7 @@
                         <input type="radio" id="Ismanager_T" name="Ismanager" value="true" />예
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" id="Ismanager_F" name="Ismanager" value="false" />아니오
+                        <input type="radio" id="Ismanager_F" name="Ismanager" value="false" checked="checked"/>아니오
                     </label>
                 </div>
             </div>
@@ -116,9 +145,6 @@
                     </button>
                 </div>
             </div>
-
-
         </form>
     </div>
-
 </div>
