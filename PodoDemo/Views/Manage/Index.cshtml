@@ -5,6 +5,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         SetMainmenulist();
+        $("#SubmenuArea").hide();
 
         $('#mainMenuList').on('rowdoubleclick', function (event) {
             var args = event.args;
@@ -17,13 +18,13 @@
             // original event.
             var ev = args.originalEvent;
 
+            $("#SubmenuArea").show();
+
             var data = $('#mainMenuList').jqxGrid('getrowdata', boundIndex);
             var dataId = new Object();
             dataId.Id = data.Id;
             var submenulist
                 = ExecuteAjax("POST", "/Manage/GetSubmenulist", "json", "application/json", JSON.stringify(data.Id));
-            //console.log("상세메뉴목록");
-            //console.log(submenulist);
             SetSubmenulist(submenulist);
 
         });
@@ -67,16 +68,17 @@
                 localization: GetLocalizationString(),
                 columns: [
                     //문자로 나오는 항목
-                    { text: "ID", datafield: "Id", align: 'center', cellsalign: 'center', width: "10%" },
-                    { text: "이름", datafield: "Name", align: 'center', cellsalign: 'center', width: "40%" },
-                    { text: "순서", datafield: "Order", align: 'center', cellsalign: 'center', width: "10%" },
-                    { text: "사용여부", datafield: "Isused", align: 'center', cellsalign: 'center', width: "20%" },
+                    { text: "ID", datafield: "Id", align: 'center', cellsalign: 'center', width: "10%", minwidth: '30px' },
+                    { text: "이름", datafield: "Name", align: 'center', cellsalign: 'center', width: "40%", minwidth: '200px'},
+                    { text: "순서", datafield: "Order", align: 'center', cellsalign: 'center', width: "10%", minwidth: '30px' },
+                    { text: "사용여부", datafield: "Isused", align: 'center', cellsalign: 'center', width: "20%, minwidth: '100px'" },
                     {
-                        text: '수정', datafield: 'Address', align: 'center', cellsalign: 'center', width: '20%', columntype: 'button', cellsrenderer: function () {
+                        text: '수정', datafield: 'Address', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px', columntype: 'button', cellsrenderer: function () {
                             return "수정";
                         }, buttonclick: function (row) {
                             // get the clicked row's data and initialize the input fields.
                             var dataRecord = $("#mainMenuList").jqxGrid('getrowdata', row);
+                            // 버튼 클릭 시 메뉴 수정으로 이동
                             WindowOpenScroll("/Manage/MenuEdit/" + dataRecord.Id + "?isPop=true", "", 350, 600, 100, 100);
                         }
                     }
@@ -86,7 +88,6 @@
 
     // 세부메뉴 수정
     function SetSubmenulist(result) {
-        //$('#subMenuList').html("<div id='subMenuList'></div>");
          var source =
             {
                 localdata: result,
@@ -120,31 +121,33 @@
                 filterable: true,
                 pagesize: 15,
                 theme: "metroCustom",//테마설정
-                //columnsheight: '40px',//헤더 높이 설정
                 localization: GetLocalizationString(),
                 columns: [
-                    //문자로 나오는 항목
-                    { text: "대메뉴아이디", datafield: "Mainmenuid", align: 'center', cellsalign: 'center' },
-                    { text: "ID", datafield: "Id", align: 'center', cellsalign: 'center', width: "10%" },
-                    { text: "이름", datafield: "Name", align: 'center', cellsalign: 'center', width: "40%" },
-                    { text: "순서", datafield: "Order", align: 'center', cellsalign: 'center', width: "10%" },
-                    { text: "사용여부", datafield: "Isused", align: 'center', cellsalign: 'center', width: "20%" },
+                    { text: "대메뉴아이디", datafield: "Mainmenuid", hidden:true },
+                    { text: "ID", datafield: "Id", align: 'center', cellsalign: 'center', width: "10%", minwidth: '30px' },
+                    { text: "이름", datafield: "Name", align: 'center', cellsalign: 'center', width: "40%", minwidth: '200px' },
+                    { text: "순서", datafield: "Order", align: 'center', cellsalign: 'center', width: "10%", minwidth: '30px' },
+                    { text: "사용여부", datafield: "Isused", align: 'center', cellsalign: 'center', width: "20%", minwidth: '100px' },
                     {
-                        text: '수정', datafield: 'Address', align: 'center', cellsalign: 'center', width: '20%', columntype: 'button', cellsrenderer: function () {
+                        text: '수정', datafield: 'Address', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px', columntype: 'button', cellsrenderer: function () {
                             return "수정";
                         }, buttonclick: function (row) {
                             // get the clicked row's data and initialize the input fields.
                             var dataRecord = $("#subMenuList").jqxGrid('getrowdata', row);
-                            WindowOpenScroll("/Manage/SubmenuEdit/" + dataRecord.Id + "?isPop=true", "", 800, 500, 100, 100);
+                            // 버튼 클릭 시 상세 메뉴 수정으로 이동
+                            WindowOpenScroll("/Manage/SubmenuEdit/" + dataRecord.Id + "?isPop=true", "", 350, 700, 100, 100);
                         }
                     }
                 ]
             });
     }
 
-    // 세부메뉴생성 페이지로 이동
+    // 생성 페이지 
     function SubmenuCreate() {
         WindowOpenScroll('/Manage/SubmenuCreate?isPop=true&mainMenuid=', '', 350, 600, 100, 100);
+    }
+    function MenuCreate() {
+        WindowOpenScroll('/Manage/MenuCreate?isPop=true', '', 350, 600, 100, 100);
     }
 </script>
 
@@ -166,12 +169,13 @@
                 </div>
                 <div id="mainMenuList"></div>
                 <br />
-                <button onclick="WindowOpenScroll('/Manage/MenuCreate?isPop=true', '', 350, 600, 100, 100);" class="btn btn-default">
+                <button onclick="MenuCreate();" class="btn btn-default">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     대메뉴 생성
                 </button>
             </div>
-            <div class="col-md-6">
+            <hr class="visible-xs-block"/>
+            <div class="col-md-6" id="SubmenuArea">
                 <div class="custom-title">
                     <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
                     <span>세부 설정</span>

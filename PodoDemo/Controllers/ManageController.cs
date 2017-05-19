@@ -23,7 +23,7 @@ namespace PodoDemo.Controllers
         /// 대메뉴 페이지 이동 및 불러오기
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> Menu()
+        public async Task<IActionResult> Index()
         {
             try
             {
