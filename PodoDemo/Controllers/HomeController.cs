@@ -37,7 +37,7 @@ namespace PodoDemo.Controllers
             if (!_CheckUser(userID, userPW))
             {
                 // return Redirect(Request.UrlReferrer.ToString());        // 사용자 없을 시 다시 돌아가기
-                return RedirectToAction("Index", "Accounts");          // 사용자 존재 시 거래처 목록으로 이동
+                return RedirectToAction("Error","Home", new { errormessage = "UserNotFound" });          // 사용자 존재 시 거래처 목록으로 이동
             }
             return RedirectToAction("Index", "Accounts");          // 사용자 존재 시 거래처 목록으로 이동
         }
@@ -52,7 +52,7 @@ namespace PodoDemo.Controllers
                         , new SqlParameter(){ ParameterName="@V_USER_PW",Value=userPW, SqlDbType=SqlDbType.NVarChar}
                     };
 
-                DataSet userResult = DatabaseUtil.getDataSet("P_GET_LOGIN_USERINFO", param);
+                DataSet userResult = DatabaseUtil.getDataSet("P_Get_Login_UserInfo", param);
 
                 if (userResult.Tables[0].Rows.Count == 0)
                 {
@@ -108,6 +108,17 @@ namespace PodoDemo.Controllers
         
         public IActionResult Close()
         {
+            return View();
+        }
+
+        public IActionResult Error(string errormessage)
+        {
+            ViewBag.message = "Error";
+            if(errormessage == "UserNotFound")
+            {
+                ViewBag.message = errormessage;
+            }
+
             return View();
         }
     }

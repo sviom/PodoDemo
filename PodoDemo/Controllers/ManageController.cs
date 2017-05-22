@@ -7,6 +7,9 @@ using PodoDemo.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using System.Data.SqlClient;
+using System.Data;
+using PodoDemo.Common;
 
 namespace PodoDemo.Controllers
 {
@@ -70,11 +73,11 @@ namespace PodoDemo.Controllers
                     mainMenu.Isdeleted = false;
 
                     // 메뉴 순서 바꾸기
-                    if(_context.Menu.Any(e => e.Order == mainMenu.Order))
+                    if (_context.Menu.Any(e => e.Order == mainMenu.Order))
                     {
                         Menu dd = _context.Menu.SingleOrDefault(x => x.Order == mainMenu.Order);
-                        int menuCount = _context.Menu.Count();                        
-                        dd.Order = menuCount + 1;                        
+                        int menuCount = _context.Menu.Count();
+                        dd.Order = menuCount + 1;
                         _context.Update(dd);
                         await _context.SaveChangesAsync();
                     }
@@ -91,7 +94,7 @@ namespace PodoDemo.Controllers
                     return View("Close", "Home");
                 }
             }
-            return View("Close","Home");
+            return View("Close", "Home");
         }
 
         /// <summary>
@@ -330,7 +333,7 @@ namespace PodoDemo.Controllers
             {
                 return NotFound();
             }
-            
+
             ViewData["mainMenuid"] = mainMenuid;    // 메인 메뉴 고유값
             ViewBag.isPop = isPop;
 
@@ -359,30 +362,34 @@ namespace PodoDemo.Controllers
                     subMenu.Modifydate = DateTime.Now;
                     subMenu.Modifyuser = HttpContext.Session.GetString("userId");
 
-                    List<SubMenu> updateList = new List<SubMenu>();
-                    var sub = _context.SubMenu.Where(x => x.Mainmenuid == subMenu.Mainmenuid);
-                    int oldOrder = sub.SingleOrDefault(x => x.Id == subMenu.Id).Order;
+                    var sub = _context.SubMenu.Where(x => x.Mainmenuid == subMenu.Mainmenuid);      // 해당 대메뉴가 가지고 있는 서브메뉴들
+                    int oldOrder = sub.SingleOrDefault(x => x.Id == subMenu.Id).Order;              // 수정하고 있는 세부메뉴의 Order
                     if (sub.Any(e => e.Order == subMenu.Order))
                     {
+                        // 수정하고 있는 세부메뉴창에서 입력한 Order가 이미 존재한다면 교체
                         SubMenu exist = sub.SingleOrDefault(x => x.Order == subMenu.Order);
-                        
-                        exist.Order = oldOrder;
+                        exist.Order = oldOrder;     // 기존 메뉴를 새로 입력한 Order로 교체
 
-                        _context.Update(exist);
-                        //_context.UpdateRange(exist);
-                        //updateList.Add(exist);
-                        _context.SaveChanges();
+                        SqlParameter[] param 
+                            = new SqlParameter[]{
+                                new SqlParameter(){ ParameterName="@menuId", Value=subMenu.Id, SqlDbType=SqlDbType.NVarChar},
+                                new SqlParameter(){ ParameterName="@newOrder",Value=subMenu.Order, SqlDbType=SqlDbType.Int},
+                                new SqlParameter(){ ParameterName="@existMenuId",Value=exist.Id, SqlDbType=SqlDbType.NVarChar},
+                                new SqlParameter(){ ParameterName="@oldOrder",Value=oldOrder, SqlDbType=SqlDbType.Int}
+                            };
 
-                        _context.Entry(exist).State = EntityState.Modified;
+                        DataSet userResult = DatabaseUtil.getDataSet("P_Update_SubmenuOrder", param);
+
+                        //if (userResult.Tables[0].Rows.Count == 0)
+                        //{
+                        //}
                     }
-
-                    //updateList.Add(subMenu);
-                    
-
-                    _context.Update(subMenu);
-                    //_context.UpdateRange(updateList);
-
-                    await _context.SaveChangesAsync();
+                    else
+                    {
+                        // 존재하지 않으면 넣은 값으로 그대로 업데이트
+                        _context.Update(subMenu);
+                        await _context.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
