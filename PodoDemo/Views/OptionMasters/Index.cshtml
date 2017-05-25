@@ -1,0 +1,284 @@
+﻿@*@model IEnumerable<PodoDemo.Models.OptionMaster>*@
+@model string
+
+@{
+    ViewData["Title"] = "옵션관리";
+}
+
+
+<script type="text/javascript">
+    var optionmasterId = -1;
+
+    $(document).ready(function () {
+        SetOptionmasterList(@Html.Raw(Model));
+        $("#SubArea").hide();
+
+        $('#optionmasterList').on('rowdoubleclick', function (event) {
+            var args = event.args;
+            // row's bound index.
+            var boundIndex = args.rowindex;
+            // row's visible index.
+            var visibleIndex = args.visibleindex;
+            // right click.
+            var rightclick = args.rightclick;
+            // original event.
+            var ev = args.originalEvent;
+
+            $("#SubArea").show();
+
+            var data = $('#optionmasterList').jqxGrid('getrowdata', boundIndex);
+
+            optionmasterId = data.Masterid;
+
+            var submenulist
+                = ExecuteAjax("POST", "/OptionMasters/GetOptiondetailList", "json", "application/json", JSON.stringify(data.Masterid));
+            SetOptiondetailList(submenulist);
+
+        });
+    });
+    // 옵션마스터 표시
+    function SetOptionmasterList(optionmasterRaw) {
+        var source =
+            {
+                localdata: optionmasterRaw,
+                datatype: "json",
+                datafields:
+                [
+                    { name: 'Masterid', type: 'number' },
+                    { name: 'Name', type: 'string' },
+                    { name: 'Isused', type: 'number' },
+                    { name: 'Description', type: 'string' }
+                    //{ name: 'Address', type: 'string' }
+                ]
+            };
+
+        var dataAdapter = new $.jqx.dataAdapter(source);
+
+        $("#optionmasterList").jqxGrid(
+            {
+                width: '100%',
+                source: dataAdapter,
+                pageable: true,
+                autoheight: true,
+                autorowheight: true,
+                sortable: true,
+                altrows: true,
+                enabletooltips: true,
+                editable: false,
+                selectionmode: 'singlerow',
+                pagesizeoptions: [10, 15, 20, 25, 30, 35, 40, 45, 50],
+                //showfilterrow: true,
+                filterable: true,
+                pagesize: 15,
+                theme: "metroCustom",//테마설정
+                //columnsheight: '40px',//헤더 높이 설정
+                localization: GetLocalizationString(),
+                columns: [
+                    //문자로 나오는 항목
+                    { text: "ID", datafield: "Masterid", align: 'center', cellsalign: 'center', width: "10%", minwidth: '30px' },
+                    { text: "이름", datafield: "Name", align: 'center', cellsalign: 'center', width: "20%", minwidth: '100px'},                    
+                    { text: "설명", datafield: "Description", align: 'center', cellsalign: 'center', width: "40%", minwidth: '100px' },
+                    { text: "사용여부", datafield: "Isused", align: 'center', cellsalign: 'center', width: "15%", minwidth: '80px' },
+                    {
+                        text: '수정', datafield: '', align: 'center', cellsalign: 'center', width: '15%', minwidth: '80px', columntype: 'button', cellsrenderer: function () {
+                            return "수정";
+                        }, buttonclick: function (row) {
+                            // get the clicked row's data and initialize the input fields.
+                            var dataRecord = $("#optionmasterList").jqxGrid('getrowdata', row);
+                            // 버튼 클릭 시 메뉴 수정으로 이동
+                            //WindowOpenScroll("/Manage/MenuEdit/" + dataRecord.Id + "?isPop=true", "", 350, 600, 100, 100);
+                        }
+                    }
+                ]
+            });
+    }
+
+    // 세부메뉴 수정
+    function SetOptiondetailList(result) {
+         var source =
+            {
+                localdata: result,
+                datatype: "Array",
+                datafields:
+                [
+                    { name: 'Optionid', type: 'string' },
+                    { name: 'Masterid', type: 'string' },
+                    { name: 'Name', type: 'number' },
+                    { name: 'Isused', type: 'number' },
+                    { name: 'Description', type: 'string' }
+                ]
+            };
+
+         var dataAdapter = new $.jqx.dataAdapter(source);
+
+         $("#optiondetailList").jqxGrid(
+            {
+                width: '100%',
+                source: dataAdapter,
+                pageable: true,
+                autoheight: true,
+                autorowheight: true,
+                sortable: true,
+                altrows: true,
+                enabletooltips: true,
+                editable: false,
+                selectionmode: 'singlerow',
+                pagesizeoptions: [10, 15, 20, 25, 30, 35, 40, 45, 50],
+                //showfilterrow: true,
+                filterable: true,
+                pagesize: 15,
+                theme: "metroCustom",//테마설정
+                localization: GetLocalizationString(),
+                columns: [
+                    { text: "대메뉴아이디", datafield: "Masterid", hidden:true },
+                    { text: "ID", datafield: "Optionid", align: 'center', cellsalign: 'center', width: "10%", minwidth: '30px' },
+                    { text: "이름", datafield: "Name", align: 'center', cellsalign: 'center', width: "20%", minwidth: '100px' },
+                    { text: "설명", datafield: "Description", align: 'center', cellsalign: 'center', width: "40%", minwidth: '100px' },
+                    { text: "사용여부", datafield: "Isused", align: 'center', cellsalign: 'center', width: "15%", minwidth: '80px' },
+                    {
+                        text: '수정', datafield: 'Address', align: 'center', cellsalign: 'center', width: '15%', minwidth: '80px', columntype: 'button', cellsrenderer: function () {
+                            return "수정";
+                        }, buttonclick: function (row) {
+                            // get the clicked row's data and initialize the input fields.
+                            var dataRecord = $("#optiondetailList").jqxGrid('getrowdata', row);
+                            // 버튼 클릭 시 상세 메뉴 수정으로 이동
+                            //WindowOpenScroll("/OptionMasters/SubmenuEdit/" + dataRecord.Id + "?isPop=true&mainMenuid=" + optionmasterId, "", 350, 700, 100, 100);
+                        }
+                    }
+                ]
+            });
+    }
+
+    // 생성 페이지
+    function SubmenuCreate() {
+        //WindowOpenScroll('/OptionMasters/SubmenuCreate?isPop=true&mainMenuid=' + optionmasterId, '', 350, 600, 100, 100);
+    }
+    function MenuCreate() {
+        //WindowOpenScroll('/OptionMasters/MenuCreate?isPop=true', '', 350, 600, 100, 100);
+    }
+</script>
+
+<div class="View">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 custom-header">
+                <p class="text-left">
+                    옵션 관리
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="custom-title">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    <span>옵션</span>
+                </div>
+                <div id="optionmasterList"></div>
+                <br />
+                <button onclick="MenuCreate();" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    옵션 생성
+                </button>
+            </div>
+            <hr class="visible-xs-block" />
+            <div class="col-md-6" id="SubArea">
+                <div class="custom-title">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    <span>세부 설정</span>
+                </div>
+                <div id="optiondetailList"></div>
+                <br />
+                <button onclick="SubmenuCreate();" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    옵션내용 생성
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<h2>Index</h2>
+
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Description)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Isused)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Defaultvalue)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Ownerid)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Createdate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Createuser)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Modifydate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Modifyuser)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Issystem)
+                    </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Isused)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Defaultvalue)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ownerid)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Createdate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Createuser)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Modifydate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Modifyuser)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Issystem)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Masterid">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Masterid">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Masterid">Delete</a>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>*@
