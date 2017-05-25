@@ -155,8 +155,7 @@ namespace PodoDemo.Controllers
 
             return RedirectToAction("Close", "Home");
         }
-
-
+        
         /// <summary>
         /// 대메뉴 더블클릭할 때 상세 메뉴 목록 가져오기
         /// </summary>
@@ -185,6 +184,45 @@ namespace PodoDemo.Controllers
             }
         }
 
+        /// <summary>
+        /// 세부 옵션 생성 페이지로 이동
+        /// </summary>
+        /// <param name="isPop"></param>
+        /// <returns></returns>
+        public IActionResult OptionDetailCreate([FromQuery]bool isPop, long Masterid)
+        {
+            ViewBag.isPop = isPop;
+            ViewData["Masterid"] = Masterid;
+            return View();
+        }
+
+        /// <summary>
+        /// 세부 옵션 생성
+        /// </summary>
+        /// <param name="isPop"></param>
+        /// <param name="optionMaster"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> OptionDetailCreate(bool isPop, OptionMasterDetail optionmasterDetail)
+        {
+            if (ModelState.IsValid)
+            {
+                optionmasterDetail.Createdate = DateTime.Now;
+                optionmasterDetail.Createuser = HttpContext.Session.GetString("userId");
+                optionmasterDetail.Modifydate = DateTime.Now;
+                optionmasterDetail.Modifyuser = HttpContext.Session.GetString("userId");
+
+                optionmasterDetail.Optionid = optionmasterDetail.Masterid + "-" + (_context.OptionMasterDetail.Count() + 1);
+
+                _context.Add(optionmasterDetail);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Close", "Home");
+            }
+            ViewBag.isPop = isPop;
+            return View(optionmasterDetail);
+        }
 
         private bool OptionMasterExists(long id)
         {

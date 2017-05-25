@@ -149,8 +149,8 @@
     }
 
     // 생성 페이지
-    function SubmenuCreate() {
-        //WindowOpenScroll('/OptionMasters/SubmenuCreate?isPop=true&mainMenuid=' + optionmasterId, '', 350, 600, 100, 100);
+    function DetailCreate() {
+        WindowOpenScroll('/OptionMasters/OptionDetailCreate?isPop=true&Masterid=' + optionmasterId, '', 350, 600, 100, 100);
     }
     function CreateMaster() {
         WindowOpenScroll('/OptionMasters/MasterCreate?isPop=true', '', 350, 500, 100, 100);
@@ -188,7 +188,7 @@
                 </div>
                 <div id="optiondetailList"></div>
                 <br />
-                <button onclick="SubmenuCreate();" class="btn btn-default">
+                <button onclick="DetailCreate();" class="btn btn-default">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     옵션내용 생성
                 </button>
