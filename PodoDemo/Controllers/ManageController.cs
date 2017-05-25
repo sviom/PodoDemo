@@ -72,19 +72,19 @@ namespace PodoDemo.Controllers
                     mainMenu.Modifyuser = HttpContext.Session.GetString("userId");
                     mainMenu.Isdeleted = false;
 
-                    // 메뉴 순서 바꾸기
                     if (_context.Menu.Any(e => e.Order == mainMenu.Order))
                     {
-                        Menu dd = _context.Menu.SingleOrDefault(x => x.Order == mainMenu.Order);
+                        // 기존의 순서가 존재하면 맨 뒤로 보내기
+                        Menu exist = _context.Menu.SingleOrDefault(x => x.Order == mainMenu.Order);
                         int menuCount = _context.Menu.Count();
-                        dd.Order = menuCount + 1;
-                        _context.Update(dd);
+                        exist.Order = menuCount + 1;
+                        _context.Update(exist);
                         await _context.SaveChangesAsync();
                     }
 
                     _context.Add(mainMenu);
                     await _context.SaveChangesAsync();
-                    //return RedirectToAction("Menu");
+                    
                     return View("Close", "Home");
                 }
                 catch (Exception ex)
@@ -142,9 +142,36 @@ namespace PodoDemo.Controllers
                 {
                     mainMenu.Modifydate = DateTime.Now;
                     mainMenu.Modifyuser = HttpContext.Session.GetString("userId");
+                    
+                    var sub = _context.Menu;
+                    long oldOrder = sub.SingleOrDefault(x => x.Id == mainMenu.Id).Order;
+                    if (sub.Any(e => e.Order == mainMenu.Order))
+                    {
+                        // 수정하고 있는 메뉴창에서 입력한 Order가 이미 존재한다면 교체
+                        Menu exist = sub.SingleOrDefault(x => x.Order == mainMenu.Order);
+                        exist.Order = oldOrder;     // 기존 메뉴를 새로 입력한 Order로 교체
 
-                    _context.Update(mainMenu);
-                    await _context.SaveChangesAsync();
+                        SqlParameter[] param
+                            = new SqlParameter[]{
+                                new SqlParameter(){ ParameterName="@menuId", Value=mainMenu.Id, SqlDbType=SqlDbType.BigInt},
+                                new SqlParameter(){ ParameterName="@newOrder",Value=mainMenu.Order, SqlDbType=SqlDbType.BigInt},
+                                new SqlParameter(){ ParameterName="@existMenuId",Value=exist.Id, SqlDbType=SqlDbType.BigInt},
+                                new SqlParameter(){ ParameterName="@oldOrder",Value=oldOrder, SqlDbType=SqlDbType.BigInt}
+                            };
+
+                        DataSet userResult = DatabaseUtil.getDataSet("P_Update_MainmenuOrder", param);
+                    }
+                    else
+                    {
+                        // 존재하지 않으면 넣은 값으로 그대로 업데이트
+                        if (mainMenu.Order > sub.Count())
+                        {
+                            mainMenu.Order = sub.Count() + 1;
+                        }
+
+                        _context.Update(mainMenu);
+                        await _context.SaveChangesAsync();
+                    }                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -302,7 +329,24 @@ namespace PodoDemo.Controllers
 
                     _context.Add(subMenu);
                     await _context.SaveChangesAsync();
-                    //return RedirectToAction("Menu");
+
+                    // 권한 추가
+                    UserAuth newMenuUserAuth = new UserAuth() {
+                        Userid = HttpContext.Session.GetString("userId"),
+                        Read= "5-3",
+                        Modify  = "5-3",
+                        Write = "5-3",
+                        Delete = "5-3",
+                        Submenuid = subMenu.Id,
+                        Createdate = DateTime.Now,
+                        Createuser = HttpContext.Session.GetString("userId"),
+                        Modifydate = DateTime.Now,
+                        Modifyuser = HttpContext.Session.GetString("userId")
+                    };
+
+                    _context.UserAuth.Add(newMenuUserAuth);
+                    await _context.SaveChangesAsync();
+                    
                     return RedirectToAction("Close", "Home");
                 }
                 catch (Exception ex)
@@ -379,21 +423,70 @@ namespace PodoDemo.Controllers
                             };
 
                         DataSet userResult = DatabaseUtil.getDataSet("P_Update_SubmenuOrder", param);
-
-                        //if (userResult.Tables[0].Rows.Count == 0)
-                        //{
-                        //}
                     }
                     else
                     {
                         // 존재하지 않으면 넣은 값으로 그대로 업데이트
+                        if(subMenu.Order > sub.Count())
+                        {
+                            subMenu.Order = sub.Count() + 1;
+                        }
                         _context.Update(subMenu);
                         await _context.SaveChangesAsync();
                     }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SubmenuExistst(subMenu.Id))
+                    if (!SubmenuExists(subMenu.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Close", "Home");
+            }
+
+            ViewBag.isPop = true;
+            return View(subMenu);
+        }
+
+        /// <summary>
+        /// 메뉴 삭제(삭제 항목 업데이트)
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="IsPop"></param>
+        /// <param name="mainMenu"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> DeleteSubmenu(string Id, bool IsPop, [Bind("Id,Name,Order,Isused,Isdeleted,Createdate,Createuser,Modifydate,Modifyuser")] SubMenu subMenu)
+        {
+            //var menu = await _context.Menu.SingleOrDefaultAsync(m => m.Id == Id);
+            //_context.Menu.Remove(menu);
+            //await _context.SaveChangesAsync();
+            //return RedirectToAction("Close","Home");
+
+            if (Id != subMenu.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    subMenu.Isdeleted = true;
+                    subMenu.Modifydate = DateTime.Now;
+                    subMenu.Modifyuser = HttpContext.Session.GetString("userId");
+
+                    _context.Update(subMenu);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!SubmenuExists(subMenu.Id))
                     {
                         return NotFound();
                     }
@@ -418,12 +511,13 @@ namespace PodoDemo.Controllers
         {
             return _context.Menu.Any(e => e.Id == id);
         }
+
         /// <summary>
         /// 상세 메뉴 존재하는지 검사
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        private bool SubmenuExistst(string id)
+        private bool SubmenuExists(string id)
         {
             return _context.SubMenu.Any(e => e.Id == id);
         }
