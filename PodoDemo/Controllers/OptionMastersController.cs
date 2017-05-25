@@ -224,6 +224,29 @@ namespace PodoDemo.Controllers
             return View(optionmasterDetail);
         }
 
+        /// <summary>
+        /// 세부 옵션 수정 페이지로 이동
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> OptionDetailEdit(string id, [FromQuery]bool isPop, long Masterid)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var optionMasterDetail = await _context.OptionMasterDetail.SingleOrDefaultAsync(m => m.Optionid == id && m.Masterid == Masterid);
+            if (optionMasterDetail == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.isPop = isPop;
+            return View(optionMasterDetail);
+        }
+
+
         private bool OptionMasterExists(long id)
         {
             return _context.OptionMaster.Any(e => e.Masterid == id);

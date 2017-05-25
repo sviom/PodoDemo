@@ -141,7 +141,7 @@
                             // get the clicked row's data and initialize the input fields.
                             var dataRecord = $("#optiondetailList").jqxGrid('getrowdata', row);
                             // 버튼 클릭 시 상세 메뉴 수정으로 이동
-                            //WindowOpenScroll("/OptionMasters/SubmenuEdit/" + dataRecord.Id + "?isPop=true&mainMenuid=" + optionmasterId, "", 350, 700, 100, 100);
+                            WindowOpenScroll("/OptionMasters/OptionDetailEdit/" + dataRecord.Optionid + "?isPop=true&Masterid=" + optionmasterId, "", 350, 700, 100, 100);
                         }
                     }
                 ]
