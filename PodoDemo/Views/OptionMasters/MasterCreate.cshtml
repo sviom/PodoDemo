@@ -1,0 +1,120 @@
+﻿@{
+    ViewData["Title"] = "옵션생성";
+
+    //팝업일 경우 레이아웃은 팝업 전용으로 변경 아닐 경우 메뉴가 포함된 기본 레이아웃
+    if (ViewBag.isPop)
+    {
+        Layout = "~/Views/Shared/Popup_Layout.cshtml";
+    }
+
+    bool isPop = ViewBag.isPop;
+}
+
+<link href="~/css/Layout_BootstrapCustom.css" rel="stylesheet" />
+<script type="text/javascript">
+    $(document).ready(function () {
+
+    });
+
+    // 메뉴 수정 내용 저장
+    function SubmitForm() {
+        // 유효성 검사 후 진행
+        if (ValidateForm()) {
+            $("#OptionMasterCreateForm").prop("action", "/OptionMasters/MasterCreate");
+            $("#OptionMasterCreateForm").prop("method", "post");
+            $("#OptionMasterCreateForm").submit();
+        }
+    }
+
+    // 입력한 값들에 대한 유효성 검사
+    function ValidateForm() {
+        var name = $("#Name").val();
+
+        if (name == "") {
+            alert("옵션 이름을 입력해주세요.");
+            return false;
+        }
+
+        if (!$('input[name=Isused]:checked').val()) {
+            alert("사용여부에 체크해주세요.");
+            return false;
+        }
+
+        if (!$('input[name=Issystem]:checked').val()) {
+            alert("시스템여부에 체크해주세요.");
+            return false;
+        }
+        return true;
+    }
+</script>
+<div class="View">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 custom-header">
+                <p class="text-left">옵션 생성</p>
+            </div>
+        </div>
+
+        <form id="OptionMasterCreateForm" class="form-horizontal">
+            <input type="hidden" id="IsPop" name="IsPop" value="@Html.Raw(isPop)" />
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label class="col-md-4 control-label">이름</label>
+                <div class="col-md-8">
+                    <input type="text" id="Name" name="Name"
+                           class="form-control"
+                           placeholder="대메뉴 이름" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label">설명</label>
+                <div class="col-md-8">
+                    <input type="text" id="Description" name="Description"
+                           class="form-control"
+                           placeholder="설명" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label">사용여부</label>
+                <div class="col-md-8">
+                    <label class="radio-inline">
+                        <input type="radio" id="Isused_T" name="Isused" value="true" />예
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" id="Isused_F" name="Isused" value="false" />아니오
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label">시스템 여부</label>
+                <div class="col-md-8">
+                    <label class="radio-inline">
+                        <input type="radio" id="Issystem_T" name="Issystem" value="true" />예
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" id="Issystem_F" name="Issystem" value="false" />아니오
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-8 col-md-2 custom-row-btn-margin">
+                    <button type="button" class="btn btn-default" onclick="SubmitForm();">
+                        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+                        저장
+                    </button>
+                </div>
+                <div class="col-md-2 custom-row-btn-margin">
+                    <button type="button" class="btn btn-default" onclick="window.close();">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        닫기
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

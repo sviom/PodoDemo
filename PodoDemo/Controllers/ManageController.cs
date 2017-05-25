@@ -160,6 +160,9 @@ namespace PodoDemo.Controllers
                             };
 
                         DataSet userResult = DatabaseUtil.getDataSet("P_Update_MainmenuOrder", param);
+
+                        _context.Update(mainMenu);
+                        await _context.SaveChangesAsync();
                     }
                     else
                     {
@@ -423,6 +426,9 @@ namespace PodoDemo.Controllers
                             };
 
                         DataSet userResult = DatabaseUtil.getDataSet("P_Update_SubmenuOrder", param);
+
+                        _context.Update(subMenu);
+                        await _context.SaveChangesAsync();
                     }
                     else
                     {

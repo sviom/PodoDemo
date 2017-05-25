@@ -46,9 +46,8 @@
                 [
                     { name: 'Masterid', type: 'number' },
                     { name: 'Name', type: 'string' },
-                    { name: 'Isused', type: 'number' },
+                    { name: 'Isused', type: 'bool' },
                     { name: 'Description', type: 'string' }
-                    //{ name: 'Address', type: 'string' }
                 ]
             };
 
@@ -86,7 +85,7 @@
                             // get the clicked row's data and initialize the input fields.
                             var dataRecord = $("#optionmasterList").jqxGrid('getrowdata', row);
                             // 버튼 클릭 시 메뉴 수정으로 이동
-                            //WindowOpenScroll("/Manage/MenuEdit/" + dataRecord.Id + "?isPop=true", "", 350, 600, 100, 100);
+                            WindowOpenScroll("/OptionMasters/MasterEdit/" + dataRecord.Masterid + "?isPop=true", "", 350, 600, 100, 100);
                         }
                     }
                 ]
@@ -153,8 +152,8 @@
     function SubmenuCreate() {
         //WindowOpenScroll('/OptionMasters/SubmenuCreate?isPop=true&mainMenuid=' + optionmasterId, '', 350, 600, 100, 100);
     }
-    function MenuCreate() {
-        //WindowOpenScroll('/OptionMasters/MenuCreate?isPop=true', '', 350, 600, 100, 100);
+    function CreateMaster() {
+        WindowOpenScroll('/OptionMasters/MasterCreate?isPop=true', '', 350, 500, 100, 100);
     }
 </script>
 
@@ -176,7 +175,7 @@
                 </div>
                 <div id="optionmasterList"></div>
                 <br />
-                <button onclick="MenuCreate();" class="btn btn-default">
+                <button onclick="CreateMaster();" class="btn btn-default">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     옵션 생성
                 </button>

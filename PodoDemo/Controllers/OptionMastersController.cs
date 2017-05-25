@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PodoDemo.Models;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace PodoDemo.Controllers
 {
@@ -19,55 +20,60 @@ namespace PodoDemo.Controllers
             _context = context;    
         }
 
-        // GET: OptionMasters
+        /// <summary>
+        /// 옵션 리스트 페이지로 이동
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             List<OptionMaster> optionmasterList = await _context.OptionMaster.ToListAsync();
             return View((Object)JsonConvert.SerializeObject(optionmasterList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
         }
 
-        // GET: OptionMasters/Details/5
-        public async Task<IActionResult> Details(long? id)
+        /// <summary>
+        /// 옵션 생성 페이지로 이동
+        /// </summary>
+        /// <param name="isPop"></param>
+        /// <returns></returns>
+        public IActionResult MasterCreate([FromQuery]bool isPop)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var optionMaster = await _context.OptionMaster
-                .SingleOrDefaultAsync(m => m.Masterid == id);
-            if (optionMaster == null)
-            {
-                return NotFound();
-            }
-
-            return View(optionMaster);
-        }
-
-        // GET: OptionMasters/Create
-        public IActionResult Create()
-        {
+            ViewBag.isPop = isPop;
             return View();
         }
 
-        // POST: OptionMasters/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// 옵션 생성
+        /// </summary>
+        /// <param name="isPop"></param>
+        /// <param name="optionMaster"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Masterid,Name,Description,Isused,Defaultvalue,Ownerid,Createdate,Createuser,Modifydate,Modifyuser,Issystem")] OptionMaster optionMaster)
+        public async Task<IActionResult> MasterCreate(bool isPop, [Bind("Name,Description,Isused,Issystem")] OptionMaster optionMaster)
         {
             if (ModelState.IsValid)
             {
+                optionMaster.Createdate = DateTime.Now;
+                optionMaster.Createuser = HttpContext.Session.GetString("userId");
+                optionMaster.Modifydate = DateTime.Now;
+                optionMaster.Modifyuser = HttpContext.Session.GetString("userId");
+                optionMaster.Ownerid = HttpContext.Session.GetString("userId");
+
                 _context.Add(optionMaster);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+
+                return RedirectToAction("Close", "Home");
             }
+            ViewBag.isPop = isPop;
             return View(optionMaster);
         }
 
-        // GET: OptionMasters/Edit/5
-        public async Task<IActionResult> Edit(long? id)
+        /// <summary>
+        /// 옵션 수정 페이지로 이동
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> MasterEdit(long? id, [FromQuery]bool isPop)
         {
             if (id == null)
             {
@@ -79,17 +85,22 @@ namespace PodoDemo.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.isPop = isPop;
             return View(optionMaster);
         }
 
-        // POST: OptionMasters/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// 옵션 수정
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="optionMaster"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Masterid,Name,Description,Isused,Defaultvalue,Ownerid,Createdate,Createuser,Modifydate,Modifyuser,Issystem")] OptionMaster optionMaster)
+        public async Task<IActionResult> MasterEdit(long Masterid, bool IsPop, [Bind("Masterid,Name,Description,Isused,Createdate,Createuser,Modifydate,Modifyuser,Issystem,Ownerid")] OptionMaster optionMaster)
         {
-            if (id != optionMaster.Masterid)
+            if (Masterid != optionMaster.Masterid)
             {
                 return NotFound();
             }
@@ -98,6 +109,9 @@ namespace PodoDemo.Controllers
             {
                 try
                 {
+                    optionMaster.Modifydate = DateTime.Now;
+                    optionMaster.Modifyuser = HttpContext.Session.GetString("userId");
+
                     _context.Update(optionMaster);
                     await _context.SaveChangesAsync();
                 }
@@ -112,28 +126,36 @@ namespace PodoDemo.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Close", "Home");
             }
             return View(optionMaster);
         }
 
-        // GET: OptionMasters/Delete/5
-        public async Task<IActionResult> Delete(long? id)
+        /// <summary>
+        /// 메뉴 삭제
+        /// </summary>
+        /// <param name="Masterid"></param>
+        /// <param name="IsPop"></param>
+        /// <param name="optionMaster"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> MasterDelete(long Masterid, bool IsPop, [Bind("Masterid,Name,Description,Isused,Createdate,Createuser,Modifydate,Modifyuser,Issystem,Ownerid")] OptionMaster optionMaster)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            //var menu = await _context.Menu.SingleOrDefaultAsync(m => m.Id == Id);
+            //_context.Menu.Remove(menu);
+            //await _context.SaveChangesAsync();
+            //return RedirectToAction("Close","Home");
 
-            var optionMaster = await _context.OptionMaster
-                .SingleOrDefaultAsync(m => m.Masterid == id);
-            if (optionMaster == null)
-            {
-                return NotFound();
-            }
+            var dd = await _context.OptionMaster.SingleOrDefaultAsync(m => m.Masterid == Masterid);
+            _context.OptionMaster.Remove(dd);
 
-            return View(optionMaster);
+            var ss = _context.OptionMasterDetail.Where(m => m.Masterid == Masterid).ToList();
+            _context.OptionMasterDetail.RemoveRange(ss);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Close", "Home");
         }
+
 
         /// <summary>
         /// 대메뉴 더블클릭할 때 상세 메뉴 목록 가져오기
@@ -163,16 +185,6 @@ namespace PodoDemo.Controllers
             }
         }
 
-        // POST: OptionMasters/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
-        {
-            var optionMaster = await _context.OptionMaster.SingleOrDefaultAsync(m => m.Masterid == id);
-            _context.OptionMaster.Remove(optionMaster);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
 
         private bool OptionMasterExists(long id)
         {

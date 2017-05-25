@@ -214,8 +214,8 @@ namespace PodoDemo.Models
                     .HasName("PK_OptionMaster");
 
                 entity.Property(e => e.Masterid)
-                    .HasColumnName("masterid")
-                    .ValueGeneratedNever();
+                    .HasColumnName("masterid");
+                    //.ValueGeneratedNever();
 
                 entity.Property(e => e.Createdate)
                     .HasColumnName("createdate")
