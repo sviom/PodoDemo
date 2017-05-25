@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PodoDemo.Models;
+using Newtonsoft.Json;
 
 namespace PodoDemo.Controllers
 {
@@ -21,8 +22,10 @@ namespace PodoDemo.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            var podoDemoNContext = _context.User.Include(u => u.DepartmentNavigation);
-            return View(await podoDemoNContext.ToListAsync());
+            //JsonConvert.SerializeObject(mainMenuList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            //var podoDemoNContext = _context.User.Include(u => u.DepartmentNavigation);
+            List<User> podoDemoNContext = await _context.User.ToListAsync();
+            return View((Object)JsonConvert.SerializeObject(podoDemoNContext, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
         }
 
         // GET: Users/Details/5
