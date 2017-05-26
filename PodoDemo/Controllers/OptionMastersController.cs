@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using PodoDemo.Models;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using System.Data.SqlClient;
+using PodoDemo.Common;
+using System.Data;
 
 namespace PodoDemo.Controllers
 {
@@ -246,10 +249,88 @@ namespace PodoDemo.Controllers
             return View(optionMasterDetail);
         }
 
+        /// <summary>
+        /// 세부 옵션 수정
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="IsPop"></param>
+        /// <param name="optionmasterDetail"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> OptionDetailEdit(string Optionid, bool IsPop, OptionMasterDetail optionmasterDetail)
+        {
+            if (Optionid != optionmasterDetail.Optionid)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    optionmasterDetail.Modifydate = DateTime.Now;
+                    optionmasterDetail.Modifyuser = HttpContext.Session.GetString("userId");
+
+                    var sub = _context.OptionMasterDetail.Where(x => x.Masterid == optionmasterDetail.Masterid);
+                    long oldOrder = sub.SingleOrDefault(x => x.Optionid == optionmasterDetail.Optionid).Order;
+                    if (sub.Any(e => e.Order == optionmasterDetail.Order))
+                    {
+                        // 수정하고 있는 세부메뉴창에서 입력한 Order가 이미 존재한다면 교체
+                        OptionMasterDetail exist = sub.SingleOrDefault(x => x.Order == optionmasterDetail.Order);
+                        exist.Order = oldOrder;     // 기존 메뉴를 새로 입력한 Order로 교체
+
+                        SqlParameter[] param
+                            = new SqlParameter[]{
+                                new SqlParameter(){ ParameterName="@optionId", Value=optionmasterDetail.Optionid, SqlDbType=SqlDbType.NVarChar},
+                                new SqlParameter(){ ParameterName="@newOrder",Value=optionmasterDetail.Order, SqlDbType=SqlDbType.BigInt},
+                                new SqlParameter(){ ParameterName="@existOptionId",Value=exist.Optionid, SqlDbType=SqlDbType.NVarChar},
+                                new SqlParameter(){ ParameterName="@oldOrder",Value=oldOrder, SqlDbType=SqlDbType.BigInt}
+                            };
+
+                        DataSet userResult = DatabaseUtil.getDataSet("P_Update_OptiondetailOrder", param);
+
+                        _context.Update(optionmasterDetail);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        // 존재하지 않으면 넣은 값으로 그대로 업데이트
+                        if (optionmasterDetail.Order > sub.Count())
+                        {
+                            optionmasterDetail.Order = sub.Count() + 1;
+                        }
+
+                        _context.Update(optionmasterDetail);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!OptionDetailExists(optionmasterDetail.Optionid))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Close", "Home");
+            }
+
+            ViewBag.isPop = true;
+            return View(optionmasterDetail);
+        }
 
         private bool OptionMasterExists(long id)
         {
             return _context.OptionMaster.Any(e => e.Masterid == id);
+        }
+
+        private bool OptionDetailExists(string id)
+        {
+            return _context.OptionMasterDetail.Any(e => e.Optionid == id);
         }
     }
 }
