@@ -135,7 +135,7 @@ namespace PodoDemo.Controllers
         }
 
         /// <summary>
-        /// 皋春 昏力
+        /// 可记 棺 可记 技何郴侩 昏力
         /// </summary>
         /// <param name="Masterid"></param>
         /// <param name="IsPop"></param>
@@ -321,6 +321,23 @@ namespace PodoDemo.Controllers
 
             ViewBag.isPop = true;
             return View(optionmasterDetail);
+        }
+
+        /// <summary>
+        /// 可记 技何 郴侩 昏力
+        /// </summary>
+        /// <param name="Masterid"></param>
+        /// <param name="IsPop"></param>
+        /// <param name="optionMaster"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> OptiondetailDelete(string Optionid, bool IsPop, OptionMasterDetail optionmasterDetail)
+        {
+            var ss = _context.OptionMasterDetail.SingleOrDefault(m => m.Optionid == Optionid);
+            _context.OptionMasterDetail.Remove(ss);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Close", "Home");
         }
 
         private bool OptionMasterExists(long id)

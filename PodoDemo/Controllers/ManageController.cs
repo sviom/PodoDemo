@@ -143,7 +143,7 @@ namespace PodoDemo.Controllers
                     mainMenu.Modifydate = DateTime.Now;
                     mainMenu.Modifyuser = HttpContext.Session.GetString("userId");
                     
-                    var sub = _context.Menu;
+                    var sub = _context.Menu.AsNoTracking();
                     long oldOrder = sub.SingleOrDefault(x => x.Id == mainMenu.Id).Order;
                     if (sub.Any(e => e.Order == mainMenu.Order))
                     {

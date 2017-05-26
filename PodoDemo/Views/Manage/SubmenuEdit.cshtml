@@ -41,10 +41,12 @@
     }
 
     // 메뉴 삭제
-    function DeleteMenu() {
-        $("#SubmenuEditForm").prop("action", "/Manage/DeleteSubmenu");
-        $("#SubmenuEditForm").prop("method", "post");
-        $("#SubmenuEditForm").submit();
+    function DeleteSubmenu() {
+        if (confirm("해당 내용을 삭제하면 복구할 수 없습니다.\n삭제하시겠습니까?")) {
+            $("#SubmenuEditForm").prop("action", "/Manage/DeleteSubmenu");
+            $("#SubmenuEditForm").prop("method", "post");
+            $("#SubmenuEditForm").submit();
+        }        
     }
 
     // 입력한 값들에 대한 유효성 검사
@@ -168,7 +170,7 @@
                     </button>
                 </div>
                 <div class="col-md-2 custom-row-btn-margin">
-                    <button type="button" id="MenuDeleteButton" class="btn btn-default btn-danger" onclick="DeleteMenu();">
+                    <button type="button" id="MenuDeleteButton" class="btn btn-default btn-danger" onclick="DeleteSubmenu();">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                         삭제
                     </button>

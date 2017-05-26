@@ -36,9 +36,10 @@
             $("#OptionMasterEditForm").submit();
         }
     }
+
     // 옵션 삭제
     function DeleteOptionmaster() {
-        if (confirm("삭제하면 다시 되돌릴 수 없습니다.\n삭제하시겠습니까?")) {
+        if (confirm("해당 내용을 삭제하면 복구할 수 없습니다.\n삭제하시겠습니까?")) {
             $("#OptionMasterEditForm").prop("action", "/OptionMasters/DeleteSubmenu");
             $("#OptionMasterEditForm").prop("method", "post");
             $("#OptionMasterEditForm").submit();
