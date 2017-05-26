@@ -409,7 +409,7 @@ namespace PodoDemo.Controllers
                     subMenu.Modifydate = DateTime.Now;
                     subMenu.Modifyuser = HttpContext.Session.GetString("userId");
 
-                    var sub = _context.SubMenu.Where(x => x.Mainmenuid == subMenu.Mainmenuid);      // 해당 대메뉴가 가지고 있는 서브메뉴들
+                    var sub = _context.SubMenu.AsNoTracking().Where(x => x.Mainmenuid == subMenu.Mainmenuid);      // 해당 대메뉴가 가지고 있는 서브메뉴들
                     int oldOrder = sub.SingleOrDefault(x => x.Id == subMenu.Id).Order;              // 수정하고 있는 세부메뉴의 Order
                     if (sub.Any(e => e.Order == subMenu.Order))
                     {

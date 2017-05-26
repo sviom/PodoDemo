@@ -272,7 +272,7 @@ namespace PodoDemo.Controllers
                     optionmasterDetail.Modifydate = DateTime.Now;
                     optionmasterDetail.Modifyuser = HttpContext.Session.GetString("userId");
 
-                    var sub = _context.OptionMasterDetail.Where(x => x.Masterid == optionmasterDetail.Masterid);
+                    var sub = _context.OptionMasterDetail.AsNoTracking().Where(x => x.Masterid == optionmasterDetail.Masterid);
                     long oldOrder = sub.SingleOrDefault(x => x.Optionid == optionmasterDetail.Optionid).Order;
                     if (sub.Any(e => e.Order == optionmasterDetail.Order))
                     {
