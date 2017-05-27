@@ -216,7 +216,7 @@ namespace PodoDemo.Controllers
                 optionmasterDetail.Modifydate = DateTime.Now;
                 optionmasterDetail.Modifyuser = HttpContext.Session.GetString("userId");
 
-                optionmasterDetail.Optionid = optionmasterDetail.Masterid + "-" + (_context.OptionMasterDetail.Count() + 1);
+                optionmasterDetail.Optionid = optionmasterDetail.Masterid + "-" + (_context.OptionMasterDetail.Where(x=>x.Masterid == optionmasterDetail.Masterid).Count() + 1);
 
                 _context.Add(optionmasterDetail);
                 await _context.SaveChangesAsync();
