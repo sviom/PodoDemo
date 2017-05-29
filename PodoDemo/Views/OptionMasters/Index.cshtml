@@ -104,7 +104,8 @@
                     { name: 'Masterid', type: 'string' },
                     { name: 'Name', type: 'number' },
                     { name: 'Isused', type: 'number' },
-                    { name: 'Description', type: 'string' }
+                    { name: 'Description', type: 'string' },
+                    { name: 'Order', type: 'number' },
                 ]
             };
 
@@ -133,9 +134,10 @@
                     { text: "ID", datafield: "Optionid", align: 'center', cellsalign: 'center', width: "10%", minwidth: '30px' },
                     { text: "이름", datafield: "Name", align: 'center', cellsalign: 'center', width: "20%", minwidth: '100px' },
                     { text: "설명", datafield: "Description", align: 'center', cellsalign: 'center', width: "40%", minwidth: '100px' },
-                    { text: "사용여부", datafield: "Isused", align: 'center', cellsalign: 'center', width: "15%", minwidth: '80px' },
+                    { text: "순서", datafield: "Order", align: 'center', cellsalign: 'center', width: "10%", minwidth: '100px' },
+                    { text: "사용여부", datafield: "Isused", align: 'center', cellsalign: 'center', width: "10%", minwidth: '80px' },
                     {
-                        text: '수정', datafield: 'Address', align: 'center', cellsalign: 'center', width: '15%', minwidth: '80px', columntype: 'button', cellsrenderer: function () {
+                        text: '수정', datafield: 'Address', align: 'center', cellsalign: 'center', width: '10%', minwidth: '80px', columntype: 'button', cellsrenderer: function () {
                             return "수정";
                         }, buttonclick: function (row) {
                             // get the clicked row's data and initialize the input fields.
