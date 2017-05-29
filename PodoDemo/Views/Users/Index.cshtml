@@ -12,29 +12,22 @@
     $(document).ready(function () {
         SetMainmenulist(@Html.Raw(Model));
 
+        $('#userList').on('rowdoubleclick', function (event) {
+            var args = event.args;
+            // row's bound index.
+            var boundIndex = args.rowindex;
+            // row's visible index.
+            var visibleIndex = args.visibleindex;
+            // right click.
+            var rightclick = args.rightclick;
+            // original event.
+            var ev = args.originalEvent;
 
-        //$('#userList').on('rowdoubleclick', function (event) {
-        //    var args = event.args;
-        //    // row's bound index.
-        //    var boundIndex = args.rowindex;
-        //    // row's visible index.
-        //    var visibleIndex = args.visibleindex;
-        //    // right click.
-        //    var rightclick = args.rightclick;
-        //    // original event.
-        //    var ev = args.originalEvent;
-
-        //    $("#SubmenuArea").show();
-
-        //    var data = $('#mainMenuList').jqxGrid('getrowdata', boundIndex);
-
-        //    mainmenuId = data.Id;
-
-        //    var submenulist
-        //        = ExecuteAjax("POST", "/Manage/GetSubmenulist", "json", "application/json", JSON.stringify(data.Id));
-        //    SetSubmenulist(submenulist);
-
-        //});
+            $("#SubmenuArea").show();
+            var data = $('#mainMenuList').jqxGrid('getrowdata', boundIndex);
+            //location.href = "/Users/Create/" + data.Id;
+            location.href = "/Users/Create/" + data.Id;
+        });
     });
     // 대메뉴 표시
     function SetMainmenulist(userlistRaw) {
@@ -114,10 +107,10 @@
 
         <div class="row">
             <div class="col-md-offset-10 col-md-2">
-                <button onclick="MenuCreate();" class="btn btn-default">
+                <a href="/Users/Create" class="btn btn-default">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     사용자 생성
-                </button>
+                </a>
             </div>
         </div>
     </div>
