@@ -25,6 +25,26 @@ namespace PodoDemo.Controllers
             //JsonConvert.SerializeObject(mainMenuList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             //var podoDemoNContext = _context.User.Include(u => u.DepartmentNavigation);
             List<User> podoDemoNContext = await _context.User.ToListAsync();
+
+            // 부서 직급 사용자 등급 표시
+            foreach (var userItem in podoDemoNContext)
+            {
+                if (!string.IsNullOrEmpty(userItem.Department))
+                {
+                    userItem.Department = _context.OptionMasterDetail.SingleOrDefault(x => x.Optionid == userItem.Department).Name;
+                }
+
+                if (!string.IsNullOrEmpty(userItem.Position))
+                {
+                    userItem.Position = _context.OptionMasterDetail.SingleOrDefault(x => x.Optionid == userItem.Position).Name;
+                }
+
+                if (!string.IsNullOrEmpty(userItem.Level))
+                {
+                    userItem.Level = _context.OptionMasterDetail.SingleOrDefault(x => x.Optionid == userItem.Level).Name;
+                }                
+            }
+
             return View((Object)JsonConvert.SerializeObject(podoDemoNContext, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
         }
 
