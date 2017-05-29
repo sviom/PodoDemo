@@ -25,8 +25,8 @@
     // 입력한 값들에 대한 유효성 검사
     function ValidateForm() {
         var name = $("#Name").val();
-        var order = $("#Order").val();
-        var menuurl = $("#Menuurl").val();
+        var pw = $("#Pw").val();
+        var repw = $("#RePw").val();
         var mainmenuid = $("#Mainmenuid").val();
         //var ceoValue = $("#Ceo").val();
         //var biznumValue = $("#Biznum").val();
@@ -88,7 +88,7 @@
 
                 <label class="col-md-2 control-label">영어이름</label>
                 <div class="col-md-2">
-                    <input type="tel" id="Phone" name="Phone" class="form-control" placeholder="English name" />
+                    <input type="tel" id="Engname" name="Engname" class="form-control" placeholder="English name" />
                 </div>
 
                 <label class="col-md-2 control-label">이메일</label>
@@ -111,10 +111,10 @@
                 <label class="col-md-2 control-label">엑셀권한</label>
                 <div class="col-md-2">
                     <label class="radio-inline">
-                        <input type="radio" id="Isused_T" name="Isused" value="true" />예
+                        <input type="radio" id="Excelauth_T" name="Excelauth" value="true" />예
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" id="Isused_F" name="Isused" value="false" checked="checked" />아니오
+                        <input type="radio" id="Excelauth_F" name="Excelauth" value="false" checked="checked" />아니오
                     </label>
                 </div>
             </div>
@@ -123,12 +123,12 @@
                 
                 <label class="col-md-2 control-label">유선전화</label>
                 <div class="col-md-2">
-                    <input type="text" id="aa" name="aa" class="form-control" placeholder="전화[02-000-0000]" />
+                    <input type="text" id="Phone" name="Phone" class="form-control" placeholder="전화[02-000-0000]" />
                 </div>
 
                 <label class="col-md-2 control-label">휴대전화</label>
                 <div class="col-md-2">
-                    <input type="text" id="ss" name="ss" class="form-control" placeholder="휴대전화[010-0000-0000]" />
+                    <input type="text" id="Mobile" name="Mobile" class="form-control" placeholder="휴대전화[010-0000-0000]" />
                 </div>
             </div>
 
