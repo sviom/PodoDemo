@@ -199,6 +199,7 @@ function ConvertToOptionTag(result, isAll, isEmpty, isAuth, selval) {
         if (isAuth == "True") {
             optionHTML += '<option value="' + result[i].value + '">' + result[i].text + '</option>';
         } else {
+            console.log(result[i].text + " / " + result[i].value + " / " + selval);
             if (result[i].value === "13-2") {
                 continue;
             } else if (selval == result[i].Text || selval == result[i].Value) {

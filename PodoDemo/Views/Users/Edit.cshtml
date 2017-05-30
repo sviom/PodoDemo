@@ -1,147 +1,233 @@
-@model PodoDemo.Models.User
+﻿@model PodoDemo.Models.User
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "사용자";
+
+    string Excelauth_T = Model.Excelauth ? "checked" : "";
+    string Excelauth_F = Model.Excelauth ? "" : "checked";
 }
 
-<h2>Edit</h2>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // 검색 조건 키 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권한
+        GetOptionDDL('1', 'Department', SetoptionTag, '@Model.Department', false, false, false);
+        GetOptionDDL('3', 'Position', SetoptionTag, '@Model.Position', false, false, false);
+        GetOptionDDL('2', 'Level', SetoptionTag, '@Model.Level', false, false, false);
 
-<form asp-action="Edit">
-    <div class="form-horizontal">
-        <h4>User</h4>
-        <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="Id" />
-        <div class="form-group">
-            <label asp-for="Pw" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Pw" class="form-control" />
-                <span asp-validation-for="Pw" class="text-danger"></span>
+        $("#Excelauth_T").prop("checked", "@Excelauth_T");
+        $("#Excelauth_F").prop("checked", "@Excelauth_F");
+    });
+
+    // 메뉴 수정 내용 저장
+    function SubmitForm() {
+        // 유효성 검사 후 진행
+        if (ValidateForm()) {
+            $("#UserEditForm").prop("action", "/Users/Edit");
+            $("#UserEditForm").prop("method", "post");
+            $("#UserEditForm").submit();
+        }
+    }
+
+    // 사용자 삭제
+    function DeleteUser() {
+        if (confirm("해당 내용을 삭제하면 복구할 수 없습니다.\n삭제하시겠습니까?")) {
+            $("#UserEditForm").prop("action", "/Users/Delete");
+            $("#UserEditForm").prop("method", "post");
+            $("#UserEditForm").submit();
+        }
+    }
+
+    // 입력한 값들에 대한 유효성 검사
+    function ValidateForm() {
+        var Id = $("#Id").val();
+        var name = $("#Name").val();
+        var Email = $("#Email").val();
+        var Phone = $("#Phone").val();
+        var pw = $("#Pw").val();
+        var repw = $("#RePw").val();
+        var Department = $("#Department option:selected").val();
+        var Position = $("#Position option:selected").val();
+        var Level = $("#Level option:selected").val();
+
+        if (Id == "") {
+            alert("사용자 아이디를 입력해주세요.");
+            return false;
+        }
+
+        if (name == "") {
+            alert("사용자 이름을 입력해주세요.");
+            return false;
+        }
+
+        if (Email == "") {
+            alert("이메일을 입력해주세요.");
+            return false;
+        }
+
+        if (Phone == "") {
+            alert("유선 전화번호를 입력해주세요.");
+            return false;
+        }
+
+        if (pw != repw) {
+            alert("비밀번호를 맞게 입력하셨는지 확인해주세요.");
+            return false;
+        }
+
+        if (Department == "") {
+            alert("부서를 선택해주세요.");
+            return false;
+        }
+
+        if (Position == "") {
+            alert("직급을 선택해주세요.");
+            return false;
+        }
+
+        if (Level == "") {
+            alert("시스템등급을 선택해주세요.");
+            return false;
+        }
+        return true;
+    }
+</script>
+<div class="View">
+    <div class="container custom-container">
+        <div class="row">
+            <div class="col-md-12 custom-header">
+                <p class="text-left">사용자 생성</p>
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Name" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+
+        <div class="col-md-12">
+            <div class="custom-title">
+                <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                <span>기본 정보</span>
+                <hr />
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Engname" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Engname" class="form-control" />
-                <span asp-validation-for="Engname" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Email" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Phone" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Mobile" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Mobile" class="form-control" />
-                <span asp-validation-for="Mobile" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Department" class="control-label col-md-2"></label>
-            <div class="col-md-10">
-                <select asp-for="Department" class="form-control" asp-items="ViewBag.Department"></select>
-                <span asp-validation-for="Department" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Position" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Position" class="form-control" />
-                <span asp-validation-for="Position" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <div class="checkbox">
-                    <input asp-for="Ismaster" />
-                    <label asp-for="Ismaster"></label>
+
+        <form class="form-horizontal" id="UserEditForm">
+            <input type="hidden" id="Createdate" name="Createdate" value="@Model.Createdate" />
+            <input type="hidden" id="Createuser" name="Createuser" value="@Model.Createuser" />
+            <input type="hidden" id="Modifydate" name="Modifydate" value="@Model.Modifydate" />
+            <input type="hidden" id="Modifyuser" name="Modifyuser" value="@Model.Modifyuser" />
+            <input type="hidden" id="existPw" name="existPw" value="@Model.Pw" />
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label class="col-md-2 control-label requireField">아이디</label>
+                <div class="col-md-2">
+                    <div class="input-group">
+                        <input type="text" id="Id" name="Id" class="form-control"
+                               value="@Model.Id"
+                               readonly="readonly"
+                               placeholder="사용자아이디" />
+                        @*<span class="input-group-btn">
+                            <button type="button" class="btn btn-default" onclick="">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
+                        </span>*@
+                    </div>
+                </div>
+
+                <label class="col-md-2 control-label requireField">이름</label>
+                <div class="col-md-2">
+                    <input type="text" id="Name" name="Name" class="form-control" 
+                           value="@Model.Name"
+                           placeholder="사용자이름" />
+                </div>
+
+                <label class="col-md-2 control-label">영어이름</label>
+                <div class="col-md-2">
+                    <input type="tel" id="Engname" name="Engname" class="form-control"
+                           value="@Model.Engname"
+                           placeholder="English name" />
                 </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Token" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Token" class="form-control" />
-                <span asp-validation-for="Token" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Keybox" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Keybox" class="form-control" />
-                <span asp-validation-for="Keybox" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <div class="checkbox">
-                    <input asp-for="Excelauth" />
-                    <label asp-for="Excelauth"></label>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label">비밀번호</label>
+                <div class="col-md-2">
+                    <input type="password" id="Pw" name="Pw" class="form-control" placeholder="비밀번호" />
+                </div>
+
+                <label class="col-md-2 control-label">비밀번호확인</label>
+                <div class="col-md-2">
+                    <input type="password" id="RePw" name="RePw" class="form-control" placeholder="비밀번호확인" />
+                </div>
+
+                <label class="col-md-2 control-label requireField">이메일</label>
+                <div class="col-md-2">
+                    <input type="email" id="Email" name="Email" class="form-control" 
+                           value="@Model.Email"
+                           placeholder="사용자이메일" />
                 </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Level" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Level" class="form-control" />
-                <span asp-validation-for="Level" class="text-danger"></span>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label requireField">유선전화</label>
+                <div class="col-md-2">
+                    <input type="text" id="Phone" name="Phone" class="form-control"
+                           value="@Model.Phone"
+                           placeholder="전화[02-000-0000]" />
+                </div>
+
+                <label class="col-md-2 control-label">휴대전화</label>
+                <div class="col-md-2">
+                    <input type="text" id="Mobile" name="Mobile" class="form-control"
+                           value="@Model.Mobile"
+                           placeholder="휴대전화[010-0000-0000]" />
+                </div>
+
+                <label class="col-md-2 control-label">엑셀권한</label>
+                <div class="col-md-2">
+                    <label class="radio-inline">
+                        <input type="radio" id="Excelauth_T" name="Excelauth" value="true" />예
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" id="Excelauth_F" name="Excelauth" value="false" />아니오
+                    </label>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Createdate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Createdate" class="form-control" />
-                <span asp-validation-for="Createdate" class="text-danger"></span>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label requireField">부서</label>
+                <div class="col-md-2">
+                    <select id="Department" name="Department" class="form-control"></select>
+                </div>
+
+                <label class="col-md-2 control-label requireField">직급</label>
+                <div class="col-md-2">
+                    <select id="Position" name="Position" class="form-control"></select>
+                </div>
+
+                <label class="col-md-2 control-label requireField">시스템등급</label>
+                <div class="col-md-2">
+                    <select id="Level" name="Level" class="form-control"></select>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Createuser" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Createuser" class="form-control" />
-                <span asp-validation-for="Createuser" class="text-danger"></span>
+        </form>
+
+        <div class="row">
+            <div class="col-md-offset-6 col-md-2 custom-row-btn-margin">
+                <button type="button" id="EditUserButton" class="btn btn-default" onclick="SubmitForm();">
+                    <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+                    저장
+                </button>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Modifydate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Modifydate" class="form-control" />
-                <span asp-validation-for="Modifydate" class="text-danger"></span>
+            <div class="col-md-2 custom-row-btn-margin">
+                <button type="button" id="DeleteUserButton" class="btn btn-default btn-danger" onclick="DeleteUser();">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    삭제
+                </button>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Modifyuser" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Modifyuser" class="form-control" />
-                <span asp-validation-for="Modifyuser" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+            <div class="col-md-2 custom-row-btn-margin">
+                <a href="/Users/Index" class="btn btn-default">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    목록
+                </a>
             </div>
         </div>
     </div>
-</form>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
-

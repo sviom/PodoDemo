@@ -19,35 +19,58 @@
             $("#UserCreateForm").prop("action", "/Users/Create");
             $("#UserCreateForm").prop("method", "post");
             $("#UserCreateForm").submit();
-        }        
+        }
     }
 
     // 입력한 값들에 대한 유효성 검사
     function ValidateForm() {
+        var Id = $("#Id").val();
         var name = $("#Name").val();
+        var Email = $("#Email").val();
+        var Phone = $("#Phone").val();
         var pw = $("#Pw").val();
         var repw = $("#RePw").val();
-        var mainmenuid = $("#Mainmenuid").val();
-        //var ceoValue = $("#Ceo").val();
-        //var biznumValue = $("#Biznum").val();
+        var Department = $("#Department option:selected").val();
+        var Position = $("#Position option:selected").val();
+        var Level = $("#Level option:selected").val();
+
+        if (Id == "") {
+            alert("사용자 아이디를 입력해주세요.");
+            return false;
+        }
 
         if (name == "") {
-            alert("상세 메뉴 이름을 입력해주세요.");
+            alert("사용자 이름을 입력해주세요.");
             return false;
         }
 
-        if (order == "") {
-            alert("순서를 입력해주세요.");
+        if (Email == "") {
+            alert("이메일을 입력해주세요.");
             return false;
         }
 
-        if (menuurl == "") {
-            alert("상세 메뉴의 접속 URL을 입력해주세요.");
+        if (Phone == "") {
+            alert("유선 전화번호를 입력해주세요.");
             return false;
         }
 
-        if (mainmenuid == "") {
-            alert("연결된 메뉴 ID가 존재하지 않습니다.\n처음부터 다시 시도해주세요.");
+        if (pw != repw) {
+            alert("비밀번호를 맞게 입력하셨는지 확인해주세요.");
+            return false;
+        }
+
+        if (Department == "") {
+            alert("부서를 선택해주세요.");
+            return false;
+        }
+
+        if (Position == "") {
+            alert("직급을 선택해주세요.");
+            return false;
+        }
+
+        if (Level == "") {
+            alert("시스템등급을 선택해주세요.");
             return false;
         }
         return true;
@@ -69,21 +92,25 @@
             </div>
         </div>
 
-        <form class="form-horizontal" id="UserCreateForm" >
-            <div class="form-group">
-                <label class="col-md-2 control-label requireField">이름</label>
-                <div class="col-md-2">
-                    @*<input type="text" id="Name" name="Name" class="form-control" placeholder="거래처 이름" />*@
+        <form class="form-horizontal" id="UserCreateForm">
+            @Html.AntiForgeryToken()
 
+            <div class="form-group">
+                <label class="col-md-2 control-label requireField">아이디</label>
+                <div class="col-md-2">
                     <div class="input-group">
-                        <input type="text" id="Name" name="Name" class="form-control"
-                               placeholder="사용자이름" aria-describedby="users name" />
+                        <input type="text" id="Id" name="Id" class="form-control" placeholder="사용자아이디" />
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" onclick="ContactsSearchPop();">
+                            <button type="button" class="btn btn-default" onclick="">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                             </button>
                         </span>
                     </div>
+                </div>
+
+                <label class="col-md-2 control-label requireField">이름</label>
+                <div class="col-md-2">
+                    <input type="text" id="Name" name="Name" class="form-control" placeholder="사용자이름" />
                 </div>
 
                 <label class="col-md-2 control-label">영어이름</label>
@@ -91,10 +118,7 @@
                     <input type="tel" id="Engname" name="Engname" class="form-control" placeholder="English name" />
                 </div>
 
-                <label class="col-md-2 control-label">이메일</label>
-                <div class="col-md-2">
-                    <input type="email" id="Email" name="Email" class="form-control" placeholder="사용자이메일"/>
-                </div>
+
             </div>
 
             <div class="form-group">
@@ -108,6 +132,24 @@
                     <input type="password" id="RePw" name="RePw" class="form-control" placeholder="비밀번호확인" />
                 </div>
 
+                <label class="col-md-2 control-label requireField">이메일</label>
+                <div class="col-md-2">
+                    <input type="email" id="Email" name="Email" class="form-control" placeholder="사용자이메일" />
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <label class="col-md-2 control-label requireField">유선전화</label>
+                <div class="col-md-2">
+                    <input type="text" id="Phone" name="Phone" class="form-control" placeholder="전화[02-000-0000]" />
+                </div>
+
+                <label class="col-md-2 control-label">휴대전화</label>
+                <div class="col-md-2">
+                    <input type="text" id="Mobile" name="Mobile" class="form-control" placeholder="휴대전화[010-0000-0000]" />
+                </div>
+
                 <label class="col-md-2 control-label">엑셀권한</label>
                 <div class="col-md-2">
                     <label class="radio-inline">
@@ -116,19 +158,6 @@
                     <label class="radio-inline">
                         <input type="radio" id="Excelauth_F" name="Excelauth" value="false" checked="checked" />아니오
                     </label>
-                </div>
-            </div>
-
-            <div class="form-group">
-                
-                <label class="col-md-2 control-label">유선전화</label>
-                <div class="col-md-2">
-                    <input type="text" id="Phone" name="Phone" class="form-control" placeholder="전화[02-000-0000]" />
-                </div>
-
-                <label class="col-md-2 control-label">휴대전화</label>
-                <div class="col-md-2">
-                    <input type="text" id="Mobile" name="Mobile" class="form-control" placeholder="휴대전화[010-0000-0000]" />
                 </div>
             </div>
 
@@ -147,12 +176,12 @@
                 <div class="col-md-2">
                     <select id="Level" name="Level" class="form-control"></select>
                 </div>
-            </div>            
+            </div>
         </form>
 
         <div class="row">
             <div class="col-md-offset-8 col-md-2 custom-row-btn-margin">
-                <button type="button" id="CreateAccountButton" class="btn btn-default" onclick="SubmitForm();">
+                <button type="button" id="CreateUserButton" class="btn btn-default" onclick="SubmitForm();">
                     <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
                     저장
                 </button>

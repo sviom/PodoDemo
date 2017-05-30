@@ -5,7 +5,6 @@
     ViewData["Title"] = "사용자";
 }
 
-
 <script type="text/javascript">
     var mainmenuId = -1;
 
@@ -22,11 +21,10 @@
             var rightclick = args.rightclick;
             // original event.
             var ev = args.originalEvent;
-
-            $("#SubmenuArea").show();
-            var data = $('#mainMenuList').jqxGrid('getrowdata', boundIndex);
+            
+            var data = $('#userList').jqxGrid('getrowdata', boundIndex);
             //location.href = "/Users/Create/" + data.Id;
-            location.href = "/Users/Create/" + data.Id;
+            location.href = "/Users/Edit/" + data.Id;
         });
     });
     // 대메뉴 표시

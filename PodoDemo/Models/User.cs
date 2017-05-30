@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace PodoDemo.Models
 {
@@ -10,6 +11,7 @@ namespace PodoDemo.Models
             UserAuth = new HashSet<UserAuth>();
         }
 
+        [Key]
         public string Id { get; set; }
         public string Pw { get; set; }
         public string Name { get; set; }
