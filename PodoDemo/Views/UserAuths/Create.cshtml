@@ -1,0 +1,93 @@
+@model PodoDemo.Models.UserAuth
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<form asp-action="Create">
+    <div class="form-horizontal">
+        <h4>UserAuth</h4>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Userid" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Userid" class ="form-control" asp-items="ViewBag.Userid"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Read" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Read" class="form-control" />
+                <span asp-validation-for="Read" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Modify" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Modify" class="form-control" />
+                <span asp-validation-for="Modify" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Write" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Write" class="form-control" />
+                <span asp-validation-for="Write" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Delete" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Delete" class="form-control" />
+                <span asp-validation-for="Delete" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Submenuid" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Submenuid" class ="form-control" asp-items="ViewBag.Submenuid"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Createdate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Createdate" class="form-control" />
+                <span asp-validation-for="Createdate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Createuser" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Createuser" class="form-control" />
+                <span asp-validation-for="Createuser" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Modifydate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Modifydate" class="form-control" />
+                <span asp-validation-for="Modifydate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Modifyuser" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Modifyuser" class="form-control" />
+                <span asp-validation-for="Modifyuser" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

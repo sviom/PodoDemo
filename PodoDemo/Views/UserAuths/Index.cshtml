@@ -1,0 +1,88 @@
+﻿@model IEnumerable<PodoDemo.Models.UserAuth>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        GetUserDDL('1-1', '@ViewBag.UserId', 'Ownerid', SetoptionTag, '@ViewBag.UserId', true, false, false);        
+        SetoptionTag('Menu', '@ViewBag.MenuList', '', true, false, false);
+        SetoptionTag('Submenu','@ViewBag.SubmenuList','',true,false,false);
+    });
+
+    // Select Tag로 Binding
+    //function SetoptionTag(control, result, selval, isAll, isEmpty, auth) {
+    //    $("#" + control).html(ConvertToOptionTag(result, isAll, isEmpty, auth, selval));
+    //}
+
+</script>
+
+<div class="View">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 custom-header">
+                <p class="text-left">
+                    권한 관리
+                </p>
+            </div>
+        </div>
+
+        <form class="form-horizontal" id="SearchAccountsForm">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <div class="custom-title">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        <span>검색</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-1 control-label">사용자</label>
+                <div class="col-md-2">
+                    <select id="Ownerid" name="Ownerid" class="form-control"></select>
+                </div>
+
+                <label class="col-md-1 control-label">대메뉴</label>
+                <div class="col-md-2">
+                    <select id="Menu" name="Menu" class="form-control"></select>
+                </div>
+
+                <label class="col-md-1 control-label">세부메뉴</label>
+                <div class="col-md-2">
+                    <select id="Submenu" name="Submenu" class="form-control"></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-10 col-md-2">
+                    <button type="button" class="btn btn-default" onclick="SearchAccounts();">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        검색
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="custom-title">
+                    <hr />
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    <span>권한 목록</span>
+                </div>
+                <div id="userList"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-offset-10 col-md-2">
+                <a href="#" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    저장
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

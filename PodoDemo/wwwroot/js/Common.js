@@ -115,8 +115,6 @@ function GetOptionDDL(searchKey, extraParam, callbackFnc, selval, isAll, isEmpty
         async: false,
         dataType: "json",
         success: function (result) {
-            console.log("옵션결과");
-            console.log(result);
             callbackFnc(extraParam, result, selval, isAll, isEmpty, auth);
         },
         error: function (data) {
@@ -174,6 +172,9 @@ function GetUserDDL(searchKey, userID, extraParam, callbackFnc, selval, isAll, i
 
 // Select Tag로 Binding
 function SetoptionTag(control, result, selval, isAll, isEmpty, auth) {
+    console.log("들어온값");
+    console.log(result);
+    console.log(typeof (result));
     $("#" + control).html(ConvertToOptionTag(result, isAll, isEmpty, auth, selval));
 }
 
@@ -199,7 +200,7 @@ function ConvertToOptionTag(result, isAll, isEmpty, isAuth, selval) {
         if (isAuth == "True") {
             optionHTML += '<option value="' + result[i].value + '">' + result[i].text + '</option>';
         } else {
-            console.log(result[i].text + " / " + result[i].value + " / " + selval);
+            
             if (result[i].value === "13-2") {
                 continue;
             } else if (selval == result[i].text || selval == result[i].value) {
@@ -210,8 +211,6 @@ function ConvertToOptionTag(result, isAll, isEmpty, isAuth, selval) {
             }
         }
     }
-
-    console.log(optionHTML);
     return optionHTML;
 }
 
@@ -250,7 +249,7 @@ function UploadAttachFile(formName, savePath, successFNC, errorFNC) {
         dataType: "text",
         processData: false,
         success: function (result) {
-            console.log(result);
+
             if (result.indexOf("[ERROR]") > -1) {
                 errorFNC(result);
             }
@@ -504,8 +503,6 @@ function ExecuteAjax(type, url, datatype, contentType, data) {
                 returnData = errorData;
             },
             success: function (successData) {
-                console.log("통신데이터 값 : ");
-                console.log(successData);
                 returnData = successData;
             }
         });
@@ -523,8 +520,6 @@ function ExecuteAjax(type, url, datatype, contentType, data) {
                 returnData = errorData;
             },
             success: function (successData) {
-                console.log("통신데이터 값 : ");
-                console.log(successData);
                 returnData = successData;
             }
         });
