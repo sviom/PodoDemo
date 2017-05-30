@@ -202,7 +202,7 @@ function ConvertToOptionTag(result, isAll, isEmpty, isAuth, selval) {
             console.log(result[i].text + " / " + result[i].value + " / " + selval);
             if (result[i].value === "13-2") {
                 continue;
-            } else if (selval == result[i].Text || selval == result[i].Value) {
+            } else if (selval == result[i].text || selval == result[i].value) {
                 optionHTML += '<option value="' + result[i].value + '\" selected==\"selected\"">' + result[i].text + '</option>';
             }
             else {
@@ -210,6 +210,8 @@ function ConvertToOptionTag(result, isAll, isEmpty, isAuth, selval) {
             }
         }
     }
+
+    console.log(optionHTML);
     return optionHTML;
 }
 

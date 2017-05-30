@@ -10,9 +10,9 @@
 <script type="text/javascript">
     $(document).ready(function () {
         // 검색 조건 키 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권한
-        GetOptionDDL('1', 'Department', SetoptionTag, '@Model.Department', false, false, false);
-        GetOptionDDL('3', 'Position', SetoptionTag, '@Model.Position', false, false, false);
-        GetOptionDDL('2', 'Level', SetoptionTag, '@Model.Level', false, false, false);
+        GetOptionDDL('1', 'Department', SetoptionTag, '@Model.Department', true, false, false);
+        GetOptionDDL('3', 'Position', SetoptionTag, '@Model.Position', true, false, false);
+        GetOptionDDL('2', 'Level', SetoptionTag, '@Model.Level', true, false, false);
 
         $("#Excelauth_T").prop("checked", "@Excelauth_T");
         $("#Excelauth_F").prop("checked", "@Excelauth_F");
@@ -69,9 +69,11 @@
             return false;
         }
 
-        if (pw != repw) {
-            alert("비밀번호를 맞게 입력하셨는지 확인해주세요.");
-            return false;
+        if (pw != "") {
+            if (pw != repw) {
+                alert("비밀번호를 맞게 입력하셨는지 확인해주세요.");
+                return false;
+            }
         }
 
         if (Department == "") {
@@ -124,16 +126,16 @@
                                readonly="readonly"
                                placeholder="사용자아이디" />
                         @*<span class="input-group-btn">
-                            <button type="button" class="btn btn-default" onclick="">
-                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                            </button>
-                        </span>*@
+                                <button type="button" class="btn btn-default" onclick="">
+                                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                                </button>
+                            </span>*@
                     </div>
                 </div>
 
                 <label class="col-md-2 control-label requireField">이름</label>
                 <div class="col-md-2">
-                    <input type="text" id="Name" name="Name" class="form-control" 
+                    <input type="text" id="Name" name="Name" class="form-control"
                            value="@Model.Name"
                            placeholder="사용자이름" />
                 </div>
@@ -159,7 +161,7 @@
 
                 <label class="col-md-2 control-label requireField">이메일</label>
                 <div class="col-md-2">
-                    <input type="email" id="Email" name="Email" class="form-control" 
+                    <input type="email" id="Email" name="Email" class="form-control"
                            value="@Model.Email"
                            placeholder="사용자이메일" />
                 </div>
