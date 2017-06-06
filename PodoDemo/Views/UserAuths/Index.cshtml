@@ -7,8 +7,17 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        GetUserDDL('1-1', '@ViewBag.UserId', 'Ownerid', SetoptionTag, '@ViewBag.UserId', true, false, false);        
-        SetoptionTag('Menu', '@ViewBag.MenuList', '', true, false, false);
+
+        var ee = new Array();
+        for (var i = 0; i < @ViewBag.MenuList.Count; i++) {
+            var dd = new Object();
+            dd.text = "dd";
+            dd.value = "dd";
+            ee.push(dd);
+        }
+
+        GetUserDDL('1-1', '@ViewBag.UserId', 'Ownerid', SetoptionTag, '@ViewBag.UserId', true, false, false);
+        SetoptionTag('Menu', ee, '', true, false, false);
         SetoptionTag('Submenu','@ViewBag.SubmenuList','',true,false,false);
     });
 
