@@ -37,13 +37,27 @@ namespace PodoDemo.Controllers
             {
                 submenuDDL.Add(new DDL() { Value = item.Id, Text = item.Name });
             }
-            //ViewBag.MenuList = JsonConvert.SerializeObject(menuDDL);
-            //ViewBag.SubmenuList = JsonConvert.SerializeObject(submenuDDL);
-            ViewBag.MenuList = menuDDL;
-            ViewBag.SubmenuList = submenuDDL;
+            ViewBag.MenuList = JsonConvert.SerializeObject(menuDDL).ToString();
+            ViewBag.SubmenuList = JsonConvert.SerializeObject(submenuDDL).ToString();
+            //ViewBag.MenuList = menuDDL;
+            //ViewBag.SubmenuList = submenuDDL;
 
             var podoDemoNContext = _context.UserAuth.Include(u => u.Submenu).Include(u => u.User);
             return View(await podoDemoNContext.ToListAsync());
+        }
+
+        /// <summary>
+        /// 사용자에 해당하는 권한 목록 얻어오기
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="menuId"></param>
+        /// <param name="submenuId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<string> GetUserauthList([FromBody]UserAuthSearch info)
+        {
+            List<UserAuth> _userauthlist = await _context.UserAuth.Where(x => x.Userid == info.Userid).ToListAsync();
+            return JsonConvert.SerializeObject(_userauthlist);
         }
 
         // GET: UserAuths/Details/5

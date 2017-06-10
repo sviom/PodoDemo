@@ -23,4 +23,16 @@ namespace PodoDemo.Models
 
         public virtual User User { get; set; }
     }
+
+    public class UserAuthSearch
+    {
+        public string Userid { get; set; }
+        public string Menuid { get; set; }
+        public string Submenuid { get; set; }
+    }
+
+    public class UserAuthDisplay : UserAuth
+    {
+        public string Menuname { get; set; }
+    }
 }

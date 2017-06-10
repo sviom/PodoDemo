@@ -1,31 +1,74 @@
 ﻿@model IEnumerable<PodoDemo.Models.UserAuth>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "권한관리";
 }
-
 
 <script type="text/javascript">
     $(document).ready(function () {
-
-        var ee = new Array();
-        for (var i = 0; i < @ViewBag.MenuList.Count; i++) {
-            var dd = new Object();
-            dd.text = "dd";
-            dd.value = "dd";
-            ee.push(dd);
-        }
-
         GetUserDDL('1-1', '@ViewBag.UserId', 'Ownerid', SetoptionTag, '@ViewBag.UserId', true, false, false);
-        SetoptionTag('Menu', ee, '', true, false, false);
-        SetoptionTag('Submenu','@ViewBag.SubmenuList','',true,false,false);
+        SetoptionTag('Menu', JSON.parse('@Html.Raw(ViewBag.MenuList)'), '', true, false, false);
+        SetoptionTag('Submenu', JSON.parse('@Html.Raw(ViewBag.SubmenuList)'), '', true, false, false);
+
+        var Info = new Object();
+        Info.Userid = $("#Ownerid option:selected").val();
+        Info.Menuid = $("#Menu option:selected").val();
+        Info.Submenuid = $("#Submenu option:selected").val();
+
+        var lis
+            = ExecuteAjax("POST", "/UserAuths/GetUserauthList", "json", "application/json", JSON.stringify(Info));
+        SetBasicElement(lis);
     });
 
-    // Select Tag로 Binding
-    //function SetoptionTag(control, result, selval, isAll, isEmpty, auth) {
-    //    $("#" + control).html(ConvertToOptionTag(result, isAll, isEmpty, auth, selval));
-    //}
 
+    // 기본 출력 항목 표시
+    function SetBasicElement(userauthListRaw) {
+
+        var source =
+            {
+                localdata: userauthListRaw,
+                datatype: "json",
+                datafields:
+                [
+                    { name: 'Id', type: 'number' },
+                    { name: 'Read', type: 'string' },
+                    { name: 'Modify', type: 'string' },
+                    { name: 'Delete', type: 'string' },
+                    { name: 'Userid', type: 'string' }
+                ]
+            };
+
+        var dataAdapter = new $.jqx.dataAdapter(source);
+
+        $("#userAuthList").jqxGrid(
+            {
+                width: '100%',
+                source: dataAdapter,
+                pageable: true,
+                autoheight: true,
+                autorowheight: true,
+                sortable: true,
+                altrows: true,
+                enabletooltips: true,
+                editable: false,
+                selectionmode: 'singlerow',
+                pagesizeoptions: [10, 15, 20, 25, 30, 35, 40, 45, 50],
+                //showfilterrow: true,
+                filterable: true,
+                pagesize: 15,
+                theme: "metroCustom",//테마설정
+                //columnsheight: '40px',//헤더 높이 설정
+                localization: GetLocalizationString(),
+                columns: [
+                    //문자로 나오는 항목
+                    { text: "Id", datafield: "Id", hidden: true },
+                    { text: '사용자', datafield: 'Userid', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
+                    { text: "읽기", datafield: "Read", align: 'center', cellsalign: 'left', width: '40%', minwidth: '100px' },
+                    { text: '수정', datafield: 'Modify', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
+                    { text: "삭제", datafield: "Delete", align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' }
+                ]
+            });
+    }
 </script>
 
 <div class="View">
@@ -81,7 +124,7 @@
                     <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
                     <span>권한 목록</span>
                 </div>
-                <div id="userList"></div>
+                <div id="userAuthList"></div>
             </div>
         </div>
 
