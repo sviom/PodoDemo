@@ -18,7 +18,7 @@ namespace PodoDemo.Controllers
 
         public UserAuthsController(PodoDemoNContext context)
         {
-            _context = context;    
+            _context = context;
         }
 
         // GET: UserAuths
@@ -59,7 +59,7 @@ namespace PodoDemo.Controllers
             List<UserAuth> _userauthlist = await _context.UserAuth.Where(x => x.Userid == info.Userid).ToListAsync();
             return JsonConvert.SerializeObject(_userauthlist);
         }
-        
+
         /// <summary>
         /// 권한 종류 가져오기
         /// </summary>
@@ -77,137 +77,37 @@ namespace PodoDemo.Controllers
             return JsonConvert.SerializeObject(authListDDL);
         }
 
-        // GET: UserAuths/Details/5
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var userAuth = await _context.UserAuth
-                .Include(u => u.Submenu)
-                .Include(u => u.User)
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (userAuth == null)
-            {
-                return NotFound();
-            }
-
-            return View(userAuth);
-        }
-
-        // GET: UserAuths/Create
-        public IActionResult Create()
-        {
-            ViewData["Submenuid"] = new SelectList(_context.SubMenu, "Id", "Id");
-            ViewData["Userid"] = new SelectList(_context.User, "Id", "Id");
-            return View();
-        }
-
-        // POST: UserAuths/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// 사용자 권한 수정
+        /// </summary>
+        /// <param name="userAuthList"></param>
+        /// <returns></returns>
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Userid,Read,Modify,Write,Delete,Submenuid,Createdate,Createuser,Modifydate,Modifyuser")] UserAuth userAuth)
+        public async Task<bool> EditUserauthList([FromBody]List<UserAuth> userAuthList)
         {
-            if (ModelState.IsValid)
+            bool editResult = false;
+            try
             {
-                _context.Add(userAuth);
+                foreach (UserAuth userAuth in userAuthList)
+                {
+                    userAuth.Createdate = DateTime.Now;
+                    userAuth.Createuser = HttpContext.Session.GetString("userId");
+                    userAuth.Modifydate = DateTime.Now;
+                    userAuth.Modifyuser = HttpContext.Session.GetString("userId");
+                }
+
+                _context.UpdateRange(userAuthList);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+
+                editResult = true;
             }
-            ViewData["Submenuid"] = new SelectList(_context.SubMenu, "Id", "Id", userAuth.Submenuid);
-            ViewData["Userid"] = new SelectList(_context.User, "Id", "Id", userAuth.Userid);
-            return View(userAuth);
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return editResult;
         }
 
-        // GET: UserAuths/Edit/5
-        public async Task<IActionResult> Edit(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var userAuth = await _context.UserAuth.SingleOrDefaultAsync(m => m.Id == id);
-            if (userAuth == null)
-            {
-                return NotFound();
-            }
-            ViewData["Submenuid"] = new SelectList(_context.SubMenu, "Id", "Id", userAuth.Submenuid);
-            ViewData["Userid"] = new SelectList(_context.User, "Id", "Id", userAuth.Userid);
-            return View(userAuth);
-        }
-
-        // POST: UserAuths/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Userid,Read,Modify,Write,Delete,Submenuid,Createdate,Createuser,Modifydate,Modifyuser")] UserAuth userAuth)
-        {
-            if (id != userAuth.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(userAuth);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserAuthExists(userAuth.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
-            }
-            ViewData["Submenuid"] = new SelectList(_context.SubMenu, "Id", "Id", userAuth.Submenuid);
-            ViewData["Userid"] = new SelectList(_context.User, "Id", "Id", userAuth.Userid);
-            return View(userAuth);
-        }
-
-        // GET: UserAuths/Delete/5
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var userAuth = await _context.UserAuth
-                .Include(u => u.Submenu)
-                .Include(u => u.User)
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (userAuth == null)
-            {
-                return NotFound();
-            }
-
-            return View(userAuth);
-        }
-
-        // POST: UserAuths/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
-        {
-            var userAuth = await _context.UserAuth.SingleOrDefaultAsync(m => m.Id == id);
-            _context.UserAuth.Remove(userAuth);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
 
         private bool UserAuthExists(long id)
         {

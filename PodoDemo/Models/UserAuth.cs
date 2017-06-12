@@ -30,9 +30,4 @@ namespace PodoDemo.Models
         public string Menuid { get; set; }
         public string Submenuid { get; set; }
     }
-
-    public class UserAuthDisplay : UserAuth
-    {
-        public string Menuname { get; set; }
-    }
 }

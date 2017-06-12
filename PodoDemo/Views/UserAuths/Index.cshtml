@@ -6,25 +6,27 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        GetUserDDL('1-1', '@ViewBag.UserId', 'Ownerid', SetoptionTag, '@ViewBag.UserId', true, false, false);
-        GetOptionDDL('4', 'AccountCustomerType', SetoptionTag, '', true, false, false);
+        GetUserDDL('1-1', '@ViewBag.UserId', 'Ownerid', SetoptionTag, '@ViewBag.UserId', false, false, false);
+
+        GetOptionDDL('4', 'ReadAll', SetoptionTag, '', false, false, false);
+        GetOptionDDL('4', 'ModifyAll', SetoptionTag, '', false, false, false);
+        GetOptionDDL('4', 'WriteAll', SetoptionTag, '', false, false, false);
+        GetOptionDDL('4', 'DeleteAll', SetoptionTag, '', false, false, false);
+
         SetoptionTag('Menu', JSON.parse('@Html.Raw(ViewBag.MenuList)'), '', true, false, false);
         SetoptionTag('Submenu', JSON.parse('@Html.Raw(ViewBag.SubmenuList)'), '', true, false, false);
 
-        var Info = new Object();
-        Info.Userid = $("#Ownerid option:selected").val();
-        Info.Menuid = $("#Menu option:selected").val();
-        Info.Submenuid = $("#Submenu option:selected").val();
+        SearchUserAuths();
 
-        var lis
-            = ExecuteAjax("POST", "/UserAuths/GetUserauthList", "json", "application/json", JSON.stringify(Info));
-        SetBasicElement(lis);
+        // 담당자,메뉴,세부메뉴 변경 시 마다 권한 재검색
+        $("#Ownerid, #Menu, #Submenu").change(function () {
+            SearchUserAuths();
+        });
     });
 
 
     // 기본 출력 항목 표시
     function SetBasicElement(userauthListRaw) {
-
         var combosource = {
             localData: ExecuteAjax("POST", "/UserAuths/GetAuthList", "json", "application/json"),
             dataType: "json",
@@ -51,7 +53,8 @@
                     { name: 'Write', type: 'string' },
                     { name: 'DeleteAuthControl', value: 'Delete', values: { source: comboAdapter.records, value: 'Value', name: 'Text' } },
                     { name: 'Delete', type: 'string' },
-                    { name: 'Userid', type: 'string' }
+                    { name: 'Userid', type: 'string' },
+                    { name: 'Submenuid', type: 'string' }
                 ]
             };
 
@@ -73,11 +76,10 @@
             filterable: true,
             pagesize: 15,
             theme: "metroCustom",//테마설정
-            //columnsheight: '40px',//헤더 높이 설정
             localization: GetLocalizationString(),
             columns: [
-                //문자로 나오는 항목
                 { text: "Id", datafield: "Id", hidden: true },
+                { text: "Submenuid", datafield: "Submenuid", hidden: true },
                 { text: '사용자', datafield: 'Userid', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px', editable: false },
                 {
                     text: "읽기 권한", datafield: "Read", displayfield: 'ReadAuthControl', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px'
@@ -114,6 +116,95 @@
             ]
         });
     }
+
+    // 사용자 권한 검색
+    function SearchUserAuths() {
+        var Info = new Object();
+        Info.Userid = $("#Ownerid option:selected").val();
+        Info.Menuid = $("#Menu option:selected").val();
+        Info.Submenuid = $("#Submenu option:selected").val();
+
+        var lis
+            = ExecuteAjax("POST", "/UserAuths/GetUserauthList", "json", "application/json", JSON.stringify(Info));
+        SetBasicElement(lis);
+    }
+
+    // 선택된 권한 전체 바꾸기
+    function SetAuthAllChange(type, obj) {
+        var rowData = $('#userAuthList').jqxGrid('getboundrows');
+
+        var selectedText = obj.options[obj.selectedIndex].text;
+        var selectedValue = obj.options[obj.selectedIndex].value;
+
+        if (selectedValue == "") {
+            return false;
+        }
+
+        var cellDateField = "Read";
+        var cellDisplayField = "ReadAuthControl";
+
+        switch (type) {
+            case 1:
+                cellDisplayField = "ReadAuthControl";
+                cellDateField = "Read";
+                break;
+            case 2:
+                cellDisplayField = "ModifyAuthControl";
+                cellDateField = "Modify";
+                break;
+            case 3:
+                cellDisplayField = "WriteAuthControl";
+                cellDateField = "Write";
+                break;
+            case 4:
+                cellDisplayField = "DeleteAuthControl";
+                cellDateField = "Delete";
+                break;
+        }
+
+        var pi = $("#userAuthList").jqxGrid('getpaginginformation');
+        var arrSel = $("#userAuthList").jqxGrid('selectedrowindexes').slice();
+        var arrRows = $("#userAuthList").jqxGrid('getrows');
+
+        var currentPageNum = pi.pagenum;
+        var pageSize = pi.pagesize;
+        var lastRowNum = (Number(currentPageNum) + 1) * pageSize;
+        var firstRowNum = lastRowNum - pageSize;
+        if (lastRowNum >= rowData.length) lastRowNum = rowData.length;
+
+        for (var i = firstRowNum; i < lastRowNum; i++) {
+            $("#userAuthList").jqxGrid('setcellvalue', i, cellDisplayField, selectedText);
+            $("#userAuthList").jqxGrid('setcellvalue', i, cellDateField, selectedValue);
+        }
+
+        return;
+    }
+
+    // 사용자 별 권한 저장
+    function SaveUserauthList() {
+        var alldata = $('#userAuthList').jqxGrid('getdisplayrows');
+        var datalist = [];
+        for (var i = 0; i < alldata.length; i++) {
+
+            var d = {
+                "Userid": alldata[i].Userid,
+                "Id": alldata[i].Id,
+                "Read": alldata[i].Read,
+                "Modify": alldata[i].Modify,
+                "Write": alldata[i].Write,
+                "Delete": alldata[i].Delete,
+                "Submenuid": alldata[i].Submenuid
+            };
+            datalist.push(d);
+        }
+
+        var saveResult = ExecuteAjax("POST", "/UserAuths/EditUserauthList", "json", "application/json", JSON.stringify(datalist));
+
+        if (saveResult) {
+            alert("권한 수정에 성공하였습니다.");
+            location.reload();
+        }
+    }
 </script>
 
 <div class="View">
@@ -126,7 +217,7 @@
             </div>
         </div>
 
-        <form class="form-horizontal" id="SearchAccountsForm">
+        <form class="form-horizontal" id="SearchUserAuthsForm">
             <div class="form-group">
                 <div class="col-md-12">
                     <div class="custom-title">
@@ -154,7 +245,7 @@
 
             <div class="form-group">
                 <div class="col-md-offset-10 col-md-2">
-                    <button type="button" class="btn btn-default" onclick="SearchAccounts();">
+                    <button type="button" class="btn btn-default" onclick="SearchUserAuths();">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                         검색
                     </button>
@@ -169,14 +260,37 @@
                     <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
                     <span>권한 목록</span>
                 </div>
+            </div>
+        </div>
+
+        <div class="row">           
+            <div class="col-md-offset-2 col-md-2">
+                <p class="text-right">전체 수정</p>
+            </div>
+            <div class="col-md-2">
+                <select id="ReadAll" name="ReadAll" class="form-control" onchange="SetAuthAllChange(1, this);"></select>
+            </div>
+            <div class="col-md-2">
+                <select id="ModifyAll" name="ModifyAll" class="form-control" onchange="SetAuthAllChange(2, this);"></select>
+            </div>
+            <div class="col-md-2">
+                <select id="WriteAll" name="WriteAll" class="form-control" onchange="SetAuthAllChange(3, this);"></select>
+            </div>
+            <div class="col-md-2">
+                <select id="DeleteAll" name="DeleteAll" class="form-control" onchange="SetAuthAllChange(4, this);"></select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
                 <div id="userAuthList"></div>
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-offset-10 col-md-2">
-                <a href="#" class="btn btn-default">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                <a href="#" class="btn btn-default" onclick="SaveUserauthList();">
+                    <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
                     저장
                 </a>
             </div>

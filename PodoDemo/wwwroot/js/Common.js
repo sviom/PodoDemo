@@ -116,7 +116,16 @@ function GetOptionDDL(searchKey, extraParam, callbackFnc, selval, isAll, isEmpty
         async: false,
         dataType: "json",
         success: function (result) {
-            callbackFnc(extraParam, result, selval, isAll, isEmpty, auth);
+            var newResult = new Array();
+            for (var i = 0; i < result.length; i++) {
+                var resultObject = new Object();
+                resultObject.Text = result[i].text;
+                resultObject.Value = result[i].value;
+
+                newResult.push(resultObject);
+            }
+
+            callbackFnc(extraParam, newResult, selval, isAll, isEmpty, auth);
         },
         error: function (data) {
             alert("[!ERROR]\n" + data.responseText);
