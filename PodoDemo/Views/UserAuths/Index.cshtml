@@ -7,6 +7,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         GetUserDDL('1-1', '@ViewBag.UserId', 'Ownerid', SetoptionTag, '@ViewBag.UserId', true, false, false);
+        GetOptionDDL('4', 'AccountCustomerType', SetoptionTag, '', true, false, false);
         SetoptionTag('Menu', JSON.parse('@Html.Raw(ViewBag.MenuList)'), '', true, false, false);
         SetoptionTag('Submenu', JSON.parse('@Html.Raw(ViewBag.SubmenuList)'), '', true, false, false);
 
@@ -24,6 +25,17 @@
     // 기본 출력 항목 표시
     function SetBasicElement(userauthListRaw) {
 
+        var combosource = {
+            localData: ExecuteAjax("POST", "/UserAuths/GetAuthList", "json", "application/json"),
+            dataType: "json",
+            dataFields:
+            [
+                { name: 'Value' },
+                { name: 'Text' }
+            ]
+        };
+        var comboAdapter = new $.jqx.dataAdapter(combosource, { autoBind: true });
+
         var source =
             {
                 localdata: userauthListRaw,
@@ -31,8 +43,13 @@
                 datafields:
                 [
                     { name: 'Id', type: 'number' },
+                    { name: 'ReadAuthControl', value: 'Read', values: { source: comboAdapter.records, value: 'Value', name: 'Text' } },
                     { name: 'Read', type: 'string' },
+                    { name: 'ModifyAuthControl', value: 'Modify', values: { source: comboAdapter.records, value: 'Value', name: 'Text' } },
                     { name: 'Modify', type: 'string' },
+                    { name: 'WriteAuthControl', value: 'Write', values: { source: comboAdapter.records, value: 'Value', name: 'Text' } },
+                    { name: 'Write', type: 'string' },
+                    { name: 'DeleteAuthControl', value: 'Delete', values: { source: comboAdapter.records, value: 'Value', name: 'Text' } },
                     { name: 'Delete', type: 'string' },
                     { name: 'Userid', type: 'string' }
                 ]
@@ -40,34 +57,62 @@
 
         var dataAdapter = new $.jqx.dataAdapter(source);
 
-        $("#userAuthList").jqxGrid(
-            {
-                width: '100%',
-                source: dataAdapter,
-                pageable: true,
-                autoheight: true,
-                autorowheight: true,
-                sortable: true,
-                altrows: true,
-                enabletooltips: true,
-                editable: false,
-                selectionmode: 'singlerow',
-                pagesizeoptions: [10, 15, 20, 25, 30, 35, 40, 45, 50],
-                //showfilterrow: true,
-                filterable: true,
-                pagesize: 15,
-                theme: "metroCustom",//테마설정
-                //columnsheight: '40px',//헤더 높이 설정
-                localization: GetLocalizationString(),
-                columns: [
-                    //문자로 나오는 항목
-                    { text: "Id", datafield: "Id", hidden: true },
-                    { text: '사용자', datafield: 'Userid', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
-                    { text: "읽기", datafield: "Read", align: 'center', cellsalign: 'left', width: '40%', minwidth: '100px' },
-                    { text: '수정', datafield: 'Modify', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
-                    { text: "삭제", datafield: "Delete", align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' }
-                ]
-            });
+        $("#userAuthList").jqxGrid({
+            width: '100%',
+            source: dataAdapter,
+            pageable: true,
+            autoheight: true,
+            autorowheight: true,
+            sortable: true,
+            altrows: true,
+            enabletooltips: true,
+            editable: true,
+            editmode: 'click',
+            pagesizeoptions: [10, 15, 20, 25, 30, 35, 40, 45, 50],
+            //showfilterrow: true,
+            filterable: true,
+            pagesize: 15,
+            theme: "metroCustom",//테마설정
+            //columnsheight: '40px',//헤더 높이 설정
+            localization: GetLocalizationString(),
+            columns: [
+                //문자로 나오는 항목
+                { text: "Id", datafield: "Id", hidden: true },
+                { text: '사용자', datafield: 'Userid', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px', editable: false },
+                {
+                    text: "읽기 권한", datafield: "Read", displayfield: 'ReadAuthControl', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px'
+                    , columntype: 'combobox'
+                    , initeditor: function (row, cellvalue, editor, celltext, cellwidth, cellheight) {
+                        editor.jqxComboBox({ autoDropDownHeight: true, source: combosource.localData, valueMember: 'Value', displayMember: 'Text' });
+                        editor.jqxComboBox('selectItem', celltext);
+                    }
+                },
+                {
+                    text: '수정 권한', datafield: 'Modify', displayfield: 'ModifyAuthControl', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px'
+                    , columntype: 'combobox'
+                    , initeditor: function (row, cellvalue, editor, celltext, cellwidth, cellheight) {
+                        editor.jqxComboBox({ autoDropDownHeight: true, source: combosource.localData, valueMember: 'Value', displayMember: 'Text' });
+                        editor.jqxComboBox('selectItem', celltext);
+                    }
+                },
+                {
+                    text: '쓰기 권한', datafield: 'Write', displayfield: 'WriteAuthControl', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px'
+                    , columntype: 'combobox'
+                    , initeditor: function (row, cellvalue, editor, celltext, cellwidth, cellheight) {
+                        editor.jqxComboBox({ autoDropDownHeight: true, source: combosource.localData, valueMember: 'Value', displayMember: 'Text' });
+                        editor.jqxComboBox('selectItem', celltext);
+                    }
+                },
+                {
+                    text: '삭제 권한', datafield: 'Delete', displayfield: 'DeleteAuthControl', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px'
+                    , columntype: 'combobox'
+                    , initeditor: function (row, cellvalue, editor, celltext, cellwidth, cellheight) {
+                        editor.jqxComboBox({ autoDropDownHeight: true, source: combosource.localData, valueMember: 'Value', displayMember: 'Text' });
+                        editor.jqxComboBox('selectItem', celltext);
+                    }
+                }
+            ]
+        });
     }
 </script>
 

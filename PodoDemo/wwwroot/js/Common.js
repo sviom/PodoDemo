@@ -104,6 +104,7 @@ function MovePopupMenu(url) {
 //extraParam : callbackFnc에서 사용할 추가 파라미터
 //callbackFnc : 결과를 전달할 함수명
 //selval : 기본 선택값 필요시
+// 검색 조건 키 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권한
 function GetOptionDDL(searchKey, extraParam, callbackFnc, selval, isAll, isEmpty, auth) {
     $.ajax({
         type: "POST",
@@ -162,7 +163,16 @@ function GetUserDDL(searchKey, userID, extraParam, callbackFnc, selval, isAll, i
         async: false,
         dataType: "json",
         success: function (result) {
-            callbackFnc(extraParam, result, selval, isAll, isEmpty, auth);
+            var newResult = new Array();
+            for (var i = 0; i < result.length; i++) {
+                var resultObject = new Object();
+                resultObject.Text = result[i].text;
+                resultObject.Value = result[i].value;
+
+                newResult.push(resultObject);
+            }
+
+            callbackFnc(extraParam, newResult, selval, isAll, isEmpty, auth);
         },
         error: function (data) {
             alert("[!ERROR]\n" + data.responseText);
@@ -172,9 +182,6 @@ function GetUserDDL(searchKey, userID, extraParam, callbackFnc, selval, isAll, i
 
 // Select Tag로 Binding
 function SetoptionTag(control, result, selval, isAll, isEmpty, auth) {
-    console.log("들어온값");
-    console.log(result);
-    console.log(typeof (result));
     $("#" + control).html(ConvertToOptionTag(result, isAll, isEmpty, auth, selval));
 }
 
@@ -198,16 +205,16 @@ function ConvertToOptionTag(result, isAll, isEmpty, isAuth, selval) {
     for (var i = 0; i < result.length; i++) {
 
         if (isAuth == "True") {
-            optionHTML += '<option value="' + result[i].value + '">' + result[i].text + '</option>';
+            optionHTML += '<option value="' + result[i].Value + '">' + result[i].Text + '</option>';
         } else {
             
-            if (result[i].value === "13-2") {
+            if (result[i].Value === "13-2") {
                 continue;
-            } else if (selval == result[i].text || selval == result[i].value) {
-                optionHTML += '<option value="' + result[i].value + '\" selected==\"selected\"">' + result[i].text + '</option>';
+            } else if (selval == result[i].Text || selval == result[i].Value) {
+                optionHTML += '<option value="' + result[i].Value + '\" selected==\"selected\"">' + result[i].Text + '</option>';
             }
             else {
-                optionHTML += '<option value="' + result[i].value + '">' + result[i].text + '</option>';
+                optionHTML += '<option value="' + result[i].Value + '">' + result[i].Text + '</option>';
             }
         }
     }

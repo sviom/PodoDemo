@@ -59,6 +59,23 @@ namespace PodoDemo.Controllers
             List<UserAuth> _userauthlist = await _context.UserAuth.Where(x => x.Userid == info.Userid).ToListAsync();
             return JsonConvert.SerializeObject(_userauthlist);
         }
+        
+        /// <summary>
+        /// 권한 종류 가져오기
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<string> GetAuthList()
+        {
+            List<OptionMasterDetail> authList = await _context.OptionMasterDetail.Where(x => x.Masterid == 4).ToListAsync();
+            List<DDL> authListDDL = new List<DDL>();
+            foreach (OptionMasterDetail item in authList)
+            {
+                authListDDL.Add(new DDL() { Value = item.Optionid, Text = item.Name });
+            }
+
+            return JsonConvert.SerializeObject(authListDDL);
+        }
 
         // GET: UserAuths/Details/5
         public async Task<IActionResult> Details(long? id)
