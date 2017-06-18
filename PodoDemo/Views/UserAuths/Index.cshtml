@@ -16,6 +16,7 @@
         SetoptionTag('Menu', JSON.parse('@Html.Raw(ViewBag.MenuList)'), '', true, false, false);
         SetoptionTag('Submenu', JSON.parse('@Html.Raw(ViewBag.SubmenuList)'), '', true, false, false);
 
+        // 검색 & 전체 목록 표시
         SearchUserAuths();
 
         // 담당자,메뉴,세부메뉴 변경 시 마다 권한 재검색
@@ -54,7 +55,9 @@
                     { name: 'DeleteAuthControl', value: 'Delete', values: { source: comboAdapter.records, value: 'Value', name: 'Text' } },
                     { name: 'Delete', type: 'string' },
                     { name: 'Userid', type: 'string' },
-                    { name: 'Submenuid', type: 'string' }
+                    { name: 'Submenuid', type: 'string' },
+                    { name: 'SubmenuName', map: 'Submenu>Name' }
+
                 ]
             };
 
@@ -80,7 +83,8 @@
             columns: [
                 { text: "Id", datafield: "Id", hidden: true },
                 { text: "Submenuid", datafield: "Submenuid", hidden: true },
-                { text: '사용자', datafield: 'Userid', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px', editable: false },
+                { text: '사용자', datafield: 'Userid', align: 'center', cellsalign: 'center', width: '10%', minwidth: '100px', editable: false },
+                { text: '메뉴이름', datafield: 'SubmenuName', align: 'center', cellsalign: 'center', width: '10%', minwidth: '100px', editable: false },
                 {
                     text: "읽기 권한", datafield: "Read", displayfield: 'ReadAuthControl', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px'
                     , columntype: 'combobox'
@@ -126,6 +130,8 @@
 
         var lis
             = ExecuteAjax("POST", "/UserAuths/GetUserauthList", "json", "application/json", JSON.stringify(Info));
+        console.log("사용 권한 목록");
+        console.log(lis);
         SetBasicElement(lis);
     }
 

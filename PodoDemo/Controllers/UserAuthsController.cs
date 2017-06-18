@@ -39,11 +39,9 @@ namespace PodoDemo.Controllers
             }
             ViewBag.MenuList = JsonConvert.SerializeObject(menuDDL).ToString();
             ViewBag.SubmenuList = JsonConvert.SerializeObject(submenuDDL).ToString();
-            //ViewBag.MenuList = menuDDL;
-            //ViewBag.SubmenuList = submenuDDL;
 
-            var podoDemoNContext = _context.UserAuth.Include(u => u.Submenu).Include(u => u.User);
-            return View(await podoDemoNContext.ToListAsync());
+            List<UserAuth> podoDemoNContext = await _context.UserAuth.Include(u => u.Submenu).Include(u => u.User).ToListAsync();
+            return View(podoDemoNContext);
         }
 
         /// <summary>
@@ -56,8 +54,41 @@ namespace PodoDemo.Controllers
         [HttpPost]
         public async Task<string> GetUserauthList([FromBody]UserAuthSearch info)
         {
-            List<UserAuth> _userauthlist = await _context.UserAuth.Where(x => x.Userid == info.Userid).ToListAsync();
-            return JsonConvert.SerializeObject(_userauthlist);
+            List<UserAuth> _userauthlist = new List<UserAuth>();
+
+            if (!string.IsNullOrEmpty(info.Menuid))
+            {
+                if (!string.IsNullOrEmpty(info.Submenuid))
+                {
+                    _userauthlist =
+                        await _context.UserAuth
+                        .Where(x => x.Userid == info.Userid)
+                        .Where(x => x.Submenu.Mainmenuid == Convert.ToDouble(info.Menuid))
+                        .Where(x => x.Submenuid == info.Submenuid)
+                        .ToListAsync();
+                }
+                else
+                {
+                    _userauthlist =
+                        await _context.UserAuth
+                        .Where(x => x.Userid == info.Userid)
+                        .Where(x => x.Submenu.Mainmenuid == Convert.ToDouble(info.Menuid))
+                        .ToListAsync();
+                }
+            }
+            else
+            {
+                _userauthlist = await _context.UserAuth.Where(x => x.Userid == info.Userid).ToListAsync();
+            }
+
+
+            // 해당 권한 메뉴 이름 배정
+            foreach (UserAuth item in _userauthlist)
+            {
+                item.Submenu = _context.SubMenu.Where(x => x.Id == item.Submenuid).SingleOrDefault();
+            }
+
+            return JsonConvert.SerializeObject(_userauthlist, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
         }
 
         /// <summary>
