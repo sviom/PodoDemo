@@ -23,7 +23,6 @@
             var ev = args.originalEvent;
             
             var data = $('#userList').jqxGrid('getrowdata', boundIndex);
-            //location.href = "/Users/Create/" + data.Id;
             location.href = "/Users/Edit/" + data.Id;
         });
     });
@@ -72,8 +71,8 @@
                     { text: "ID", datafield: "Id", align: 'center', cellsalign: 'center', width: "10%", minwidth: '30px' },
                     { text: "이름", datafield: "Name", align: 'center', cellsalign: 'center', width: "10%", minwidth: '100px'},
                     { text: "이메일", datafield: "Email", align: 'center', cellsalign: 'center', width: "20%", minwidth: '100px' },
-                    { text: "전화번호", datafield: "Phone", align: 'center', cellsalign: 'center', width: "10%", minwidth: '100px' },
-                    { text: "휴대폰", datafield: "Mobile", align: 'center', cellsalign: 'center', width: "10%", minwidth: '100px' },
+                    { text: "전화번호", datafield: "Phone", align: 'center', cellsalign: 'center', width: "15%", minwidth: '100px' },
+                    { text: "휴대폰", datafield: "Mobile", align: 'center', cellsalign: 'center', width: "15%", minwidth: '100px' },
                     { text: "부서", datafield: "Department", align: 'center', cellsalign: 'center', width: "10%", minwidth: '100px' },
                     { text: "직급", datafield: "Position", align: 'center', cellsalign: 'center', width: "10%", minwidth: '100px' },
                     { text: "등급", datafield: "Level", align: 'center', cellsalign: 'center', width: "10%", minwidth: '100px' }

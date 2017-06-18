@@ -87,6 +87,31 @@ namespace PodoDemo.Controllers
 
                 _context.Add(user);
                 await _context.SaveChangesAsync();
+
+                // 사용자 생성 후 해당 사용자에 대한 권한 추가(기본값은 없음)
+                var submenuList = _context.SubMenu.ToList();
+                foreach (var item in submenuList)
+                {
+                    UserAuth createdUserAuth = new UserAuth()
+                    {
+                        Createdate = DateTime.Now,
+                        Createuser = HttpContext.Session.GetString("userId"),
+                        Modifydate = DateTime.Now,
+                        Modifyuser = HttpContext.Session.GetString("userId"),
+
+                        Delete = "4-3",
+                        Modify = "4-3",
+                        Write = "4-3",
+                        Read = "4-3",
+
+                        Submenu = item,
+                        Submenuid = item.Id,
+                        User = user
+                    };
+
+                    _context.Add(createdUserAuth);
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToAction("Index");
             }
             ViewData["Department"] = new SelectList(_context.OptionMasterDetail, "Optionid", "Optionid", user.Department);
