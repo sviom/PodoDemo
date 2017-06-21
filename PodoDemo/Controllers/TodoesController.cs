@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PodoDemo.Models;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace PodoDemo.Controllers
 {
@@ -19,9 +21,47 @@ namespace PodoDemo.Controllers
         }
 
         // GET: Todoes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool? isPop)
         {
-            return View(await _context.Todo.ToListAsync());
+            if (isPop == null)
+            {
+                ViewBag.isPop = false;
+            }
+            else
+            {
+                ViewBag.isPop = isPop;
+            }
+
+            ViewBag.UserId = HttpContext.Session.GetString("userId");
+
+            return View((Object)JsonConvert.SerializeObject(await _context.Todo.ToListAsync()));
+        }
+        
+        /// <summary>
+        /// 할일 검색
+        /// </summary>
+        [HttpPost]
+        public string Search([FromBody]Todo todoSearch)
+        {
+            List<Todo> todoList = new List<Todo>();
+            try
+            {
+                if (todoSearch != null)
+                {
+                    todoList = 
+                        _context.Todo
+                        .Where(x => x.Name.Contains(todoSearch.Name) || todoSearch.Name.Equals(""))
+                        .Where(x => x.State.Equals(todoSearch.State) || todoSearch.State.Equals(""))
+                        .Where(x => x.Startdate > todoSearch.Startdate || todoSearch.Startdate.Equals(""))
+                        .Where(x => x.Ownerid.Equals(todoSearch.Ownerid) || todoSearch.Ownerid.Equals(""))
+                        .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return JsonConvert.SerializeObject(todoList);
         }
 
         // GET: Todoes/Details/5
