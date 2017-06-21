@@ -88,5 +88,26 @@ namespace PodoDemo.Controllers
                 return list;
             }
         }
+
+        [HttpPost("Logout")]
+        public bool Logout()
+        {
+            bool logoutResult = false;
+            //HttpContext.Session.SetString("userId", userResult.Tables[0].Rows[0]["id"].ToString());
+            //HttpContext.Session.SetString("userName", userResult.Tables[0].Rows[0]["name"].ToString());
+            try
+            {
+                HttpContext.Session.Remove("userId");
+                HttpContext.Session.Remove("userName");
+
+                logoutResult = true;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+            
+            return logoutResult;
+        }
     }
 }

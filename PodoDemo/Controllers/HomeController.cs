@@ -74,6 +74,7 @@ namespace PodoDemo.Controllers
 
                 HttpContext.Session.SetString("userId", userResult.Tables[0].Rows[0]["id"].ToString());
                 HttpContext.Session.SetString("userName", userResult.Tables[0].Rows[0]["name"].ToString());
+
                 //Session["userName"] = userResult.Tables[0].Rows[0]["name"];
                 //Session["userLevel"] = userResult.Tables[0].Rows[0]["level"];
                 //Session["userLevelText"] = userResult.Tables[0].Rows[0]["LEVEL_TEXT"];
