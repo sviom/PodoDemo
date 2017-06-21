@@ -14,6 +14,7 @@ namespace PodoDemo.Models
         public virtual DbSet<SubMenu> SubMenu { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserAuth> UserAuth { get; set; }
+        public virtual DbSet<Todo> Task { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -490,6 +491,58 @@ namespace PodoDemo.Models
                     .WithMany(p => p.UserAuth)
                     .HasForeignKey(d => d.Userid)
                     .HasConstraintName("FK_UserAuth_User");
+            });
+
+            modelBuilder.Entity<Todo>(entity =>
+            {
+                entity.HasKey(e => e.Taskid)
+                .HasName("PK_Task");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.Regardingobjectid)
+                    .HasColumnName("regardingobjectid");
+
+                entity.Property(e => e.Startdate)
+                    .IsRequired()
+                    .HasColumnName("startdate");
+
+                entity.Property(e => e.Enddate)
+                    .HasColumnName("enddate");
+
+                entity.Property(e => e.Createdate)
+                    .IsRequired()
+                    .HasColumnName("createdate");
+
+                entity.Property(e => e.Createuser)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("createuser");
+
+                entity.Property(e => e.Modifydate)
+                    .IsRequired()
+                    .HasColumnName("modifydate");
+
+                entity.Property(e => e.Modifyuser)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("modifyuser");
+
+                entity.Property(e => e.Ownerid)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("ownerid");
+
+                entity.Property(e => e.State)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("state");
             });
         }
     }
