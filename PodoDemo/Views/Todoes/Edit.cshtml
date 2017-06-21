@@ -1,0 +1,103 @@
+@model PodoDemo.Models.Todo
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<form asp-action="Edit">
+    <div class="form-horizontal">
+        <h4>Todo</h4>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Todoid" />
+        <div class="form-group">
+            <label asp-for="Name" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Regardingobjectid" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Regardingobjectid" class="form-control" />
+                <span asp-validation-for="Regardingobjectid" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Startdate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Startdate" class="form-control" />
+                <span asp-validation-for="Startdate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Enddate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Enddate" class="form-control" />
+                <span asp-validation-for="Enddate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Createdate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Createdate" class="form-control" />
+                <span asp-validation-for="Createdate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Createuser" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Createuser" class="form-control" />
+                <span asp-validation-for="Createuser" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Modifydate" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Modifydate" class="form-control" />
+                <span asp-validation-for="Modifydate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Modifyuser" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Modifyuser" class="form-control" />
+                <span asp-validation-for="Modifyuser" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Ownerid" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Ownerid" class="form-control" />
+                <span asp-validation-for="Ownerid" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="State" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="State" class="form-control" />
+                <span asp-validation-for="State" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

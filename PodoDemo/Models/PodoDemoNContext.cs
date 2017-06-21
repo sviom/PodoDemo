@@ -14,7 +14,7 @@ namespace PodoDemo.Models
         public virtual DbSet<SubMenu> SubMenu { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserAuth> UserAuth { get; set; }
-        public virtual DbSet<Todo> Task { get; set; }
+        public virtual DbSet<Todo> Todo { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -495,8 +495,8 @@ namespace PodoDemo.Models
 
             modelBuilder.Entity<Todo>(entity =>
             {
-                entity.HasKey(e => e.Taskid)
-                .HasName("PK_Task");
+                entity.HasKey(e => e.Todoid)
+                .HasName("PK_Todo");
 
                 entity.Property(e => e.Name)
                     .IsRequired()

@@ -1,0 +1,84 @@
+@model PodoDemo.Models.Todo
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Todo</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Regardingobjectid)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Regardingobjectid)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Startdate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Startdate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Enddate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Enddate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Createdate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Createdate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Createuser)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Createuser)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Modifydate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Modifydate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Modifyuser)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Modifyuser)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Ownerid)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Ownerid)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.State)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.State)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Todoid">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

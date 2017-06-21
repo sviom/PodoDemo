@@ -7,7 +7,7 @@ namespace PodoDemo.Models
 {
     public class Todo
     {
-        public long Taskid { get; set; }
+        public long Todoid { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public long Regardingobjectid { get; set; }
