@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
 using System.Data;
 using PodoDemo.Common;
@@ -120,6 +119,10 @@ namespace PodoDemo.Controllers
         {
             ViewBag.message = "Error";
             if(errormessage == "UserNotFound")
+            {
+                ViewBag.message = errormessage;
+            }
+            else if (errormessage == "UserauthError")
             {
                 ViewBag.message = errormessage;
             }

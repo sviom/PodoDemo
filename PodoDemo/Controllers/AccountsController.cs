@@ -20,14 +20,23 @@ namespace PodoDemo.Controllers
         public AccountsController(PodoDemoNContext context)
         {
             _context = context;
-            CommonAPIController ss = new CommonAPIController(_context);
-            _userAuth = new UserAuth();
-            _userAuth = ss.CheckUseauth(HttpContext.Session.GetString("userId"), "1-1");
+            
         }
 
         // GET: Accounts
         public async Task<IActionResult> Index(bool? isPop)
-        {   
+        {
+            CommonAPIController ss = new CommonAPIController(_context);
+            _userAuth = new UserAuth();
+            string userid = HttpContext.Session.GetString("userId");
+            _userAuth = ss.CheckUseauth(userid, "1-1");
+
+            // 사용자 수정 권한 체크
+            if (_userAuth.Read.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             ViewData["Read"] = _userAuth.Read;
             ViewData["Write"] = _userAuth.Write;
             ViewData["Modify"] = _userAuth.Modify;
@@ -95,7 +104,7 @@ namespace PodoDemo.Controllers
             }
             else
             {
-                return RedirectToAction("Index", "Home", new { viewMessage = "해당 페이지에 접속할 권한이 없습니다." });
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }            
         }
 
@@ -105,7 +114,13 @@ namespace PodoDemo.Controllers
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Account account)
-        {
+        {            
+            // 사용자 수정 권한 체크
+            if (_userAuth.Write.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -156,6 +171,13 @@ namespace PodoDemo.Controllers
             {
                 return NotFound();
             }
+
+            // 사용자 수정 권한 체크
+            if (_userAuth.Modify.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             return View(account);
         }
 
@@ -166,6 +188,12 @@ namespace PodoDemo.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Accountid,Name,Phone,Fax,Homepage,Ceo,Postcode,Address,Addresscity,Addressdetail,Addresstype,Biznum,Founddate,Detail,Ownerid,Createuser,Createdate,Modifydate,Modifyuser")] Account account)
         {
+            // 사용자 수정 권한 체크
+            if (_userAuth.Modify.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (id != account.Accountid)
             {
                 return NotFound();
