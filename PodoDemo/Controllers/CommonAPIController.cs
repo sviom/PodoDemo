@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Data;
 using PodoDemo.Common;
 using PodoDemo.Models.InnerModels;
+using PodoDemo.Models;
 
 namespace PodoDemo.Controllers
 {
@@ -15,6 +16,29 @@ namespace PodoDemo.Controllers
     [Route("api/CommonAPI")]
     public class CommonAPIController : Controller
     {
+        private readonly PodoDemoNContext _context;
+
+        public CommonAPIController(PodoDemoNContext context)
+        {
+            _context = context;
+        }
+
+        /// <summary>
+        /// 사용자 권한 체크
+        /// </summary>
+        /// <param name="userId">현재 로그인한 사용자 아이디</param>
+        /// <param name="submenuId">권한을 확인하고자하는 세부메뉴아이디</param>
+        /// <returns></returns>
+        public UserAuth CheckUseauth(string userId, string submenuId)
+        {
+            UserAuth _userauth = 
+                _context.UserAuth
+                .Where(x => x.Userid.Equals(userId) && x.Submenuid.Equals(submenuId))
+                .SingleOrDefault();
+
+            return _userauth;
+        }
+
         /// <summary>
         /// 해당 키값에 맞는 옵션셋 가져오기
         /// </summary>

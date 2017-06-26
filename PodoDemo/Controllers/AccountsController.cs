@@ -15,15 +15,23 @@ namespace PodoDemo.Controllers
     public class AccountsController : Controller
     {
         private readonly PodoDemoNContext _context;
+        UserAuth _userAuth = new UserAuth();
 
         public AccountsController(PodoDemoNContext context)
         {
             _context = context;
+            CommonAPIController ss = new CommonAPIController(_context);
+            _userAuth = ss.CheckUseauth(HttpContext.Session.GetString("userId"), "1-1");
         }
 
         // GET: Accounts
         public async Task<IActionResult> Index(bool? isPop)
-        {
+        {   
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
             if (isPop == null)
             {
                 ViewBag.isPop = false;
@@ -78,7 +86,15 @@ namespace PodoDemo.Controllers
             }
             ViewBag.AccountPropertyTypeList = propertyTypeList;
             ViewBag.AccountPropertyList = propertyList;
-            return View();
+
+            if (_userAuth.Write.Equals("4-1") || _userAuth.Write.Equals("4-2"))
+            {
+                return View();
+            }
+            else
+            {
+                return View("Index");
+            }            
         }
 
         // POST: Accounts/Create
