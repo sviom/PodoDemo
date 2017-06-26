@@ -15,12 +15,13 @@ namespace PodoDemo.Controllers
     public class AccountsController : Controller
     {
         private readonly PodoDemoNContext _context;
-        UserAuth _userAuth = new UserAuth();
+        UserAuth _userAuth;
 
         public AccountsController(PodoDemoNContext context)
         {
             _context = context;
             CommonAPIController ss = new CommonAPIController(_context);
+            _userAuth = new UserAuth();
             _userAuth = ss.CheckUseauth(HttpContext.Session.GetString("userId"), "1-1");
         }
 
@@ -87,13 +88,14 @@ namespace PodoDemo.Controllers
             ViewBag.AccountPropertyTypeList = propertyTypeList;
             ViewBag.AccountPropertyList = propertyList;
 
+            // 사용자 권한 검색
             if (_userAuth.Write.Equals("4-1") || _userAuth.Write.Equals("4-2"))
             {
                 return View();
             }
             else
             {
-                return View("Index");
+                return RedirectToAction("Index", "Home", new { viewMessage = "해당 페이지에 접속할 권한이 없습니다." });
             }            
         }
 

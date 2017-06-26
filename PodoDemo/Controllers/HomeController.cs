@@ -21,8 +21,12 @@ namespace PodoDemo.Controllers
             DatabaseUtil._connString = _settings.Value;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string viewMessage = null)
         {
+            if (!string.IsNullOrEmpty(viewMessage))
+            {
+                ViewBag.viewMessage = viewMessage;
+            }
             return View();
         }
 
