@@ -14,7 +14,7 @@ namespace PodoDemo.Controllers
     public class ContactsController : Controller
     {
         private readonly PodoDemoNContext _context;
-        UserAuth _userAuth;
+        private static UserAuth _userAuth;
 
         public ContactsController(PodoDemoNContext context)
         {
@@ -92,6 +92,11 @@ namespace PodoDemo.Controllers
             }
 
             ViewData["Accountid"] = new SelectList(_context.Account, "Accountid", "Biznum");
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
             return View();
         }
 
@@ -123,7 +128,7 @@ namespace PodoDemo.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-
+            
             return View(contact);
         }
 
@@ -154,10 +159,15 @@ namespace PodoDemo.Controllers
             ViewData["userId"] = HttpContext.Session.GetString("userId");
 
             // 사용자 수정 권한 체크
-            if (_userAuth.Modify.Equals("4-3"))
+            if (_userAuth.Read.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
+
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
 
             return View(contact);
         }

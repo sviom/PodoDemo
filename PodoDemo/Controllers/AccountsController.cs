@@ -15,7 +15,7 @@ namespace PodoDemo.Controllers
     public class AccountsController : Controller
     {
         private readonly PodoDemoNContext _context;
-        UserAuth _userAuth;
+        private static UserAuth _userAuth;
 
         public AccountsController(PodoDemoNContext context)
         {
@@ -104,15 +104,18 @@ namespace PodoDemo.Controllers
             ViewBag.AccountPropertyTypeList = propertyTypeList;
             ViewBag.AccountPropertyList = propertyList;
 
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
             // 사용자 권한 검색
-            if (_userAuth.Write.Equals("4-1") || _userAuth.Write.Equals("4-2"))
-            {
-                return View();
-            }
-            else
+            if (_userAuth.Write.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
+
+            return View();
         }
 
         /// <summary>
@@ -188,10 +191,15 @@ namespace PodoDemo.Controllers
             }
 
             // 사용자 수정 권한 체크
-            if (_userAuth.Modify.Equals("4-3"))
+            if (_userAuth.Read.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
+
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
 
             return View(account);
         }
@@ -241,17 +249,6 @@ namespace PodoDemo.Controllers
                 return RedirectToAction("Index");
             }
             return View(account);
-        }
-
-        // POST: Accounts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
-        {
-            var account = await _context.Account.SingleOrDefaultAsync(m => m.Accountid == id);
-            _context.Account.Remove(account);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
         }
 
         private bool AccountExists(long id)

@@ -10,10 +10,6 @@
 }
 <script type="text/javascript">
     $(document).ready(function () {
-
-        console.log("@ViewData["Write"]");
-
-
         SetBasicElement(@Html.Raw(Model));
 
         // 검색 조건 키 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권한
@@ -189,7 +185,7 @@
         @if (ViewBag.isPop)
         {
             <div class="row">
-                <div class="col-md-offset-10 col-md-2">
+                <div class="col-md-2">
                     <button type="button" class="btn btn-default" onclick="window.close();">
                         <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
                         닫기
@@ -202,7 +198,7 @@
             @if (ViewData["Write"].ToString().Equals("4-1") || ViewData["Write"].ToString().Equals("4-2"))
             {
                 <div class="row">
-                    <div class="col-md-offset-10 col-md-2">
+                    <div class="col-md-2">
                         <a href="/Accounts/Create" class="btn btn-default">
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                             거래처 생성

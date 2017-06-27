@@ -193,7 +193,7 @@
         @if (ViewBag.isPop)
         {
             <div class="row">
-                <div class="col-md-offset-10 col-md-2">
+                <div class="col-md-2">
                     <button type="button" class="btn btn-default" onclick="window.close();">
                         <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
                         닫기
@@ -203,14 +203,17 @@
         }
         else
         {
-            <div class="row">
-                <div class="col-md-offset-10 col-md-2">
-                    <a href="/Contacts/Create" class="btn btn-default">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                        연락처 생성
-                    </a>
+            @if (ViewData["Write"].ToString().Equals("4-1") || ViewData["Write"].ToString().Equals("4-2"))
+            {
+                <div class="row">
+                    <div class="col-md-2">
+                        <a href="/Contacts/Create" class="btn btn-default">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                            연락처 생성
+                        </a>
+                    </div>
                 </div>
-            </div>
+            }
         }
 
     </div>
