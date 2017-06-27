@@ -167,6 +167,7 @@
         </div>
 
         <form class="form-horizontal" id="AccountEditForm" action="/Accounts/Edit/@Model.Accountid" method="post">
+            @Html.AntiForgeryToken();
             <input type="hidden" id="Accountid" name="Accountid" value="@Model.Accountid" />
             <input type="hidden" asp-for="Createdate" value="@Model.Createdate" />
             <input type="hidden" id="Createuser" name="Createuser" value="@Model.Createuser" />

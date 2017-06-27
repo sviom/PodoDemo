@@ -88,6 +88,7 @@
         </div>
 
         <form class="form-horizontal" id="ContactsEditForm" action="/Contacts/Edit/@Model.Contactid" method="post">
+            @Html.AntiForgeryToken();
             <input type="hidden" id="Contactid" name="Contactid" value="@Model.Contactid" />
             <input type="hidden" asp-for="Createdate" value="@Model.Createdate" />
             <input type="hidden" id="Createuser" name="Createuser" value="@Model.Createuser" />
@@ -141,7 +142,7 @@
                 <label class="col-md-1 control-label">회사명</label>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <input type="hidden" id="Accountid" name="Accountid" value="@Model.Accountid"/>
+                        <input type="hidden" id="Accountid" name="Accountid" value="@Model.Accountid" />
                         <input type="text" id="Accountname" name="Accountname" class="form-control"
                                placeholder="선택된 거래처가 표시됩니다." aria-describedby="account name"
                                value="@ViewData["Accountname"]"

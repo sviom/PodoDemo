@@ -14,15 +14,36 @@ namespace PodoDemo.Controllers
     public class ContactsController : Controller
     {
         private readonly PodoDemoNContext _context;
+        UserAuth _userAuth;
 
         public ContactsController(PodoDemoNContext context)
         {
             _context = context;
         }
 
-        // GET: Contacts
+        /// <summary>
+        /// 연락처 목록으로 이동
+        /// </summary>
+        /// <param name="isPop"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Index(bool? isPop)
         {
+            CommonAPIController ss = new CommonAPIController(_context);
+            _userAuth = new UserAuth();
+            string userid = HttpContext.Session.GetString("userId");
+            _userAuth = ss.CheckUseauth(userid, "1-2");
+
+            // 사용자 수정 권한 체크
+            if (_userAuth.Read.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
             if (isPop == null)
             {
                 ViewBag.isPop = false;
@@ -58,44 +79,37 @@ namespace PodoDemo.Controllers
             return JsonConvert.SerializeObject(query, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
         }
 
-        // GET: Contacts/Details/5
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var contact = await _context.Contact
-                .Include(c => c.Account)
-                .SingleOrDefaultAsync(m => m.Contactid == id);
-            if (contact == null)
-            {
-                return NotFound();
-            }
-
-            return View(contact);
-        }
-
-        // GET: Contacts/Create
+        /// <summary>
+        /// 연락처 생성 페이지로 이동
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Create()
         {
+            // 사용자 권한 검색
+            if (_userAuth.Write.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             ViewData["Accountid"] = new SelectList(_context.Account, "Accountid", "Biznum");
             return View();
         }
 
-        // POST: Contacts/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         /// <summary>
         /// 연락처 생성
         /// </summary>
         /// <param name="contact"></param>
         /// <returns></returns>
         [HttpPost]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Contactid,Name,Department,Accountid,Email,Phone,Mobile,Detail,Bossid,Createdate,Createuser,Modifydate,Modifyuser,Isdeleted,Ownerid")] Contact contact)
         {
+            // 사용자 수정 권한 체크
+            if (_userAuth.Write.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (ModelState.IsValid)
             {
                 contact.Createdate = DateTime.Now;
@@ -109,11 +123,10 @@ namespace PodoDemo.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            //ViewData["Accountid"] = new SelectList(_context.Account, "Accountid", "Biznum", contact.Accountid);
+
             return View(contact);
         }
 
-        // GET: Contacts/Edit/5
         /// <summary>
         /// 연락처 수정페이지로 이동
         /// </summary>
@@ -139,12 +152,16 @@ namespace PodoDemo.Controllers
             ViewData["Bossname"] = _context.Contact.SingleOrDefault(c => c.Contactid == contact.Bossid).Name;
 
             ViewData["userId"] = HttpContext.Session.GetString("userId");
+
+            // 사용자 수정 권한 체크
+            if (_userAuth.Modify.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             return View(contact);
         }
 
-        // POST: Contacts/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         /// <summary>
         /// 실제 연락처 수정
         /// </summary>
@@ -152,9 +169,15 @@ namespace PodoDemo.Controllers
         /// <param name="contact"></param>
         /// <returns></returns>
         [HttpPost]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Contactid,Name,Department,Accountid,Email,Phone,Mobile,Detail,Bossid,Createdate,Createuser,Modifydate,Modifyuser,Isdeleted,Ownerid")] Contact contact)
         {
+            // 사용자 수정 권한 체크
+            if (_userAuth.Modify.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (id != contact.Contactid)
             {
                 return NotFound();
@@ -185,36 +208,6 @@ namespace PodoDemo.Controllers
             }
             ViewData["Accountid"] = new SelectList(_context.Account, "Accountid", "Biznum", contact.Accountid);
             return View(contact);
-        }
-
-        // GET: Contacts/Delete/5
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var contact = await _context.Contact
-                .Include(c => c.Account)
-                .SingleOrDefaultAsync(m => m.Contactid == id);
-            if (contact == null)
-            {
-                return NotFound();
-            }
-
-            return View(contact);
-        }
-
-        // POST: Contacts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
-        {
-            var contact = await _context.Contact.SingleOrDefaultAsync(m => m.Contactid == id);
-            _context.Contact.Remove(contact);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
         }
 
         private bool ContactExists(long id)

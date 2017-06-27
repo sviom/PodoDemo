@@ -20,10 +20,14 @@ namespace PodoDemo.Controllers
         public AccountsController(PodoDemoNContext context)
         {
             _context = context;
-            
+
         }
 
-        // GET: Accounts
+        /// <summary>
+        /// 거래처 리스트로 이동
+        /// </summary>
+        /// <param name="isPop">팝업인지 아닌지</param>
+        /// <returns></returns>
         public async Task<IActionResult> Index(bool? isPop)
         {
             CommonAPIController ss = new CommonAPIController(_context);
@@ -74,7 +78,10 @@ namespace PodoDemo.Controllers
             return JsonConvert.SerializeObject(query);
         }
 
-        // GET: Accounts/Create
+        /// <summary>
+        /// 거래처 생성 페이지로 이동
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Create()
         {
             int count = this.GetType().GetProperties().Count();
@@ -105,16 +112,18 @@ namespace PodoDemo.Controllers
             else
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
-            }            
+            }
         }
 
-        // POST: Accounts/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// 실제 거래처 생성
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
         [HttpPost]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Account account)
-        {            
+        {
             // 사용자 수정 권한 체크
             if (_userAuth.Write.Equals("4-3"))
             {
@@ -147,7 +156,11 @@ namespace PodoDemo.Controllers
             return View();
         }
 
-        // GET: Accounts/Edit/5
+        /// <summary>
+        /// 거래처 수정 페이지로 이동
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -156,6 +169,7 @@ namespace PodoDemo.Controllers
             }
 
             var account = await _context.Account.SingleOrDefaultAsync(m => m.Accountid == id);
+            // 연결된 연락처 리스트
             List<Contact> connContactslist = _context.Contact.Where(x => x.Accountid == account.Accountid).ToList();
             if (connContactslist.Count > 0)
             {
@@ -167,6 +181,7 @@ namespace PodoDemo.Controllers
                 ViewData["connctedContactList"] = "";
             }
 
+            // 거래처 없을 경우
             if (account == null)
             {
                 return NotFound();
@@ -181,11 +196,14 @@ namespace PodoDemo.Controllers
             return View(account);
         }
 
-        // POST: Accounts/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// 실제 거래처 수정
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="account"></param>
+        /// <returns></returns>
         [HttpPost]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Accountid,Name,Phone,Fax,Homepage,Ceo,Postcode,Address,Addresscity,Addressdetail,Addresstype,Biznum,Founddate,Detail,Ownerid,Createuser,Createdate,Modifydate,Modifyuser")] Account account)
         {
             // 사용자 수정 권한 체크
