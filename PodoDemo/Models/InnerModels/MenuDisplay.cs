@@ -33,6 +33,10 @@ namespace PodoDemo.Models.InnerModels
         /// <summary>
         /// 메뉴 순서
         /// </summary>
-        public long MenuOrder { get; set; }        
+        public long MenuOrder { get; set; }
+        /// <summary>
+        /// 관리자용 메뉴 여부
+        /// </summary>
+        public bool IsManager { get; set; }
     }
 }
