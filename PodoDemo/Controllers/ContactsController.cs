@@ -31,7 +31,16 @@ namespace PodoDemo.Controllers
             CommonAPIController ss = new CommonAPIController(_context);
             _userAuth = new UserAuth();
             string userid = HttpContext.Session.GetString("userId");
-            _userAuth = ss.CheckUseauth(userid, "1-2");
+
+            // 사용자 세션 체크
+            if (!string.IsNullOrEmpty(userid))
+            {
+                _userAuth = ss.CheckUseauth(userid, "1-2");
+            }
+            else
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }            
 
             // 사용자 수정 권한 체크
             if (_userAuth.Read.Equals("4-3"))
@@ -85,7 +94,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public IActionResult Create()
         {
-            // 사용자 권한 검색
+            // 사용자에게 쓰기 권한이 있는지 체크 
             if (_userAuth.Write.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
@@ -158,7 +167,7 @@ namespace PodoDemo.Controllers
 
             ViewData["userId"] = HttpContext.Session.GetString("userId");
 
-            // 사용자 수정 권한 체크
+            // 읽기 권한이 없으면 아예 들어가지 못하게 한다.
             if (_userAuth.Read.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
@@ -166,8 +175,25 @@ namespace PodoDemo.Controllers
 
             ViewData["Read"] = _userAuth.Read;
             ViewData["Write"] = _userAuth.Write;
-            ViewData["Modify"] = _userAuth.Modify;
-            ViewData["Delete"] = _userAuth.Delete;
+            
+            // 담당자가 아니면 수정을 못하게 한다.
+            if (!_userAuth.Modify.Equals("4-3") && HttpContext.Session.GetString("userId").Equals(contact.Ownerid))
+            {
+                ViewData["Modify"] = _userAuth.Modify;
+            }
+            else
+            {
+                ViewData["Modify"] = "4-3";
+            }
+            // 담당자가 아니면 삭제를 못하게 한다.
+            if (!_userAuth.Delete.Equals("4-3") && HttpContext.Session.GetString("userId").Equals(contact.Ownerid))
+            {
+                ViewData["Delete"] = _userAuth.Delete;
+            }
+            else
+            {
+                ViewData["Delete"] = "4-3";
+            }
 
             return View(contact);
         }
@@ -182,8 +208,8 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Contactid,Name,Department,Accountid,Email,Phone,Mobile,Detail,Bossid,Createdate,Createuser,Modifydate,Modifyuser,Isdeleted,Ownerid")] Contact contact)
         {
-            // 사용자 수정 권한 체크
-            if (_userAuth.Modify.Equals("4-3"))
+            // 사용자 수정 권한 체크 및 담당자가 아니면 수정을 못하게 한다.
+            if (_userAuth.Modify.Equals("4-3") || HttpContext.Session.GetString("userId") != contact.Ownerid)
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
@@ -223,6 +249,39 @@ namespace PodoDemo.Controllers
         private bool ContactExists(long id)
         {
             return _context.Contact.Any(e => e.Contactid == id);
+        }
+
+        /// <summary>
+        /// 연락처 삭제
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> Delete(long? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            Contact contact = await _context.Contact.Where(x => x.Contactid == id).SingleOrDefaultAsync();
+
+            if (contact != null)
+            {
+                _context.Remove(contact);
+                int deleteResult = await _context.SaveChangesAsync();
+
+                // 삭제가 정상적으로 이루어지지 않았을 때
+                if (deleteResult <= 0)
+                {
+                    return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+                }
+            }
+            else
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
+            return View("Index");
         }
     }
 }

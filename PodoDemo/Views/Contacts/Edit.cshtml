@@ -17,54 +17,53 @@
         //$("#jqdatetimeinput_founddate").jqxDateTimeInput({ width: '100%', formatString: 'yyyy-MM-dd' });
     }
 
-    // 폼이 입력될 때
-    function SubmitForm() {
-        // 유효성 검사 후 진행
-        if (ValidateForm()) {
-            $("#ContactsEditForm").submit();
+    // 폼이 입력될 때(수정/삭제)
+    function SubmitForm(targetName) {
+        if (targetName == "Edit") {
+            // 유효성 검사 후 진행
+            if (ValidateForm()) {
+                $("#ContactsEditForm").prop("action", "/Contacts/" + targetName + "/@Model.Contactid");
+                $("#ContactsEditForm").submit();
+            }
+        } else if (targetName == "Delete") {
+            if (confirm("해당 내용을 정말로 삭제하시겠습니까?\n삭제후에는 복원되지 않습니다.")) {
+                if ($("#Contactid").val() != "" && $("#Contactid").val() != null) {
+                    $("#ContactsEditForm").prop("action", "/Contacts/" + targetName + "/@Model.Contactid");
+                    $("#ContactsEditForm").submit();
+                } else {
+                    alert("삭제할 내용이 없습니다.");
+                    return;
+                }
+            }
         }
     }
 
     // 입력한 값들에 대한 유효성 검사
     function ValidateForm() {
         var nameValue = $("#Name").val();
-        //var phoneValue = $("#Phone").val();
-        //var founddateValue = $("#jqdatetimeinput_founddate").jqxDateTimeInput('getText');
 
         if (nameValue == "") {
             alert("이름을 입력해주세요.");
             return false;
         }
 
-        //if (phoneValue != "") {
-        //    if (!IsPhoneType(phoneValue)) {
-        //        alert("전화번호 형식을 00-000-0000 형식으로\n올바르게 입력해주세요.");
-        //        return false;
-        //    }
-        //}
-
-        //if (founddateValue != "") {
-        //    if (!IsDateType(founddateValue)) {
-        //        alert("날짜 형식을 올바르게 입력해주세요.");
-        //        return false;
-        //    }
-        //}
-
         return true;
     }
 
+    // 해당 연락처의 거래처 검색
     function AccountsSearchPop() {
         WindowOpenScroll("/Accounts/Index?isPop=true", "", 350, 600, 100, 100);
     }
+    // 상사 검색
     function ContactsSearchPop() {
         WindowOpenScroll("/Contacts/Index?isPop=true", "", 350, 600, 100, 100);
     }
-
+    // 팝업으로 검색한 거래처 세팅
     function SetAccountsInfo(accountId, accountName) {
         $("#Accountname").val(accountName);
         $("#Accountid").val(accountId);
     }
-
+    // 팝업으로 검색한 상사 세팅
     function SetContactsInfo(contactId, contactName) {
         $("#Bossname").val(contactName);
         $("#Bossid").val(contactId);
@@ -87,7 +86,7 @@
             </div>
         </div>
 
-        <form class="form-horizontal" id="ContactsEditForm" action="/Contacts/Edit/@Model.Contactid" method="post">
+        <form class="form-horizontal" id="ContactsEditForm" method="post">
             @Html.AntiForgeryToken()
             <input type="hidden" id="Contactid" name="Contactid" value="@Model.Contactid" />
             <input type="hidden" asp-for="Createdate" value="@Model.Createdate" />
@@ -173,7 +172,7 @@
             @if (ViewData["Modify"].ToString().Equals("4-1") || ViewData["Modify"].ToString().Equals("4-2"))
             {
                 <div class="col-md-2 custom-row-btn-margin">
-                    <button type="button" id="EditButton" class="btn btn-default" onclick="SubmitForm();">
+                    <button type="button" id="EditButton" class="btn btn-default" onclick="SubmitForm('Edit');">
                         <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
                         저장
                     </button>
@@ -182,7 +181,7 @@
             @if (ViewData["Delete"].ToString().Equals("4-1") || ViewData["Delete"].ToString().Equals("4-2"))
             {
                 <div class="col-md-2 custom-row-btn-margin">
-                    <button type="button" id="DeleteButton" class="btn btn-default btn-danger">
+                    <button type="button" id="DeleteButton" class="btn btn-default btn-danger" onclick="SubmitForm('Delete');">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                         삭제
                     </button>
