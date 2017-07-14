@@ -144,23 +144,17 @@ namespace PodoDemo.Controllers
                     mainMenu.Modifyuser = HttpContext.Session.GetString("userId");
                     
                     var sub = _context.Menu.AsNoTracking();
+
+                    // 기존 순서
                     long oldOrder = sub.SingleOrDefault(x => x.Id == mainMenu.Id).Order;
+
+                    // 
                     if (sub.Any(e => e.Order == mainMenu.Order))
                     {
                         // 수정하고 있는 메뉴창에서 입력한 Order가 이미 존재한다면 교체
                         Menu exist = sub.SingleOrDefault(x => x.Order == mainMenu.Order);
                         exist.Order = oldOrder;     // 기존 메뉴를 새로 입력한 Order로 교체
-
-                        SqlParameter[] param
-                            = new SqlParameter[]{
-                                new SqlParameter(){ ParameterName="@menuId", Value=mainMenu.Id, SqlDbType=SqlDbType.BigInt},
-                                new SqlParameter(){ ParameterName="@newOrder",Value=mainMenu.Order, SqlDbType=SqlDbType.BigInt},
-                                new SqlParameter(){ ParameterName="@existMenuId",Value=exist.Id, SqlDbType=SqlDbType.BigInt},
-                                new SqlParameter(){ ParameterName="@oldOrder",Value=oldOrder, SqlDbType=SqlDbType.BigInt}
-                            };
-
-                        DataSet userResult = DatabaseUtil.getDataSet("P_Update_MainmenuOrder", param);
-
+                        _context.Update(exist);
                         _context.Update(mainMenu);
                         await _context.SaveChangesAsync();
                     }
@@ -416,17 +410,7 @@ namespace PodoDemo.Controllers
                         // 수정하고 있는 세부메뉴창에서 입력한 Order가 이미 존재한다면 교체
                         SubMenu exist = sub.SingleOrDefault(x => x.Order == subMenu.Order);
                         exist.Order = oldOrder;     // 기존 메뉴를 새로 입력한 Order로 교체
-
-                        SqlParameter[] param 
-                            = new SqlParameter[]{
-                                new SqlParameter(){ ParameterName="@menuId", Value=subMenu.Id, SqlDbType=SqlDbType.NVarChar},
-                                new SqlParameter(){ ParameterName="@newOrder",Value=subMenu.Order, SqlDbType=SqlDbType.Int},
-                                new SqlParameter(){ ParameterName="@existMenuId",Value=exist.Id, SqlDbType=SqlDbType.NVarChar},
-                                new SqlParameter(){ ParameterName="@oldOrder",Value=oldOrder, SqlDbType=SqlDbType.Int}
-                            };
-
-                        DataSet userResult = DatabaseUtil.getDataSet("P_Update_SubmenuOrder", param);
-
+                        _context.Update(exist);
                         _context.Update(subMenu);
                         await _context.SaveChangesAsync();
                     }

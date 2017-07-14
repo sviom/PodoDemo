@@ -292,24 +292,22 @@ namespace PodoDemo.Controllers
                     optionmasterDetail.Modifydate = DateTime.Now;
                     optionmasterDetail.Modifyuser = HttpContext.Session.GetString("userId");
 
-                    var sub = _context.OptionMasterDetail.AsNoTracking().Where(x => x.Masterid == optionmasterDetail.Masterid);
+                    // 세부 옵션
+                    var sub 
+                        = _context.OptionMasterDetail
+                                .AsNoTracking()
+                                .Where(x => x.Masterid == optionmasterDetail.Masterid);
+
+                    // 기존 순서
                     long oldOrder = sub.SingleOrDefault(x => x.Optionid == optionmasterDetail.Optionid).Order;
+
+                    // 기존 순서 존재 시
                     if (sub.Any(e => e.Order == optionmasterDetail.Order))
                     {
                         // 수정하고 있는 세부메뉴창에서 입력한 Order가 이미 존재한다면 교체
                         OptionMasterDetail exist = sub.SingleOrDefault(x => x.Order == optionmasterDetail.Order);
-                        exist.Order = oldOrder;     // 기존 메뉴를 새로 입력한 Order로 교체
-
-                        SqlParameter[] param
-                            = new SqlParameter[]{
-                                new SqlParameter(){ ParameterName="@optionId", Value=optionmasterDetail.Optionid, SqlDbType=SqlDbType.NVarChar},
-                                new SqlParameter(){ ParameterName="@newOrder",Value=optionmasterDetail.Order, SqlDbType=SqlDbType.BigInt},
-                                new SqlParameter(){ ParameterName="@existOptionId",Value=exist.Optionid, SqlDbType=SqlDbType.NVarChar},
-                                new SqlParameter(){ ParameterName="@oldOrder",Value=oldOrder, SqlDbType=SqlDbType.BigInt}
-                            };
-
-                        DataSet userResult = DatabaseUtil.getDataSet("P_Update_OptiondetailOrder", param);
-
+                        exist.Order = oldOrder;     // 기존 순서를 새로 입력한 Order로 교체
+                        _context.Update(exist);     // 기존 순서를 업데이트
                         _context.Update(optionmasterDetail);
                         await _context.SaveChangesAsync();
                     }
