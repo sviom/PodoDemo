@@ -6,8 +6,9 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        GetUserDDL('1-1', '@ViewBag.UserId', 'Ownerid', SetoptionTag, '', true, false, false); // 담당자
-        GetOptionDDL('5', 'State', SetoptionTag, '', true, false, false);     // 상태
+        GetUserDDL("", '@ViewBag.UserId', 'Ownerid', SetoptionTag, '', true, false, false);     // 담당자
+        GetOptionDDL('5', 'State', SetoptionTag, '', true, false, false);                       // 상태
+
         $("#jqdatetimeinput_Startdate").jqxDateTimeInput({ width: '100%', formatString: 'yyyy-MM-dd' });
 
         SetBasicElement("@Html.Raw(Model)");
@@ -16,7 +17,6 @@
         $("#State, #Ownerid").change(function () {
             SearchTodoes();
         });
-
     });
 
     // 기본적으로 그리는 화면 내용
@@ -159,14 +159,17 @@
         }
         else
         {
-            <div class="row">
-                <div class="col-md-offset-10 col-md-2">
-                    <a href="/Accounts/Create" class="btn btn-default">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                        할일 생성
-                    </a>
+            @if (ViewData["Write"].ToString().Equals("4-1") || ViewData["Write"].ToString().Equals("4-2"))
+            {
+                <div class="row">
+                    <div class="col-md-2">
+                        <a href="/Todoes/Create" class="btn btn-default">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                            할일 생성
+                        </a>
+                    </div>
                 </div>
-            </div>
+            }
         }
     </div>
 </div>

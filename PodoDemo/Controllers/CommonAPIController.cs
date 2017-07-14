@@ -88,5 +88,15 @@ namespace PodoDemo.Controllers
 
             return userDDLList;
         }
+
+        /// <summary>
+        /// 각 메뉴의 URL 가져오기
+        /// </summary>
+        [HttpPost("GetSubmenuUrl")]
+        public string GetSubmenuUrl([FromBody]SubMenu inSubmenu)
+        {
+            SubMenu _submenu = _context.SubMenu.Where(x => x.Id == inSubmenu.Id).SingleOrDefault();
+            return _submenu.Menuurl;
+        }
     }
 }

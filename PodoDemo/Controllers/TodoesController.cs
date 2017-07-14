@@ -8,21 +8,53 @@ using Microsoft.EntityFrameworkCore;
 using PodoDemo.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using PodoDemo.Models.InnerModels;
 
 namespace PodoDemo.Controllers
 {
     public class TodoesController : Controller
     {
         private readonly PodoDemoNContext _context;
+        private static UserAuth _userAuth;
 
         public TodoesController(PodoDemoNContext context)
         {
             _context = context;    
         }
 
-        // GET: Todoes
+        /// <summary>
+        /// 할일 페이지로 이동
+        /// </summary>
+        /// <param name="isPop"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Index(bool? isPop)
         {
+            CommonAPIController _commonAPI = new CommonAPIController(_context);
+            _userAuth = new UserAuth();
+            string userid = HttpContext.Session.GetString("userId");
+
+            // 사용자 세션 체크
+            if (!string.IsNullOrEmpty(userid))
+            {
+                _userAuth = _commonAPI.CheckUseauth(userid, "3-2");
+            }
+            else
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
+            // 사용자 읽기 권한 체크
+            if (_userAuth.Read.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
+            // 권한
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
             if (isPop == null)
             {
                 ViewBag.isPop = false;
@@ -64,27 +96,30 @@ namespace PodoDemo.Controllers
             return JsonConvert.SerializeObject(todoList);
         }
 
-        // GET: Todoes/Details/5
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var todo = await _context.Todo
-                .SingleOrDefaultAsync(m => m.Todoid == id);
-            if (todo == null)
-            {
-                return NotFound();
-            }
-
-            return View(todo);
-        }
-
-        // GET: Todoes/Create
+        /// <summary>
+        /// 할일 생성페이지 이동
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Create()
         {
+            // 사용자 권한
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
+            // 사용자에게 쓰기 권한이 있는지 체크
+            if (_userAuth.Write.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
+            List<DDL> submenuDDL = new List<DDL>();
+            foreach (var item in _context.SubMenu.Where(x=>x.Ismanager == false && x.Mainmenuid != 7).ToList())
+            {
+                submenuDDL.Add(new DDL() { Value = item.Id, Text = item.Name });
+            }
+            ViewBag.SubmenuList = JsonConvert.SerializeObject(submenuDDL).ToString();
             return View();
         }
 
