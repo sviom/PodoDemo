@@ -59,7 +59,7 @@ namespace PodoDemo.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
             return JsonConvert.SerializeObject(todoList);
         }
