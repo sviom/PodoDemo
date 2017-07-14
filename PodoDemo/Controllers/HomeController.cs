@@ -129,5 +129,24 @@ namespace PodoDemo.Controllers
 
             return View();
         }
+
+        /// <summary>
+        /// 사용자 로그아웃
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult Logout()
+        {
+            try
+            {
+                HttpContext.Session.Remove("userId");
+                HttpContext.Session.Remove("userName");
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return Redirect("/Home/Index");
+        }
     }
 }

@@ -83,35 +83,6 @@ namespace PodoDemo.Controllers
         [HttpPost("GetJoinedUserDDL")]
         public List<DDL> GetJoinedUserDDL([FromBody]DDL input)
         {
-            //using (SqlConnection con = new SqlConnection(DatabaseUtil._connString.DBConnectionString))
-            //{
-            //    List<DDL> list = new List<DDL>();
-            //    SqlCommand cmd = new SqlCommand("P_Get_UserList", con);
-            //    cmd.CommandType = CommandType.StoredProcedure;
-
-            //    cmd.Parameters.AddWithValue("@Department", input.SearchKey);
-            //    cmd.Parameters.AddWithValue("@UserId", input.Userid);
-
-            //    con.Open();
-
-            //    IDataReader reader = cmd.ExecuteReader();
-
-
-            //    while (reader.Read())
-            //    {
-            //        DDL data = new DDL()
-            //        {
-            //            Value = reader["Value"].ToString(),
-            //            Text = reader["Text"].ToString()
-            //        };
-
-            //        list.Add(data);
-            //    }
-            //    con.Close();
-
-            //    return list;
-            //}
-
             List<User> joinedUserList 
                 = _context.User
                     .Where(x => x.Level != "2-1" && x.Ismaster == false)
@@ -128,27 +99,6 @@ namespace PodoDemo.Controllers
             }
 
             return userDDLList;
-        }
-
-        [HttpPost("Logout")]
-        public bool Logout()
-        {
-            bool logoutResult = false;
-            //HttpContext.Session.SetString("userId", userResult.Tables[0].Rows[0]["id"].ToString());
-            //HttpContext.Session.SetString("userName", userResult.Tables[0].Rows[0]["name"].ToString());
-            try
-            {
-                HttpContext.Session.Remove("userId");
-                HttpContext.Session.Remove("userName");
-
-                logoutResult = true;
-            }
-            catch(Exception ex)
-            {
-                throw;
-            }
-            
-            return logoutResult;
         }
     }
 }

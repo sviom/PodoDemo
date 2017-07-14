@@ -12,8 +12,7 @@
 
         // 로그 아웃 버튼 클릭 시
         $("#logoutBtn").click(function () {
-            var dd = ExecuteAjax("POST", window.location.origin + "/api/CommonAPI/Logoutdd", "json", "application/json");
-            alert(dd);
+            alert("로그아웃 되었습니다.");
         });
     });
 </script>
@@ -65,7 +64,7 @@
             <p class="navbar-text"><strong>@ViewBag.UserName</strong>님, 환영합니다.</p>
 
             <form class="navbar-form navbar-left" role="search">
-                <button type="button" id="logoutBtn" class="btn btn-default">로그아웃</button>
+                <a id="logoutBtn" class="btn btn-default" href="/Home/Logout">로그아웃</a>
             </form>
 
         </div><!-- /.navbar-collapse -->
