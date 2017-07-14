@@ -130,22 +130,46 @@ namespace PodoDemo.Controllers
                 submenuDDL.Add(new DDL() { Value = item.Id, Text = item.Name });
             }
             ViewBag.SubmenuList = JsonConvert.SerializeObject(submenuDDL).ToString();
+
             return View();
         }
 
-        // POST: Todoes/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// 할일 생성
+        /// </summary>
+        /// <param name="todo"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Todoid,Name,Description,Regardingobjectid,Startdate,Enddate,Createdate,Createuser,Modifydate,Modifyuser,Ownerid,State")] Todo todo)
+        public async Task<IActionResult> Create(Todo todo)
         {
+            //[Bind("Name,Description,Regardingobjectid,Startdate,Enddate,State")] 
+            CreaetUserAuth();
+            // 사용자에게 쓰기 권한이 있는지 체크
+            if (_userAuth.Write.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (ModelState.IsValid)
             {
+                todo.Createdate = DateTime.Now;
+                todo.Createuser = HttpContext.Session.GetString("userId");
+                todo.Modifydate = DateTime.Now;
+                todo.Modifyuser = HttpContext.Session.GetString("userId");
+                todo.Ownerid = HttpContext.Session.GetString("userId");
+
+
                 _context.Add(todo);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
+
+            // 사용자 권한
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
             return View(todo);
         }
 

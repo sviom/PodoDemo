@@ -495,8 +495,9 @@ namespace PodoDemo.Models
 
             modelBuilder.Entity<Todo>(entity =>
             {
-                entity.HasKey(e => e.Todoid)
-                .HasName("PK_Todo");
+                entity.Property(e => e.Todoid).HasColumnName("todoid");
+                //entity.HasKey(e => e.Todoid)
+                //.HasName("PK_Todo");
 
                 entity.Property(e => e.Name)
                     .IsRequired()

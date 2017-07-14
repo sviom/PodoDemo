@@ -22,7 +22,7 @@
     function SubmitForm() {
         // 유효성 검사 후 진행
         if (ValidateForm()) {
-            $("#Stratdate").val($('#jqdatetimeinput_startdate').jqxDateTimeInput('getText'));
+            $("#Startdate").val($('#jqdatetimeinput_startdate').jqxDateTimeInput('getText'));
             $("#Enddate").val($('#jqdatetimeinput_enddate').jqxDateTimeInput('getText'));
             $("#TodoesCreateForm").submit();
         }
@@ -32,7 +32,7 @@
     function ValidateForm() {
         var nameValue = $("#Name").val();
         var startdateValue = $("#jqdatetimeinput_startdate").jqxDateTimeInput('getText');
-        var detailValue = $("#Detail").val();
+        var stateValue = $("#State option:selected").val();
 
         if (nameValue == "") {
             alert("제목을 입력해주세요.");
@@ -49,6 +49,11 @@
             }
         }
 
+        if (stateValue == "") {
+            alert("상태를 선택해주세요.");
+            return false;
+        }
+
         return true;
     }
 
@@ -61,9 +66,10 @@
         WindowOpenScroll(menu.Menuurl+ "?isPop=true", "", 350, 600, 100, 100);
     }
 
+    // 관련항목에서 설정한 내용들 반영
     function SetRegardingInfo(id, name) {
         $("#Regardingobjectid").val(id);
-        $("#RegardingobjectName").val(name);        
+        $("#RegardingobjectName").val(name);
     }
 </script>
 
@@ -94,7 +100,7 @@
                 <label class="col-md-1 control-label requireField">시작일</label>
                 <div class="col-md-3">
                     <div id="jqdatetimeinput_startdate"></div>
-                    <input type="hidden" id="Stratdate" name="Stratdate" />
+                    <input type="hidden" id="Startdate" name="Startdate" />
                 </div>
                 <label class="col-md-1 control-label">종료일</label>
                 <div class="col-md-3">
