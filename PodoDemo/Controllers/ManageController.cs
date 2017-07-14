@@ -293,7 +293,7 @@ namespace PodoDemo.Controllers
                                      Mainmenuid = sm.Mainmenuid,
                                      Menuurl = sm.Menuurl,
                                      Order = sm.Order,
-                                     UserAuth = sm.UserAuth
+                                     //UserAuth = sm.UserAuth
                                  }).ToList<SubMenu>();
 
                     return JsonConvert.SerializeObject(query);
@@ -356,22 +356,40 @@ namespace PodoDemo.Controllers
                     _context.Add(subMenu);
                     await _context.SaveChangesAsync();
 
-                    // 권한 추가
-                    UserAuth newMenuUserAuth = new UserAuth()
+                    // 사용자 수 만큼 권한 추가
+                    List<User> userList = _context.User.ToList();
+                    List<UserAuth> addedUserAuthList = new List<UserAuth>();
+                    foreach (User item in userList)
                     {
-                        Userid = HttpContext.Session.GetString("userId"),
-                        Read = "4-3",
-                        Modify = "4-3",
-                        Write = "4-3",
-                        Delete = "4-3",
-                        Submenuid = subMenu.Id,
-                        Createdate = DateTime.Now,
-                        Createuser = HttpContext.Session.GetString("userId"),
-                        Modifydate = DateTime.Now,
-                        Modifyuser = HttpContext.Session.GetString("userId")
-                    };
+                        UserAuth newMenuUserAuth = new UserAuth();
+                        newMenuUserAuth.Userid = item.Id;
 
-                    _context.UserAuth.Add(newMenuUserAuth);
+                        if(loginedUser.Level == "2-1" || loginedUser.Level == "시스템관리자")
+                        {
+                            newMenuUserAuth.Read = "4-1";
+                            newMenuUserAuth.Modify = "4-1";
+                            newMenuUserAuth.Write = "4-1";
+                            newMenuUserAuth.Delete = "4-1";
+                        }
+                        else
+                        {
+                            newMenuUserAuth.Read = "4-3";
+                            newMenuUserAuth.Modify = "4-3";
+                            newMenuUserAuth.Write = "4-3";
+                            newMenuUserAuth.Delete = "4-3";
+                        }
+                        
+                        newMenuUserAuth.Submenuid = subMenu.Id;
+                        newMenuUserAuth.Createdate = DateTime.Now;
+                        newMenuUserAuth.Createuser = HttpContext.Session.GetString("userId");
+                        newMenuUserAuth.Modifydate = DateTime.Now;
+                        newMenuUserAuth.Modifyuser = HttpContext.Session.GetString("userId");
+
+                        addedUserAuthList.Add(newMenuUserAuth);
+                    }
+
+                    //_context.UserAuth.Add(newMenuUserAuth);
+                    _context.UserAuth.AddRange(addedUserAuthList);
                     await _context.SaveChangesAsync();
 
                     return RedirectToAction("Close", "Home");
@@ -489,43 +507,22 @@ namespace PodoDemo.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteSubmenu(string Id, bool IsPop, [Bind("Id,Name,Order,Isused,Isdeleted,Createdate,Createuser,Modifydate,Modifyuser")] SubMenu subMenu)
         {
-            //var menu = await _context.Menu.SingleOrDefaultAsync(m => m.Id == Id);
-            //_context.Menu.Remove(menu);
-            //await _context.SaveChangesAsync();
-            //return RedirectToAction("Close","Home");
-
             if (Id != subMenu.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    subMenu.Isdeleted = true;
-                    subMenu.Modifydate = DateTime.Now;
-                    subMenu.Modifyuser = HttpContext.Session.GetString("userId");
+            // Submenu 삭제
+            var menu = await _context.SubMenu.SingleOrDefaultAsync(m => m.Id == Id);
+            _context.SubMenu.Remove(menu);
+            await _context.SaveChangesAsync();
 
-                    _context.Update(subMenu);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SubmenuExists(subMenu.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Close", "Home");
-            }
+            // Submenu에 해당하는 UserAuth 삭제
+            List<UserAuth> removedUserAuthList = _context.UserAuth.Where(x => x.Submenuid == Id).ToList();
+            _context.UserAuth.RemoveRange(removedUserAuthList);
+            await _context.SaveChangesAsync();
 
-            ViewBag.isPop = true;
-            return View(subMenu);
+            return RedirectToAction("Close", "Home");
         }
 
         /// <summary>

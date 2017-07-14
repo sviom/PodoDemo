@@ -7,7 +7,7 @@ namespace PodoDemo.Models
     {
         public SubMenu()
         {
-            UserAuth = new HashSet<UserAuth>();
+            //UserAuth = new HashSet<UserAuth>();
         }
 
         public string Id { get; set; }
@@ -25,6 +25,6 @@ namespace PodoDemo.Models
 
         public virtual Menu Mainmenu { get; set; }
 
-        public virtual ICollection<UserAuth> UserAuth { get; set; }
+        //public virtual ICollection<UserAuth> UserAuth { get; set; }
     }
 }

@@ -482,10 +482,10 @@ namespace PodoDemo.Models
                 entity.Property(e => e.Submenuid).HasColumnName("submenuid");
                 entity.Property(e => e.Userid).HasColumnName("userid");
 
-                entity.HasOne(d => d.Submenu)
-                    .WithMany(p => p.UserAuth)
-                    .HasForeignKey(d => d.Submenuid)
-                    .HasConstraintName("FK_Auth_SubMenu");
+                //entity.HasOne(d => d.Submenu)
+                //    .WithMany(p => p.UserAuth)
+                //    .HasForeignKey(d => d.Submenuid)
+                //    .HasConstraintName("FK_Auth_SubMenu");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserAuth)
