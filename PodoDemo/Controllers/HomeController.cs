@@ -7,7 +7,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http;
 using System.Data.SqlClient;
 using System.Data;
-using PodoDemo.Common;
 using PodoDemo.Models;
 
 namespace PodoDemo.Controllers
@@ -114,7 +113,7 @@ namespace PodoDemo.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
 
             return Redirect("/Home/Index");

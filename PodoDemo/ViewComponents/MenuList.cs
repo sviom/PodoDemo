@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Data.SqlClient;
-using PodoDemo.Common;
 using Microsoft.AspNetCore.Http;
 using PodoDemo.Models.InnerModels;
 

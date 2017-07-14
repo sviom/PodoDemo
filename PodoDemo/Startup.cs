@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using PodoDemo.Models;
 using Microsoft.EntityFrameworkCore;
-using PodoDemo.Common;
 using Microsoft.AspNetCore.Session;
 
 namespace PodoDemo

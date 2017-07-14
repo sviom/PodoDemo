@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
 using System.Data;
-using PodoDemo.Common;
 using PodoDemo.Models.InnerModels;
 using PodoDemo.Models;
 
@@ -79,9 +78,11 @@ namespace PodoDemo.Controllers
 
             foreach (User item in joinedUserList)
             {
-                DDL tempDDL = new DDL();
-                tempDDL.Text = item.Name;
-                tempDDL.Value = item.Id;
+                DDL tempDDL = new DDL()
+                {
+                    Text = item.Name,
+                    Value = item.Id
+                };
                 userDDLList.Add(tempDDL);
             }
 

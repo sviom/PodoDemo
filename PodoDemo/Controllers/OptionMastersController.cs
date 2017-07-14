@@ -9,7 +9,6 @@ using PodoDemo.Models;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using System.Data.SqlClient;
-using PodoDemo.Common;
 using System.Data;
 
 namespace PodoDemo.Controllers
@@ -203,7 +202,7 @@ namespace PodoDemo.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
