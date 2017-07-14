@@ -14,6 +14,7 @@ namespace PodoDemo.Controllers
     public class UsersController : Controller
     {
         private readonly PodoDemoNContext _context;
+        private static User loginedUser = new Models.User();
 
         public UsersController(PodoDemoNContext context)
         {
@@ -26,6 +27,17 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Index()
         {
+            loginedUser
+                = await _context.User
+                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
+                            .SingleAsync();
+
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             //JsonConvert.SerializeObject(mainMenuList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             //var podoDemoNContext = _context.User.Include(u => u.DepartmentNavigation);
             List<User> podoDemoNContext = await _context.User.ToListAsync();
@@ -58,6 +70,12 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public IActionResult Create()
         {
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             ViewData["Department"] = new SelectList(_context.OptionMasterDetail, "Optionid", "Optionid");
             return View();
         }
@@ -133,6 +151,12 @@ namespace PodoDemo.Controllers
                 return NotFound();
             }
 
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             var user = await _context.User.SingleOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
@@ -200,7 +224,7 @@ namespace PodoDemo.Controllers
             ViewData["Department"] = new SelectList(_context.OptionMasterDetail, "Optionid", "Optionid", user.Department);
             return View(user);
         }
-        
+
         /// <summary>
         /// 사용자 삭제
         /// </summary>

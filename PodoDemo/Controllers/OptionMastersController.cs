@@ -34,6 +34,12 @@ namespace PodoDemo.Controllers
                             .Where(x => x.Id == HttpContext.Session.GetString("userId"))
                             .SingleAsync();
 
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             // 옵션의 시스템 여부 및 기타 여부에 따른 옵션 표시 항목 제한
             List<OptionMaster> optionmasterList = new List<OptionMaster>();
             if (loginedUser.Ismaster && (loginedUser.Level == "2-1" || loginedUser.Level == "시스템관리자"))

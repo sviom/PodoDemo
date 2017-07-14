@@ -15,6 +15,7 @@ namespace PodoDemo.Controllers
     public class ManageController : Controller
     {
         private readonly PodoDemoNContext _context;
+        private static User loginedUser = new Models.User();
 
         public ManageController(PodoDemoNContext context)
         {
@@ -29,6 +30,17 @@ namespace PodoDemo.Controllers
         {
             try
             {
+                loginedUser
+                = await _context.User
+                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
+                            .SingleAsync();
+
+                // 관리자가 아니면 접근 못하게
+                if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+                {
+                    return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+                }
+
                 List<Menu> mainMenuList = _context.Menu.ToList();
                 List<SubMenu> subMenuList = await _context.SubMenu.ToListAsync();
 
@@ -51,6 +63,12 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public IActionResult MenuCreate([FromQuery]bool isPop)
         {
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             ViewBag.isPop = isPop;
             return View();
         }
@@ -83,7 +101,7 @@ namespace PodoDemo.Controllers
 
                     _context.Add(mainMenu);
                     await _context.SaveChangesAsync();
-                    
+
                     return View("Close", "Home");
                 }
                 catch (Exception ex)
@@ -107,6 +125,12 @@ namespace PodoDemo.Controllers
             if (id == null)
             {
                 return NotFound();
+            }
+
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
 
             var menu = await _context.Menu.SingleOrDefaultAsync(m => m.Id == id);
@@ -141,7 +165,7 @@ namespace PodoDemo.Controllers
                 {
                     mainMenu.Modifydate = DateTime.Now;
                     mainMenu.Modifyuser = HttpContext.Session.GetString("userId");
-                    
+
                     var sub = _context.Menu.AsNoTracking();
 
                     // 기존 순서
@@ -167,7 +191,7 @@ namespace PodoDemo.Controllers
 
                         _context.Update(mainMenu);
                         await _context.SaveChangesAsync();
-                    }                    
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -288,6 +312,12 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public IActionResult SubmenuCreate([FromQuery]bool isPop, int mainMenuid)
         {
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             ViewBag.isPop = isPop;                  // 팝업여부
             ViewData["mainMenuid"] = mainMenuid;    // 메인 메뉴 고유값
             return View();
@@ -327,10 +357,11 @@ namespace PodoDemo.Controllers
                     await _context.SaveChangesAsync();
 
                     // 권한 추가
-                    UserAuth newMenuUserAuth = new UserAuth() {
+                    UserAuth newMenuUserAuth = new UserAuth()
+                    {
                         Userid = HttpContext.Session.GetString("userId"),
-                        Read= "4-3",
-                        Modify  = "4-3",
+                        Read = "4-3",
+                        Modify = "4-3",
                         Write = "4-3",
                         Delete = "4-3",
                         Submenuid = subMenu.Id,
@@ -342,7 +373,7 @@ namespace PodoDemo.Controllers
 
                     _context.UserAuth.Add(newMenuUserAuth);
                     await _context.SaveChangesAsync();
-                    
+
                     return RedirectToAction("Close", "Home");
                 }
                 catch (Exception ex)
@@ -366,6 +397,12 @@ namespace PodoDemo.Controllers
             if (id == null)
             {
                 return NotFound();
+            }
+
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
 
             var menu = await _context.SubMenu.SingleOrDefaultAsync(m => m.Id == id);
@@ -416,7 +453,7 @@ namespace PodoDemo.Controllers
                     else
                     {
                         // 존재하지 않으면 넣은 값으로 그대로 업데이트
-                        if(subMenu.Order > sub.Count())
+                        if (subMenu.Order > sub.Count())
                         {
                             subMenu.Order = sub.Count() + 1;
                         }

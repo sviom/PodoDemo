@@ -15,6 +15,7 @@ namespace PodoDemo.Controllers
     public class UserAuthsController : Controller
     {
         private readonly PodoDemoNContext _context;
+        private static User loginedUser = new Models.User();
 
         public UserAuthsController(PodoDemoNContext context)
         {
@@ -27,6 +28,17 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Index()
         {
+            loginedUser
+                = await _context.User
+                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
+                            .SingleAsync();
+
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             ViewBag.UserId = HttpContext.Session.GetString("userId");
 
             List<DDL> menuDDL = new List<DDL>();
@@ -141,7 +153,7 @@ namespace PodoDemo.Controllers
             }
             return editResult;
         }
-        
+
         private bool UserAuthExists(long id)
         {
             return _context.UserAuth.Any(e => e.Id == id);
