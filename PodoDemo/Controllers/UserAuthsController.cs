@@ -21,7 +21,10 @@ namespace PodoDemo.Controllers
             _context = context;
         }
 
-        // GET: UserAuths
+        /// <summary>
+        /// 권한 목록 페이지로 이동
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             ViewBag.UserId = HttpContext.Session.GetString("userId");
@@ -138,8 +141,7 @@ namespace PodoDemo.Controllers
             }
             return editResult;
         }
-
-
+        
         private bool UserAuthExists(long id)
         {
             return _context.UserAuth.Any(e => e.Id == id);

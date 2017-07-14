@@ -20,7 +20,10 @@ namespace PodoDemo.Controllers
             _context = context;
         }
 
-        // GET: Users
+        /// <summary>
+        /// 사용자 목록 페이지로 이동
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             //JsonConvert.SerializeObject(mainMenuList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });

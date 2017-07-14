@@ -83,34 +83,51 @@ namespace PodoDemo.Controllers
         [HttpPost("GetJoinedUserDDL")]
         public List<DDL> GetJoinedUserDDL([FromBody]DDL input)
         {
-            using (SqlConnection con = new SqlConnection(DatabaseUtil._connString.DBConnectionString))
+            //using (SqlConnection con = new SqlConnection(DatabaseUtil._connString.DBConnectionString))
+            //{
+            //    List<DDL> list = new List<DDL>();
+            //    SqlCommand cmd = new SqlCommand("P_Get_UserList", con);
+            //    cmd.CommandType = CommandType.StoredProcedure;
+
+            //    cmd.Parameters.AddWithValue("@Department", input.SearchKey);
+            //    cmd.Parameters.AddWithValue("@UserId", input.Userid);
+
+            //    con.Open();
+
+            //    IDataReader reader = cmd.ExecuteReader();
+
+
+            //    while (reader.Read())
+            //    {
+            //        DDL data = new DDL()
+            //        {
+            //            Value = reader["Value"].ToString(),
+            //            Text = reader["Text"].ToString()
+            //        };
+
+            //        list.Add(data);
+            //    }
+            //    con.Close();
+
+            //    return list;
+            //}
+
+            List<User> joinedUserList 
+                = _context.User
+                    .Where(x => x.Level != "2-1" && x.Ismaster == false)
+                    .Where(x=>x.Department == input.SearchKey || input.SearchKey == "")
+                    .ToList();
+            List<DDL> userDDLList = new List<DDL>();
+
+            foreach (User item in joinedUserList)
             {
-                List<DDL> list = new List<DDL>();
-                SqlCommand cmd = new SqlCommand("P_Get_UserList", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@Department", input.SearchKey);
-                cmd.Parameters.AddWithValue("@UserId", input.Userid);
-
-                con.Open();
-
-                IDataReader reader = cmd.ExecuteReader();
-
-
-                while (reader.Read())
-                {
-                    DDL data = new DDL()
-                    {
-                        Value = reader["Value"].ToString(),
-                        Text = reader["Text"].ToString()
-                    };
-
-                    list.Add(data);
-                }
-                con.Close();
-
-                return list;
+                DDL tempDDL = new DDL();
+                tempDDL.Text = item.Name;
+                tempDDL.Value = item.Id;
+                userDDLList.Add(tempDDL);
             }
+
+            return userDDLList;
         }
 
         [HttpPost("Logout")]

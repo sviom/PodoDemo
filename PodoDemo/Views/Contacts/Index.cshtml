@@ -15,7 +15,7 @@
         SetBasicElement(@Html.Raw(Model));
         // 검색 조건 키 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권한
         GetOptionDDL('1', 'accountCustomerType', SetoptionTag, '', true, false, false);
-        GetUserDDL('1-1', '@ViewBag.UserId', 'Ownerid', SetoptionTag, '', true, false, false); // 담당자
+        GetUserDDL("", '@ViewBag.UserId', 'Ownerid', SetoptionTag, '', true, false, false); // 담당자
 
         $('#contactList').on('rowdoubleclick', function (event) {
             var args = event.args;

@@ -9,7 +9,7 @@
         SetBasicElement();// 기본적으로 그리는 화면 내용
         SetContactsElement(@Html.Raw(ViewData["connctedContactList"]));             // 연결된 연락처 표시
         // 부서값 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권한
-        GetUserDDL('1-1', '@Model.Ownerid', 'Ownerid', SetoptionTag, '@Model.Ownerid', false, false, false);
+        GetUserDDL("", '@Model.Ownerid', 'Ownerid', SetoptionTag, '@Model.Ownerid', false, false, false);
 
         // 연결된 연락처 정보
         $('#contactList').on('rowdoubleclick', function (event) {

@@ -336,10 +336,10 @@ namespace PodoDemo.Controllers
                     // 권한 추가
                     UserAuth newMenuUserAuth = new UserAuth() {
                         Userid = HttpContext.Session.GetString("userId"),
-                        Read= "5-3",
-                        Modify  = "5-3",
-                        Write = "5-3",
-                        Delete = "5-3",
+                        Read= "4-3",
+                        Modify  = "4-3",
+                        Write = "4-3",
+                        Delete = "4-3",
                         Submenuid = subMenu.Id,
                         Createdate = DateTime.Now,
                         Createuser = HttpContext.Session.GetString("userId"),
