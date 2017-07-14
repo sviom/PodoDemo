@@ -172,7 +172,7 @@ namespace PodoDemo.Controllers
                     long oldOrder = sub.SingleOrDefault(x => x.Id == mainMenu.Id).Order;
 
                     // 
-                    if (sub.Any(e => e.Order == mainMenu.Order))
+                    if (sub.Any(e => e.Order == mainMenu.Order) && oldOrder != mainMenu.Order)
                     {
                         // 수정하고 있는 메뉴창에서 입력한 Order가 이미 존재한다면 교체
                         Menu exist = sub.SingleOrDefault(x => x.Order == mainMenu.Order);
@@ -460,7 +460,7 @@ namespace PodoDemo.Controllers
 
                     var sub = _context.SubMenu.AsNoTracking().Where(x => x.Mainmenuid == subMenu.Mainmenuid);      // 해당 대메뉴가 가지고 있는 서브메뉴들
                     int oldOrder = sub.SingleOrDefault(x => x.Id == subMenu.Id).Order;              // 수정하고 있는 세부메뉴의 Order
-                    if (sub.Any(e => e.Order == subMenu.Order))
+                    if (sub.Any(e => e.Order == subMenu.Order) && oldOrder != subMenu.Order)
                     {
                         // 수정하고 있는 세부메뉴창에서 입력한 Order가 이미 존재한다면 교체
                         SubMenu exist = sub.SingleOrDefault(x => x.Order == subMenu.Order);

@@ -43,7 +43,7 @@ namespace PodoDemo.Controllers
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
 
-            // 사용자 수정 권한 체크
+            // 사용자 읽기 권한 체크
             if (_userAuth.Read.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
@@ -220,33 +220,7 @@ namespace PodoDemo.Controllers
             ViewData["Modify"] = _userAuth.Modify;
             ViewData["Delete"] = _userAuth.Delete;
 
-            // 최종 관리자는 아무거나 수정 가능
-            if (_context.User.Where(x => x.Id == HttpContext.Session.GetString("userId")).Single().Ismaster)
-            {
-                ViewData["Modify"] = _userAuth.Modify;
-                ViewData["Delete"] = _userAuth.Delete;
-            }
-            else
-            {
-                // 담당자가 아니면 수정을 못하게 한다.
-                if (!_userAuth.Modify.Equals("4-3") && HttpContext.Session.GetString("userId").Equals(account.Ownerid))
-                {
-                    ViewData["Modify"] = _userAuth.Modify;
-                }
-                else
-                {
-                    ViewData["Modify"] = "4-3";
-                }
-                // 담당자가 아니면 삭제를 못하게 한다.
-                if (!_userAuth.Delete.Equals("4-3") && HttpContext.Session.GetString("userId").Equals(account.Ownerid))
-                {
-                    ViewData["Delete"] = _userAuth.Delete;
-                }
-                else
-                {
-                    ViewData["Delete"] = "4-3";
-                }
-            }
+            
 
             return View(account);
         }
@@ -261,12 +235,10 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Accountid,Name,Phone,Fax,Homepage,Ceo,Postcode,Address,Addresscity,Addressdetail,Addresstype,Biznum,Founddate,Detail,Ownerid,Createuser,Createdate,Modifydate,Modifyuser")] Account account)
         {
-            if (!_context.User.Where(x => x.Id == HttpContext.Session.GetString("userId")).Single().Ismaster)
+            // 권한 검사
+            if (_userAuth.Modify.Equals("4-3"))
             {
-                if (_userAuth.Modify.Equals("4-3") || HttpContext.Session.GetString("userId") != account.Ownerid)
-                {
-                    return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
-                }
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
 
             if (id != account.Accountid)
@@ -312,6 +284,12 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Delete(long? id)
         {
+            // 권한 검사
+            if (_userAuth.Delete.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (id == null)
             {
                 return NotFound();

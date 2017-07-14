@@ -307,7 +307,7 @@ namespace PodoDemo.Controllers
                     long oldOrder = sub.SingleOrDefault(x => x.Optionid == optionmasterDetail.Optionid).Order;
 
                     // 기존 순서 존재 시
-                    if (sub.Any(e => e.Order == optionmasterDetail.Order))
+                    if (sub.Any(e => e.Order == optionmasterDetail.Order) && oldOrder != optionmasterDetail.Order)
                     {
                         // 수정하고 있는 세부메뉴창에서 입력한 Order가 이미 존재한다면 교체
                         OptionMasterDetail exist = sub.SingleOrDefault(x => x.Order == optionmasterDetail.Order);

@@ -42,7 +42,7 @@ namespace PodoDemo.Controllers
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
 
-            // 사용자 수정 권한 체크
+            // 사용자 읽기 권한 체크
             if (_userAuth.Read.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
@@ -118,7 +118,7 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Contactid,Name,Department,Accountid,Email,Phone,Mobile,Detail,Bossid,Createdate,Createuser,Modifydate,Modifyuser,Isdeleted,Ownerid")] Contact contact)
         {
-            // 사용자 수정 권한 체크
+            // 사용자 쓰기 권한 체크
             if (_userAuth.Write.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
@@ -175,34 +175,9 @@ namespace PodoDemo.Controllers
 
             ViewData["Read"] = _userAuth.Read;
             ViewData["Write"] = _userAuth.Write;
-
-            if (_context.User.Where(x => x.Id == HttpContext.Session.GetString("userId")).Single().Ismaster)
-            {
-                ViewData["Modify"] = _userAuth.Modify;
-                ViewData["Delete"] = _userAuth.Delete;
-            }
-            else
-            {
-                // 담당자가 아니면 수정을 못하게 한다.
-                if (!_userAuth.Modify.Equals("4-3") && HttpContext.Session.GetString("userId").Equals(contact.Ownerid))
-                {
-                    ViewData["Modify"] = _userAuth.Modify;
-                }
-                else
-                {
-                    ViewData["Modify"] = "4-3";
-                }
-                // 담당자가 아니면 삭제를 못하게 한다.
-                if (!_userAuth.Delete.Equals("4-3") && HttpContext.Session.GetString("userId").Equals(contact.Ownerid))
-                {
-                    ViewData["Delete"] = _userAuth.Delete;
-                }
-                else
-                {
-                    ViewData["Delete"] = "4-3";
-                }
-            }
-
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+            
             return View(contact);
         }
 
@@ -216,8 +191,8 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Contactid,Name,Department,Accountid,Email,Phone,Mobile,Detail,Bossid,Createdate,Createuser,Modifydate,Modifyuser,Isdeleted,Ownerid")] Contact contact)
         {
-            // 사용자 수정 권한 체크 및 담당자가 아니면 수정을 못하게 한다.
-            if (_userAuth.Modify.Equals("4-3") || HttpContext.Session.GetString("userId") != contact.Ownerid)
+            // 사용자 수정 권한 체크
+            if (_userAuth.Modify.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
@@ -266,6 +241,12 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Delete(long? id)
         {
+            // 사용자 삭제 권한 체크
+            if (_userAuth.Delete.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (id == null)
             {
                 return NotFound();
