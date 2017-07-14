@@ -31,7 +31,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public UserAuth CheckUseauth(string userId, string submenuId)
         {
-            UserAuth _userauth = 
+            UserAuth _userauth =
                 _context.UserAuth
                 .Where(x => x.Userid.Equals(userId) && x.Submenuid.Equals(submenuId))
                 .SingleOrDefault();
@@ -47,32 +47,18 @@ namespace PodoDemo.Controllers
         [HttpPost("GetOptionDDL")]
         public List<DDL> GetOptionDDL([FromBody]DDL input)
         {
-            using (SqlConnection con = new SqlConnection(DatabaseUtil._connString.DBConnectionString))
+            List<DDL> list = new List<DDL>();
+            var optionList = _context.OptionMasterDetail.Where(x => x.Isused == true && x.Masterid == Convert.ToDouble(input.SearchKey)).ToList();
+            foreach (OptionMasterDetail item in optionList)
             {
-                SqlCommand cmd = new SqlCommand("P_Get_Option", con)
+                DDL data = new DDL()
                 {
-                    CommandType = CommandType.StoredProcedure
+                    Value = item.Optionid,
+                    Text = item.Name
                 };
-                cmd.Parameters.AddWithValue("@V_MASTERID", input.SearchKey);
-
-                con.Open();
-
-                IDataReader reader = cmd.ExecuteReader();
-
-                List<DDL> list = new List<DDL>();
-                while (reader.Read())
-                {
-                    DDL data = new DDL()
-                    {
-                        Value = reader["Value"].ToString(),
-                        Text = reader["Text"].ToString(),
-                        IsDefault = Convert.ToBoolean(reader["isDefault"].ToString())
-                    };
-                    list.Add(data);
-                }
-
-                return list;
+                list.Add(data);
             }
+            return list;
         }
 
         /// <summary>
@@ -83,10 +69,11 @@ namespace PodoDemo.Controllers
         [HttpPost("GetJoinedUserDDL")]
         public List<DDL> GetJoinedUserDDL([FromBody]DDL input)
         {
-            List<User> joinedUserList 
+            // 사용자 중 CRM ADMIN은 가져오지 않는다.
+            List<User> joinedUserList
                 = _context.User
                     .Where(x => x.Level != "2-1" && x.Ismaster == false)
-                    .Where(x=>x.Department == input.SearchKey || input.SearchKey == "")
+                    .Where(x => x.Department == input.SearchKey || input.SearchKey == "")
                     .ToList();
             List<DDL> userDDLList = new List<DDL>();
 

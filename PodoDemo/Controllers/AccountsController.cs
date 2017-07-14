@@ -20,7 +20,6 @@ namespace PodoDemo.Controllers
         public AccountsController(PodoDemoNContext context)
         {
             _context = context;
-
         }
 
         /// <summary>

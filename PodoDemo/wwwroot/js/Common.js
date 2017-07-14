@@ -116,6 +116,7 @@ function GetOptionDDL(searchKey, extraParam, callbackFnc, selval, isAll, isEmpty
         async: false,
         dataType: "json",
         success: function (result) {
+            // 프로퍼티 소문자 대문자로 변환
             var newResult = new Array();
             for (var i = 0; i < result.length; i++) {
                 var resultObject = new Object();
