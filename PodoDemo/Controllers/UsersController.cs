@@ -33,7 +33,7 @@ namespace PodoDemo.Controllers
                             .SingleAsync();
 
             // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
@@ -71,7 +71,7 @@ namespace PodoDemo.Controllers
         public IActionResult Create()
         {
             // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
@@ -89,6 +89,12 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Pw,Name,Engname,Email,Phone,Mobile,Department,Position,Excelauth,Level")] User user)
         {
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (ModelState.IsValid)
             {
                 user.Createdate = DateTime.Now;
@@ -152,7 +158,7 @@ namespace PodoDemo.Controllers
             }
 
             // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
@@ -180,6 +186,12 @@ namespace PodoDemo.Controllers
             if (id != user.Id)
             {
                 return NotFound();
+            }
+
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
 
             if (ModelState.IsValid)
@@ -234,6 +246,12 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             var user = await _context.User.SingleOrDefaultAsync(m => m.Id == id);
             _context.User.Remove(user);
             await _context.SaveChangesAsync();

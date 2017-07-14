@@ -113,7 +113,10 @@ namespace PodoDemo.Controllers
         [HttpPost]
         public async Task<string> GetAuthList()
         {
-            List<OptionMasterDetail> authList = await _context.OptionMasterDetail.Where(x => x.Masterid == 4).ToListAsync();
+            List<OptionMasterDetail> authList 
+                = await _context.OptionMasterDetail
+                                .Where(x => x.Masterid == 4 && x.Isused == true)
+                                .ToListAsync();
             List<DDL> authListDDL = new List<DDL>();
             foreach (OptionMasterDetail item in authList)
             {
@@ -131,6 +134,12 @@ namespace PodoDemo.Controllers
         [HttpPost]
         public async Task<bool> EditUserauthList([FromBody]List<UserAuth> userAuthList)
         {
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            {
+                return false;
+            }
+
             bool editResult = false;
             try
             {
