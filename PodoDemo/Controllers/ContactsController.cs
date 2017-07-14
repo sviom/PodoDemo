@@ -40,7 +40,7 @@ namespace PodoDemo.Controllers
             else
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
-            }            
+            }
 
             // 사용자 수정 권한 체크
             if (_userAuth.Read.Equals("4-3"))
@@ -137,7 +137,7 @@ namespace PodoDemo.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            
+
             return View(contact);
         }
 
@@ -175,24 +175,32 @@ namespace PodoDemo.Controllers
 
             ViewData["Read"] = _userAuth.Read;
             ViewData["Write"] = _userAuth.Write;
-            
-            // 담당자가 아니면 수정을 못하게 한다.
-            if (!_userAuth.Modify.Equals("4-3") && HttpContext.Session.GetString("userId").Equals(contact.Ownerid))
+
+            if (_context.User.Where(x => x.Id == HttpContext.Session.GetString("userId")).Single().Ismaster)
             {
                 ViewData["Modify"] = _userAuth.Modify;
-            }
-            else
-            {
-                ViewData["Modify"] = "4-3";
-            }
-            // 담당자가 아니면 삭제를 못하게 한다.
-            if (!_userAuth.Delete.Equals("4-3") && HttpContext.Session.GetString("userId").Equals(contact.Ownerid))
-            {
                 ViewData["Delete"] = _userAuth.Delete;
             }
             else
             {
-                ViewData["Delete"] = "4-3";
+                // 담당자가 아니면 수정을 못하게 한다.
+                if (!_userAuth.Modify.Equals("4-3") && HttpContext.Session.GetString("userId").Equals(contact.Ownerid))
+                {
+                    ViewData["Modify"] = _userAuth.Modify;
+                }
+                else
+                {
+                    ViewData["Modify"] = "4-3";
+                }
+                // 담당자가 아니면 삭제를 못하게 한다.
+                if (!_userAuth.Delete.Equals("4-3") && HttpContext.Session.GetString("userId").Equals(contact.Ownerid))
+                {
+                    ViewData["Delete"] = _userAuth.Delete;
+                }
+                else
+                {
+                    ViewData["Delete"] = "4-3";
+                }
             }
 
             return View(contact);
@@ -258,7 +266,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Delete(long? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }

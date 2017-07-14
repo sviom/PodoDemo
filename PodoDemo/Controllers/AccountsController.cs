@@ -217,26 +217,36 @@ namespace PodoDemo.Controllers
 
             ViewData["Read"] = _userAuth.Read;
             ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
 
-            // 담당자가 아니면 수정을 못하게 한다.
-            if (!_userAuth.Modify.Equals("4-3") && HttpContext.Session.GetString("userId").Equals(account.Ownerid))
+            // 최종 관리자는 아무거나 수정 가능
+            if (_context.User.Where(x => x.Id == HttpContext.Session.GetString("userId")).Single().Ismaster)
             {
                 ViewData["Modify"] = _userAuth.Modify;
-            }
-            else
-            {
-                ViewData["Modify"] = "4-3";
-            }
-            // 담당자가 아니면 삭제를 못하게 한다.
-            if (!_userAuth.Delete.Equals("4-3") && HttpContext.Session.GetString("userId").Equals(account.Ownerid))
-            {
                 ViewData["Delete"] = _userAuth.Delete;
             }
             else
             {
-                ViewData["Delete"] = "4-3";
+                // 담당자가 아니면 수정을 못하게 한다.
+                if (!_userAuth.Modify.Equals("4-3") && HttpContext.Session.GetString("userId").Equals(account.Ownerid))
+                {
+                    ViewData["Modify"] = _userAuth.Modify;
+                }
+                else
+                {
+                    ViewData["Modify"] = "4-3";
+                }
+                // 담당자가 아니면 삭제를 못하게 한다.
+                if (!_userAuth.Delete.Equals("4-3") && HttpContext.Session.GetString("userId").Equals(account.Ownerid))
+                {
+                    ViewData["Delete"] = _userAuth.Delete;
+                }
+                else
+                {
+                    ViewData["Delete"] = "4-3";
+                }
             }
-
 
             return View(account);
         }
@@ -251,10 +261,12 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Accountid,Name,Phone,Fax,Homepage,Ceo,Postcode,Address,Addresscity,Addressdetail,Addresstype,Biznum,Founddate,Detail,Ownerid,Createuser,Createdate,Modifydate,Modifyuser")] Account account)
         {
-            // 사용자 수정 권한 체크 및 담당자가 아니면 수정을 못하게 한다.
-            if (_userAuth.Modify.Equals("4-3") || HttpContext.Session.GetString("userId") != account.Ownerid)
+            if (!_context.User.Where(x => x.Id == HttpContext.Session.GetString("userId")).Single().Ismaster)
             {
-                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+                if (_userAuth.Modify.Equals("4-3") || HttpContext.Session.GetString("userId") != account.Ownerid)
+                {
+                    return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+                }
             }
 
             if (id != account.Accountid)
@@ -322,7 +334,15 @@ namespace PodoDemo.Controllers
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
-            return View("Index");
+
+            ViewBag.isPop = false;
+            // 권한
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
+            return RedirectToAction("Index", "Accounts");
         }
     }
 }

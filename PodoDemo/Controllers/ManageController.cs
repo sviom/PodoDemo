@@ -364,7 +364,8 @@ namespace PodoDemo.Controllers
                         UserAuth newMenuUserAuth = new UserAuth();
                         newMenuUserAuth.Userid = item.Id;
 
-                        if(loginedUser.Level == "2-1" || loginedUser.Level == "시스템관리자")
+                        // 메뉴 생성 시에도 최종관리자는 모든 권한 획득
+                        if(item.Level == "2-1" || item.Level == "시스템관리자" || item.Ismaster == true)
                         {
                             newMenuUserAuth.Read = "4-1";
                             newMenuUserAuth.Modify = "4-1";
