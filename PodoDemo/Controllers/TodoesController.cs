@@ -21,6 +21,26 @@ namespace PodoDemo.Controllers
         {
             _context = context;    
         }
+        /// <summary>
+        /// 사용자 권한 넣기
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult CreaetUserAuth()
+        {
+            CommonAPIController ss = new CommonAPIController(_context);
+            string userid = HttpContext.Session.GetString("userId");
+
+            // 사용자 세션 체크
+            if (!string.IsNullOrEmpty(userid))
+            {
+                _userAuth = ss.CheckUseauth(userid, "3-2");
+                return null;
+            }
+            else
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+        }
 
         /// <summary>
         /// 할일 페이지로 이동
@@ -29,19 +49,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Index(bool? isPop)
         {
-            CommonAPIController _commonAPI = new CommonAPIController(_context);
-            _userAuth = new UserAuth();
-            string userid = HttpContext.Session.GetString("userId");
-
-            // 사용자 세션 체크
-            if (!string.IsNullOrEmpty(userid))
-            {
-                _userAuth = _commonAPI.CheckUseauth(userid, "3-2");
-            }
-            else
-            {
-                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
-            }
+            CreaetUserAuth();
 
             // 사용자 읽기 권한 체크
             if (_userAuth.Read.Equals("4-3"))
@@ -102,6 +110,8 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public IActionResult Create()
         {
+            CreaetUserAuth();
+
             // 사용자 권한
             ViewData["Read"] = _userAuth.Read;
             ViewData["Write"] = _userAuth.Write;

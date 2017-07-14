@@ -5,10 +5,10 @@ namespace PodoDemo.Models
 {
     public partial class SubMenu
     {
-        public SubMenu()
-        {
-            //UserAuth = new HashSet<UserAuth>();
-        }
+        //public SubMenu()
+        //{
+        //    //UserAuth = new HashSet<UserAuth>();
+        //}
 
         public string Id { get; set; }
         public long Mainmenuid { get; set; }

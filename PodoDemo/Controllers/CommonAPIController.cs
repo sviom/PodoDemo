@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Data;
 using PodoDemo.Models.InnerModels;
 using PodoDemo.Models;
+using Newtonsoft.Json;
 
 namespace PodoDemo.Controllers
 {
@@ -96,7 +97,7 @@ namespace PodoDemo.Controllers
         public string GetSubmenuUrl([FromBody]SubMenu inSubmenu)
         {
             SubMenu _submenu = _context.SubMenu.Where(x => x.Id == inSubmenu.Id).SingleOrDefault();
-            return _submenu.Menuurl;
-        }
+            return JsonConvert.SerializeObject(_submenu);
+        }        
     }
 }

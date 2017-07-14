@@ -36,7 +36,8 @@
             @if (ViewBag.isPop)
             {
             <text>
-            window.opener.SetContactsInfo(data.Contactid, data.Name);
+            if (typeof window.opener.SetContactsInfo == "function") { window.opener.SetContactsInfo(data.Contactid, data.Name); }
+            if (typeof window.opener.SetRegardingInfo == "function") { window.opener.SetRegardingInfo(data.Accountid, data.Name) }
             window.close();
             </text>
             }else

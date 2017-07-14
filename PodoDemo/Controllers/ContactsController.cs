@@ -14,11 +14,31 @@ namespace PodoDemo.Controllers
     public class ContactsController : Controller
     {
         private readonly PodoDemoNContext _context;
-        private static UserAuth _userAuth;
+        private static UserAuth _userAuth = new UserAuth();
 
         public ContactsController(PodoDemoNContext context)
         {
             _context = context;
+        }
+        /// <summary>
+        /// 사용자 권한 넣기
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult CreaetUserAuth()
+        {
+            CommonAPIController ss = new CommonAPIController(_context);
+            string userid = HttpContext.Session.GetString("userId");
+
+            // 사용자 세션 체크
+            if (!string.IsNullOrEmpty(userid))
+            {
+                _userAuth = ss.CheckUseauth(userid, "1-2");
+                return null;
+            }
+            else
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
         }
 
         /// <summary>
@@ -28,19 +48,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Index(bool? isPop)
         {
-            CommonAPIController ss = new CommonAPIController(_context);
-            _userAuth = new UserAuth();
-            string userid = HttpContext.Session.GetString("userId");
-
-            // 사용자 세션 체크
-            if (!string.IsNullOrEmpty(userid))
-            {
-                _userAuth = ss.CheckUseauth(userid, "1-2");
-            }
-            else
-            {
-                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
-            }
+            CreaetUserAuth();
 
             // 사용자 읽기 권한 체크
             if (_userAuth.Read.Equals("4-3"))
@@ -94,6 +102,8 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public IActionResult Create()
         {
+            CreaetUserAuth();
+
             // 사용자에게 쓰기 권한이 있는지 체크 
             if (_userAuth.Write.Equals("4-3"))
             {
@@ -118,6 +128,8 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Contactid,Name,Department,Accountid,Email,Phone,Mobile,Detail,Bossid,Createdate,Createuser,Modifydate,Modifyuser,Isdeleted,Ownerid")] Contact contact)
         {
+            CreaetUserAuth();
+
             // 사용자 쓰기 권한 체크
             if (_userAuth.Write.Equals("4-3"))
             {
@@ -148,6 +160,8 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Edit(long? id)
         {
+            CreaetUserAuth();
+
             if (id == null)
             {
                 return NotFound();
@@ -163,7 +177,15 @@ namespace PodoDemo.Controllers
             ViewData["Accountid"]
                 = new SelectList(_context.Account, "Accountid", "Biznum", contact.Accountid).SelectedValue;
             ViewData["Accountname"] = _context.Account.SingleOrDefault(a => a.Accountid == contact.Accountid).Name;
-            ViewData["Bossname"] = _context.Contact.SingleOrDefault(c => c.Contactid == contact.Bossid).Name;
+
+            if (_context.Contact.SingleOrDefault(c => c.Contactid == contact.Bossid) != null)
+            {
+                ViewData["Bossname"] = _context.Contact.SingleOrDefault(c => c.Contactid == contact.Bossid).Name;
+            }
+            else
+            {
+                ViewData["Bossname"] = null;
+            }
 
             ViewData["userId"] = HttpContext.Session.GetString("userId");
 
@@ -177,7 +199,7 @@ namespace PodoDemo.Controllers
             ViewData["Write"] = _userAuth.Write;
             ViewData["Modify"] = _userAuth.Modify;
             ViewData["Delete"] = _userAuth.Delete;
-            
+
             return View(contact);
         }
 
@@ -191,6 +213,8 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Contactid,Name,Department,Accountid,Email,Phone,Mobile,Detail,Bossid,Createdate,Createuser,Modifydate,Modifyuser,Isdeleted,Ownerid")] Contact contact)
         {
+            CreaetUserAuth();
+
             // 사용자 수정 권한 체크
             if (_userAuth.Modify.Equals("4-3"))
             {
@@ -241,6 +265,8 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Delete(long? id)
         {
+            CreaetUserAuth();
+
             // 사용자 삭제 권한 체크
             if (_userAuth.Delete.Equals("4-3"))
             {

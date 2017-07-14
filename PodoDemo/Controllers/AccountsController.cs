@@ -15,11 +15,32 @@ namespace PodoDemo.Controllers
     public class AccountsController : Controller
     {
         private readonly PodoDemoNContext _context;
-        private static UserAuth _userAuth;
+        private static UserAuth _userAuth = new UserAuth();
 
         public AccountsController(PodoDemoNContext context)
         {
             _context = context;
+        }
+
+        /// <summary>
+        /// 사용자 권한 넣기
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult CreaetUserAuth()
+        {
+            CommonAPIController ss = new CommonAPIController(_context);
+            string userid = HttpContext.Session.GetString("userId");
+
+            // 사용자 세션 체크
+            if (!string.IsNullOrEmpty(userid))
+            {
+                _userAuth = ss.CheckUseauth(userid, "1-1");
+                return null;
+            }
+            else
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
         }
 
         /// <summary>
@@ -29,19 +50,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Index(bool? isPop)
         {
-            CommonAPIController ss = new CommonAPIController(_context);
-            _userAuth = new UserAuth();
-            string userid = HttpContext.Session.GetString("userId");
-
-            // 사용자 세션 체크
-            if (!string.IsNullOrEmpty(userid))
-            {
-                _userAuth = ss.CheckUseauth(userid, "1-1");
-            }
-            else
-            {
-                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
-            }
+            CreaetUserAuth();
 
             // 사용자 읽기 권한 체크
             if (_userAuth.Read.Equals("4-3"))
@@ -122,6 +131,8 @@ namespace PodoDemo.Controllers
             ViewBag.AccountPropertyTypeList = propertyTypeList;
             ViewBag.AccountPropertyList = propertyList;
 
+            CreaetUserAuth();
+
             // 사용자 권한
             ViewData["Read"] = _userAuth.Read;
             ViewData["Write"] = _userAuth.Write;
@@ -146,6 +157,8 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Account account)
         {
+            CreaetUserAuth();
+
             // 사용자 수정 권한 체크
             if (_userAuth.Write.Equals("4-3"))
             {
@@ -185,6 +198,8 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Edit(long? id)
         {
+            CreaetUserAuth();
+
             if (id == null)
             {
                 return NotFound();
@@ -235,6 +250,8 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Accountid,Name,Phone,Fax,Homepage,Ceo,Postcode,Address,Addresscity,Addressdetail,Addresstype,Biznum,Founddate,Detail,Ownerid,Createuser,Createdate,Modifydate,Modifyuser")] Account account)
         {
+            CreaetUserAuth();
+
             // 권한 검사
             if (_userAuth.Modify.Equals("4-3"))
             {
@@ -284,6 +301,8 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Delete(long? id)
         {
+            CreaetUserAuth();
+
             // 권한 검사
             if (_userAuth.Delete.Equals("4-3"))
             {

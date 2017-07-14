@@ -2,6 +2,12 @@
 
 @{
     ViewData["Title"] = "할일";
+
+    // 팝업 여부 확인
+    if (ViewBag.isPop)
+    {
+        Layout = "~/Views/Shared/Popup_Layout.cshtml";
+    }
 }
 
 <script type="text/javascript">
@@ -16,6 +22,37 @@
         // 고객타입, 담당자 변경 시 마다 거래처 재검색
         $("#State, #Ownerid").change(function () {
             SearchTodoes();
+        });
+
+        $('#todoList').on('rowdoubleclick', function (event) {
+            var args = event.args;
+            // row's bound index.
+            var boundIndex = args.rowindex;
+            // row's visible index.
+            var visibleIndex = args.visibleindex;
+            // right click.
+            var rightclick = args.rightclick;
+            // original event.
+            var ev = args.originalEvent;
+
+            var data = $('#todoList').jqxGrid('getrowdata', boundIndex);
+
+            @*
+                팝업 여부에 따라 팝업이면 기본적으로 거래처 검색 페이지라고 생각해야 한다.
+            *@
+            @if (ViewBag.isPop)
+            {
+                <text>
+            if (typeof window.opener.SetRegardingInfo == "function") { window.opener.SetRegardingInfo(data.Accountid, data.Name) }
+            window.close();
+                </text>
+            }
+            else
+            {
+                <text>
+            location.href = "/Accounts/Edit/" + data.Accountid;
+                </text>
+            }
         });
     });
 
@@ -80,6 +117,7 @@
         // 리스트에 반영
         SetBasicElement(todoListRaw);
     }
+
 </script>
 
 <div class="View">

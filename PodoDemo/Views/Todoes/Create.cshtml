@@ -39,7 +39,6 @@
             return false;
         }
 
-
         if (startdateValue == "") {
             alert("시작날짜는 반드시 지정해주세요.");
             return false;
@@ -57,10 +56,14 @@
     function SearchRegardingObjectPop() {
         var inSubmenu = new Object();
         inSubmenu.Id = $("#RegardingTypeList option:selected").val();
-        console.log(window.location.origin);
-        var ss = ExecuteAjax("POST", window.location.origin + "/api/CommonAPI/GetSubmenuUrl", "json", "application/json", inSubmenu);
-        console.log("메뉴URL :   " + ss);
-        //WindowOpenScroll("/Contacts/Index?isPop=true", "", 350, 600, 100, 100);
+
+        var menu = ExecuteAjax("POST", window.location.origin + "/api/CommonAPI/GetSubmenuUrl", "json", "application/json", JSON.stringify(inSubmenu));
+        WindowOpenScroll(menu.Menuurl+ "?isPop=true", "", 350, 600, 100, 100);
+    }
+
+    function SetRegardingInfo(id, name) {
+        $("#Regardingobjectid").val(id);
+        $("#RegardingobjectName").val(name);        
     }
 </script>
 
@@ -118,8 +121,8 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" id="RegardingobjectName" name="RegardingobjectName" class="form-control" 
-                           placeholder="선택된 관련항목이 표시됩니다." aria-describedby="regardingobject name" readonly="readonly"/>
+                    <input type="text" id="RegardingobjectName" name="RegardingobjectName" class="form-control"
+                           placeholder="선택된 관련항목이 표시됩니다." aria-describedby="regardingobject name" readonly="readonly" />
                 </div>
             </div>
             <div class="form-group">
