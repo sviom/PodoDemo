@@ -17,10 +17,11 @@ namespace PodoDemo.Controllers
     public class OptionMastersController : Controller
     {
         private readonly PodoDemoNContext _context;
+        private static User loginedUser = new Models.User();
 
         public OptionMastersController(PodoDemoNContext context)
         {
-            _context = context;    
+            _context = context;
         }
 
         /// <summary>
@@ -29,7 +30,23 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Index()
         {
-            List<OptionMaster> optionmasterList = await _context.OptionMaster.ToListAsync();
+            loginedUser
+                = await _context.User
+                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
+                            .SingleAsync();
+
+            // 옵션의 시스템 여부 및 기타 여부에 따른 옵션 표시 항목 제한
+            List<OptionMaster> optionmasterList = new List<OptionMaster>();
+            if (loginedUser.Ismaster && (loginedUser.Level == "2-1" || loginedUser.Level == "시스템관리자"))
+            {
+                optionmasterList = await _context.OptionMaster.ToListAsync();
+            }
+            else
+            {
+                optionmasterList = await _context.OptionMaster.Where(x => x.Issystem == false).ToListAsync();
+            }
+
+
             return View((Object)JsonConvert.SerializeObject(optionmasterList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
         }
 
@@ -41,6 +58,7 @@ namespace PodoDemo.Controllers
         public IActionResult MasterCreate([FromQuery]bool isPop)
         {
             ViewBag.isPop = isPop;
+            ViewBag.Ismaster = loginedUser.Ismaster;
             return View();
         }
 
@@ -52,7 +70,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> MasterCreate(bool isPop, [Bind("Name,Description,Isused,Issystem")] OptionMaster optionMaster)
+        public async Task<IActionResult> MasterCreate(bool isPop, [Bind("Name,Description,Isused")] OptionMaster optionMaster)
         {
             if (ModelState.IsValid)
             {
@@ -90,6 +108,8 @@ namespace PodoDemo.Controllers
             }
 
             ViewBag.isPop = isPop;
+            ViewBag.Ismaster = loginedUser.Ismaster;
+
             return View(optionMaster);
         }
 
@@ -158,7 +178,7 @@ namespace PodoDemo.Controllers
 
             return RedirectToAction("Close", "Home");
         }
-        
+
         /// <summary>
         /// 대메뉴 더블클릭할 때 상세 메뉴 목록 가져오기
         /// </summary>
@@ -175,7 +195,7 @@ namespace PodoDemo.Controllers
                 }
                 else
                 {
-                    List<OptionMasterDetail> optiondetailList 
+                    List<OptionMasterDetail> optiondetailList
                         = await _context.OptionMasterDetail.Where(x => x.Masterid == Id).ToListAsync();
 
                     return JsonConvert.SerializeObject(optiondetailList);
@@ -216,7 +236,7 @@ namespace PodoDemo.Controllers
                 optionmasterDetail.Modifydate = DateTime.Now;
                 optionmasterDetail.Modifyuser = HttpContext.Session.GetString("userId");
 
-                optionmasterDetail.Optionid = optionmasterDetail.Masterid + "-" + (_context.OptionMasterDetail.Where(x=>x.Masterid == optionmasterDetail.Masterid).Count() + 1);
+                optionmasterDetail.Optionid = optionmasterDetail.Masterid + "-" + (_context.OptionMasterDetail.Where(x => x.Masterid == optionmasterDetail.Masterid).Count() + 1);
 
                 _context.Add(optionmasterDetail);
                 await _context.SaveChangesAsync();

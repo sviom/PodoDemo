@@ -89,17 +89,20 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="col-md-4 control-label">시스템 여부</label>
-                <div class="col-md-8">
-                    <label class="radio-inline">
-                        <input type="radio" id="Issystem_T" name="Issystem" value="true" />예
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" id="Issystem_F" name="Issystem" value="false" />아니오
-                    </label>
+            @if (ViewBag.Ismaster)
+            {
+                <div class="form-group">
+                    <label class="col-md-4 control-label">시스템 여부</label>
+                    <div class="col-md-8">
+                        <label class="radio-inline">
+                            <input type="radio" id="Issystem_T" name="Issystem" value="true" />예
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" id="Issystem_F" name="Issystem" value="false" checked="checked" />아니오
+                        </label>
+                    </div>
                 </div>
-            </div>
+            }
 
             <div class="form-group">
                 <div class="col-md-offset-8 col-md-2 custom-row-btn-margin">

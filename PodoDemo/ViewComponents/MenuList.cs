@@ -25,12 +25,15 @@ namespace PodoDemo.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            User loginedUser = await _context.User.Where(x => x.Id == HttpContext.Session.GetString("userId")).SingleOrDefaultAsync();
+            User loginedUser
+                = await _context.User
+                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
+                            .SingleAsync();
 
             // 권한에 따른 대메뉴 출력
             List<MenuDisplay> query = new List<MenuDisplay>();
-            
-            if (loginedUser.Level == "2-1" || loginedUser.Level == "2-2")
+
+            if (loginedUser.Level == "2-1" || loginedUser.Level == "2-2" || loginedUser.Level == "시스템관리자" || loginedUser.Level == "CRM관리자")
             {
                 // 시스템관리자/CRM관리자
                 query = (from ua in _context.UserAuth
@@ -80,7 +83,7 @@ namespace PodoDemo.ViewComponents
             // 권한에 따른 세부메뉴 출력(관리자/최종관리자)
             List<MenuDisplay> subMenuDisplay = new List<MenuDisplay>();
 
-            if (loginedUser.Ismaster && loginedUser.Level == "2-1")
+            if (loginedUser.Ismaster && (loginedUser.Level == "2-1" || loginedUser.Level == "시스템관리자"))
             {
                 // 최종 관리자(트루인포 관리자)
                 subMenuDisplay
@@ -98,7 +101,7 @@ namespace PodoDemo.ViewComponents
                            IsManager = sm.Ismanager
                        }).ToList<MenuDisplay>();
             }
-            else if (loginedUser.Level == "2-2")
+            else if (loginedUser.Level == "2-2" || loginedUser.Level == "CRM관리자")
             {
                 // CRM 관리자(업체 관리자)
                 subMenuDisplay

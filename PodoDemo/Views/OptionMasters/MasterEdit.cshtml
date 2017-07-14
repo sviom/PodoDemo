@@ -23,8 +23,6 @@
     $(document).ready(function () {
         $("#Isused_T").prop("checked", "@isUsedChecked_T");
         $("#Isused_F").prop("checked", "@isUsedChecked_F");
-        $("#Issystem_T").prop("checked", "@issystem_T");
-        $("#Issystem_F").prop("checked", "@issystem_F");
     });
 
     // 옵션 수정 내용 저장
@@ -60,10 +58,6 @@
             return false;
         }
 
-        if (!$('input[name=Issystem]:checked').val()) {
-            alert("시스템여부에 체크해주세요.");
-            return false;
-        }
         return true;
     }
 </script>
@@ -117,17 +111,26 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="col-md-4 control-label">시스템 여부</label>
-                <div class="col-md-8">
-                    <label class="radio-inline">
-                        <input type="radio" id="Issystem_T" name="Issystem" value="true" />예
-                    </label>
-                    <label class="radio-inline">
-                        <input type="radio" id="Issystem_F" name="Issystem" value="false" />아니오
-                    </label>
+            @if (ViewBag.Ismaster)
+            {
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        $("#Issystem_T").prop("checked", "@issystem_T");
+                        $("#Issystem_F").prop("checked", "@issystem_F");
+                    });
+                </script>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">시스템 여부</label>
+                    <div class="col-md-8">
+                        <label class="radio-inline">
+                            <input type="radio" id="Issystem_T" name="Issystem" value="true" />예
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" id="Issystem_F" name="Issystem" value="false" />아니오
+                        </label>
+                    </div>
                 </div>
-            </div>
+            }
 
             <div class="form-group">
                 <div class="col-md-offset-6 col-md-2 custom-row-btn-margin">
