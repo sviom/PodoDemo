@@ -15,9 +15,9 @@
         GetUserDDL("", '@ViewBag.UserId', 'Ownerid', SetoptionTag, '', true, false, false);     // 담당자
         GetOptionDDL('5', 'State', SetoptionTag, '', true, false, false);                       // 상태
 
-        $("#jqdatetimeinput_Startdate").jqxDateTimeInput({ width: '100%', formatString: 'yyyy-MM-dd' });
+        $("#jqdatetimeinput_Startdate").jqxDateTimeInput({ width: '100%', formatString: 'yyyy-MM-dd' }).val("");
 
-        SetBasicElement("@Html.Raw(Model)");
+        SetBasicElement(@Html.Raw(Model));
 
         // 고객타입, 담당자 변경 시 마다 거래처 재검색
         $("#State, #Ownerid").change(function () {
@@ -43,14 +43,14 @@
             @if (ViewBag.isPop)
             {
                 <text>
-            if (typeof window.opener.SetRegardingInfo == "function") { window.opener.SetRegardingInfo(data.Accountid, data.Name) }
+            if (typeof window.opener.SetRegardingInfo == "function") { window.opener.SetRegardingInfo(data.Todoid, data.Name) }
             window.close();
                 </text>
             }
             else
             {
                 <text>
-            location.href = "/Accounts/Edit/" + data.Accountid;
+            location.href = "/Todoes/Edit/" + data.Todoid;
                 </text>
             }
         });
@@ -68,6 +68,7 @@
                     { name: 'Name', type: 'string' },
                     { name: 'Startdate', type: 'date' },
                     { name: 'Ownerid', type: 'string' },
+                    { name: 'Regardingobjectname', type: 'string' },
                     { name: 'State', type: 'string' }
                 ]
             };
@@ -95,8 +96,8 @@
                 columns: [
                     { text: "Todoid", datafield: "Todoid", hidden: true },
                     { text: "제목", datafield: "Name", align: 'center', cellsalign: 'left', width: '30%', minwidth: '100px' },
-                    { text: "관련항목", datafield: "Regardingobjectid", align: 'center', cellsalign: 'left', width: '20%', minwidth: '100px' },
-                    { text: "시작일", datafield: 'Startdate', align: 'center', cellsalign: 'center', width: '15%', minwidth: '100px' },
+                    { text: "관련항목", datafield: "Regardingobjectname", align: 'center', cellsalign: 'left', width: '20%', minwidth: '100px' },
+                    { text: "시작일", datafield: 'Startdate', align: 'center', cellsalign: 'center', width: '15%', minwidth: '100px', cellsformat: 'yyyy-MM-dd' },
                     { text: "상태", datafield: "State", align: 'center', cellsalign: 'center', width: '15%', minwidth: '100px' },
                     { text: '담당자', datafield: 'Ownerid', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
                 ]
@@ -107,13 +108,15 @@
     function SearchTodoes() {
         var SearchInfo = new Object();
         SearchInfo.Name = $("#Name").val();
-        SearchInfo.State = $("#State").val();
-        SearchInfo.Startdate = $("#Startdate").val();
+        SearchInfo.State = $("#State").val();        
         SearchInfo.Ownerid = $("#Ownerid").val();
+        // 값이 없으면 컨트롤러에서 인식 못해서 아예 없애면 기본값으로 들어감
+        if ($("#jqdatetimeinput_Startdate").jqxDateTimeInput('getText') != "") {
+            SearchInfo.Startdate = $("#jqdatetimeinput_Startdate").jqxDateTimeInput('getText');
+        }
 
-        //JSON.stringify(SearchInfo)
         var todoListRaw
-            = ExecuteAjax("POST", "/Todoes/Search", "json", "application/json", SearchInfo);
+            = ExecuteAjax("POST", "/Todoes/Search", "json", "application/json", JSON.stringify(SearchInfo));
         // 리스트에 반영
         SetBasicElement(todoListRaw);
     }

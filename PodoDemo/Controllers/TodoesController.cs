@@ -71,30 +71,43 @@ namespace PodoDemo.Controllers
             {
                 ViewBag.isPop = isPop;
             }
+            List<Todo> das = await _context.Todo.ToListAsync();
+
+            foreach (Todo item in das)
+            {
+                item.State = _context.OptionMasterDetail.Where(x => x.Optionid == item.State && x.Isused == true).Single().Name;
+                item.Ownerid = _context.User.Where(x => x.Id == item.Ownerid).Single().Name;
+            }
 
             ViewBag.UserId = HttpContext.Session.GetString("userId");
 
-            return View((Object)JsonConvert.SerializeObject(await _context.Todo.ToListAsync()));
+            return View((Object)JsonConvert.SerializeObject(das));
         }
         
         /// <summary>
         /// 할일 검색
         /// </summary>
         [HttpPost]
-        public string Search([FromBody]Todo todoSearch)
+        public string Search([FromBody]TodoSearch todoSearch)
         {
             List<Todo> todoList = new List<Todo>();
             try
             {
                 if (todoSearch != null)
                 {
-                    todoList = 
-                        _context.Todo
-                        .Where(x => x.Name.Contains(todoSearch.Name) || todoSearch.Name.Equals(""))
-                        .Where(x => x.State.Equals(todoSearch.State) || todoSearch.State.Equals(""))
-                        .Where(x => x.Startdate > todoSearch.Startdate || todoSearch.Startdate.Equals(""))
-                        .Where(x => x.Ownerid.Equals(todoSearch.Ownerid) || todoSearch.Ownerid.Equals(""))
-                        .ToList();
+                    todoList = (from todoes in _context.Todo
+                                where
+                                 (todoes.Name.Contains(todoSearch.Name) || todoSearch.Name.Equals(""))
+                                 && (todoes.State.Equals(todoSearch.State) || todoSearch.State.Equals(""))
+                                 && (todoes.Startdate >= todoSearch.Startdate || todoSearch.Startdate.Equals(DateTime.MinValue))
+                                 && (todoes.Ownerid.Equals(todoSearch.Ownerid) || todoSearch.Ownerid.Equals(""))
+                                select todoes).ToList();
+
+                    foreach (Todo item in todoList)
+                    {
+                        item.State = _context.OptionMasterDetail.Where(x => x.Optionid == item.State && x.Isused == true).Single().Name;
+                        item.Ownerid = _context.User.Where(x => x.Id == item.Ownerid).Single().Name;
+                    }
                 }
             }
             catch (Exception ex)

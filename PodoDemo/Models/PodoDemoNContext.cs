@@ -510,6 +510,12 @@ namespace PodoDemo.Models
                 entity.Property(e => e.Regardingobjectid)
                     .HasColumnName("regardingobjectid");
 
+                entity.Property(e => e.Regardingobjecttypeid)
+                    .HasColumnName("regardingobjecttypeid");
+
+                entity.Property(e => e.Regardingobjectname)
+                    .HasColumnName("regardingobjectname");
+
                 entity.Property(e => e.Startdate)
                     .IsRequired()
                     .HasColumnName("startdate");

@@ -284,32 +284,23 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-1">
-                <p class="text-nowrap">생성일</p>
-            </div>
-            <div class="col-md-2">
-                <p class="text-nowrap">@Model.Createdate.ToString("yyyy-MM-dd")</p>
-
-            </div>
-            <div class="col-md-1">
-                <p class="text-nowrap">생성자</p>
-            </div>
-            <div class="col-md-2">
-                <p class="text-nowrap">@Model.Createuser</p>
-
-            </div>
-            <div class="col-md-1">
-                <p class="text-nowrap">수정일</p>
-            </div>
-            <div class="col-md-2">
-                <p class="text-nowrap">@Model.Modifydate.ToString("yyyy-MM-dd")</p>
-
-            </div>
-            <div class="col-md-1">
-                <p class="text-nowrap">수정자</p>
-            </div>
-            <div class="col-md-2">
-                <p class="text-nowrap">@Model.Modifyuser</p>
+            <div class="col-md-12">
+                <table class="table table-striped table-hover table-responsive">
+                    <thead>
+                        <tr>
+                            <th>생성일</th>
+                            <th>생성자</th>
+                            <th>수정일</th>
+                            <th>수정자</th>
+                        </tr>
+                    </thead>
+                    <tr class="info">
+                        <td><strong>@Model.Createdate</strong></td>
+                        <td><strong>@Model.Createuser</strong></td>
+                        <td><strong>@Model.Modifydate</strong></td>
+                        <td><strong>@Model.Modifyuser</strong></td>
+                    </tr>
+                </table>
             </div>
         </div>
 
