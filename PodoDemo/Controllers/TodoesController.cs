@@ -186,13 +186,39 @@ namespace PodoDemo.Controllers
             return View(todo);
         }
 
-        // GET: Todoes/Edit/5
+        /// <summary>
+        /// 수정페이지로 이동
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
+
+            CreaetUserAuth();
+
+            // 사용자 권한
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
+            // 읽기 권한이 없으면 아예 들어가지 못하게 한다.
+            if (_userAuth.Read.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
+            // 관련항목 출력 서브메뉴 리스트
+            List<DDL> submenuDDL = new List<DDL>();
+            foreach (var item in _context.SubMenu.Where(x => x.Ismanager == false && x.Mainmenuid != 7).ToList())
+            {
+                submenuDDL.Add(new DDL() { Value = item.Id, Text = item.Name });
+            }
+            ViewBag.SubmenuList = JsonConvert.SerializeObject(submenuDDL).ToString();
 
             var todo = await _context.Todo.SingleOrDefaultAsync(m => m.Todoid == id);
             if (todo == null)
@@ -202,13 +228,24 @@ namespace PodoDemo.Controllers
             return View(todo);
         }
 
-        // POST: Todoes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// 할일 수정
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="todo"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Todoid,Name,Description,Regardingobjectid,Startdate,Enddate,Createdate,Createuser,Modifydate,Modifyuser,Ownerid,State")] Todo todo)
         {
+            CreaetUserAuth();
+
+            // 사용자 수정 권한 체크
+            if (_userAuth.Modify.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (id != todo.Todoid)
             {
                 return NotFound();
@@ -218,6 +255,9 @@ namespace PodoDemo.Controllers
             {
                 try
                 {
+                    todo.Modifydate = DateTime.Now;
+                    todo.Modifyuser = HttpContext.Session.GetString("userId");
+
                     _context.Update(todo);
                     await _context.SaveChangesAsync();
                 }
@@ -234,6 +274,30 @@ namespace PodoDemo.Controllers
                 }
                 return RedirectToAction("Index");
             }
+
+            #region 수정에 실패할 경우
+            CreaetUserAuth();
+
+            // 사용자 권한
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
+            // 읽기 권한이 없으면 아예 들어가지 못하게 한다.
+            if (_userAuth.Read.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
+            // 관련항목 출력 서브메뉴 리스트
+            List<DDL> submenuDDL = new List<DDL>();
+            foreach (var item in _context.SubMenu.Where(x => x.Ismanager == false && x.Mainmenuid != 7).ToList())
+            {
+                submenuDDL.Add(new DDL() { Value = item.Id, Text = item.Name });
+            }
+            ViewBag.SubmenuList = JsonConvert.SerializeObject(submenuDDL).ToString();
+            #endregion
             return View(todo);
         }
 
