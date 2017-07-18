@@ -33,7 +33,7 @@ namespace PodoDemo.Controllers
             // 사용자 세션 체크
             if (!string.IsNullOrEmpty(userid))
             {
-                _userAuth = ss.CheckUseauth(userid, "1-1");
+                _userAuth = ss.CheckUseauth(userid, "2-2");
                 return null;
             }
             else
@@ -49,9 +49,8 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Index(bool? isPop)
         {
-            CreaetUserAuth();
-
             // 사용자 읽기 권한 체크
+            CreaetUserAuth();
             if (_userAuth.Read.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });

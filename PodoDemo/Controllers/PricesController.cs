@@ -6,58 +6,121 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PodoDemo.Models;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace PodoDemo.Controllers
 {
     public class PricesController : Controller
     {
         private readonly PodoDemoNContext _context;
+        private static UserAuth _userAuth = new UserAuth();
 
         public PricesController(PodoDemoNContext context)
         {
             _context = context;    
         }
 
-        // GET: Prices
-        public async Task<IActionResult> Index()
+        /// <summary>
+        /// 사용자 권한 넣기
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult CreaetUserAuth()
         {
-            var podoDemoNContext = _context.Price.Include(p => p.Product);
-            return View(await podoDemoNContext.ToListAsync());
+            CommonAPIController ss = new CommonAPIController(_context);
+            string userid = HttpContext.Session.GetString("userId");
+
+            // 사용자 세션 체크
+            if (!string.IsNullOrEmpty(userid))
+            {
+                _userAuth = ss.CheckUseauth(userid, "2-3");
+                return null;
+            }
+            else
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
         }
 
-        // GET: Prices/Details/5
-        public async Task<IActionResult> Details(long? id)
+        /// <summary>
+        /// 가격표 목록 페이지로 이동
+        /// </summary>
+        /// <param name="isPop"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> Index(bool? isPop)
         {
-            if (id == null)
+            // 사용자 읽기 권한 체크
+            CreaetUserAuth();
+            if (_userAuth.Read.Equals("4-3"))
             {
-                return NotFound();
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
 
-            var price = await _context.Price
-                .Include(p => p.Product)
-                .SingleOrDefaultAsync(m => m.Priceid == id);
-            if (price == null)
+            // 권한
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
+            if (isPop == null)
             {
-                return NotFound();
+                ViewBag.isPop = false;
+            }
+            else
+            {
+                ViewBag.isPop = isPop;
             }
 
-            return View(price);
+            List<Price> priceList = await _context.Price.Include(p => p.Product).ToListAsync();
+
+            // 옵션 관련 이름으로 변환
+            foreach (Price item in priceList)
+            {
+                item.Ownerid = _context.User.Single(x => x.Id == item.Ownerid).Name;
+            }
+
+            return View((Object)JsonConvert.SerializeObject(priceList));
         }
 
-        // GET: Prices/Create
+        /// <summary>
+        /// 가격표 생성 페이지로 이동
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Create()
         {
+            // 사용자 권한
+            CreaetUserAuth();
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
+            // 사용자에게 쓰기 권한이 있는지 체크
+            if (_userAuth.Write.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             ViewData["Productid"] = new SelectList(_context.Product, "Productid", "Createuser");
             return View();
         }
 
-        // POST: Prices/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// 가격표 생성
+        /// </summary>
+        /// <param name="price"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Priceid,Productid,Prices,Cost,Currency,Createdate,Createuser,Modifydate,Modifyuser,Ownerid")] Price price)
+        public async Task<IActionResult> Create([Bind("Productid,Prices,Cost,Currency,")] Price price)
         {
+            // 사용자 쓰기 권한 체크
+            CreaetUserAuth();
+            if (_userAuth.Write.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(price);
