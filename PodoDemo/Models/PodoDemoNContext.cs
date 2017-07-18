@@ -15,6 +15,7 @@ namespace PodoDemo.Models
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserAuth> UserAuth { get; set; }
         public virtual DbSet<Todo> Todo { get; set; }
+        public virtual DbSet<Product> Product { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -550,6 +551,53 @@ namespace PodoDemo.Models
                     .IsRequired()
                     .HasMaxLength(10)
                     .HasColumnName("state");
+            });
+
+            modelBuilder.Entity<Product>(entity =>
+            {
+                //entity.Property(e => e.Productid)
+                //    .IsRequired()                   
+                //    .HasColumnName("productid");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.Maker)
+                    .HasMaxLength(10)
+                    .HasColumnName("maker");
+
+                entity.Property(e => e.Origin)
+                    .HasMaxLength(10)
+                    .HasColumnName("origin");
+
+                entity.Property(e => e.Productcode)
+                    .HasMaxLength(50)
+                    .HasColumnName("productcode");
+
+                entity.Property(e => e.Ownerid)
+                    .IsRequired()
+                    .HasColumnName("ownerid")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Createdate)
+                    .IsRequired()
+                    .HasColumnName("createdate");
+
+                entity.Property(e => e.Createuser)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("createuser");
+
+                entity.Property(e => e.Modifydate)
+                    .IsRequired()
+                    .HasColumnName("modifydate");
+
+                entity.Property(e => e.Modifyuser)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("modifyuser");
             });
         }
     }

@@ -1,0 +1,72 @@
+@model PodoDemo.Models.Product
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Maker)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Maker)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Ownerid)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Ownerid)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Origin)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Origin)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Productcode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Productcode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Createdate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Createdate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Createuser)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Createuser)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Modifydate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Modifydate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Modifyuser)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Modifyuser)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Productid">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
