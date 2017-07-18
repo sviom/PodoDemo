@@ -87,7 +87,33 @@ namespace PodoDemo.Controllers
             return View((Object)JsonConvert.SerializeObject(productList));
         }
 
-        
+        /// <summary>
+        /// 제품 검색
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public string Search([FromBody]ProductSearch info)
+        {
+            var query = (from pc in _context.Product
+                         where (pc.Name.Contains(info.Name) || info.Name.Equals(""))
+                         && (pc.Ownerid.Contains(info.Ownerid) || info.Ownerid.Equals(""))
+                         && (pc.Productcode.Contains(info.Productcode) || info.Productcode.Equals(""))
+                         && (pc.Maker.Equals(info.Maker) || info.Maker.Equals(""))
+                         select pc
+                         ).ToList<Product>();
+
+            // 사용자에게 읽기권한(=검색)이 있는지 체크
+            if (_userAuth.Read.Equals("4-3"))
+            {
+                return "";
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(query);
+            }
+        }
+
         /// <summary>
         /// 제품 생성 페이지로 이동
         /// </summary>

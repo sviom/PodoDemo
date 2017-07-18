@@ -18,4 +18,12 @@ namespace PodoDemo.Models
         public DateTime Modifydate { get; set; }
         public string Modifyuser { get; set; }
     }
+
+    public class ProductSearch
+    {
+        public string Name { get; set; }
+        public string Productcode { get; set; } = "";
+        public string Maker { get; set; } = "";
+        public string Ownerid { get; set; } = "";
+    }
 }

@@ -110,7 +110,7 @@
         SearchInfo.Name = $("#Name").val();
         SearchInfo.Productcode = $("#Productcode").val();
         SearchInfo.Maker = $("#Maker option:selected").val();
-        SearchInfo.Origin = $("#Origin option:selected").val();
+        SearchInfo.Ownerid = $("#Ownerid option:selected").val();
 
         var productListRaw
             = ExecuteAjax("POST", "/Products/Search", "json", "application/json", JSON.stringify(SearchInfo));
