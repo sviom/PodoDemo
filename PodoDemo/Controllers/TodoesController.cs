@@ -198,9 +198,8 @@ namespace PodoDemo.Controllers
                 return NotFound();
             }
 
-            CreaetUserAuth();
-
             // 사용자 권한
+            CreaetUserAuth();
             ViewData["Read"] = _userAuth.Read;
             ViewData["Write"] = _userAuth.Write;
             ViewData["Modify"] = _userAuth.Modify;
@@ -236,11 +235,12 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Todoid,Name,Description,Regardingobjectid,Startdate,Enddate,Createdate,Createuser,Modifydate,Modifyuser,Ownerid,State")] Todo todo)
+        public async Task<IActionResult> Edit(long id,  Todo todo)
         {
-            CreaetUserAuth();
-
+            //[Bind("Todoid,Name,Description,Regardingobjectid,Startdate,Enddate,Createdate,Createuser,Modifydate,Modifyuser,Ownerid,State")]
+            
             // 사용자 수정 권한 체크
+            CreaetUserAuth();
             if (_userAuth.Modify.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
@@ -276,9 +276,8 @@ namespace PodoDemo.Controllers
             }
 
             #region 수정에 실패할 경우
-            CreaetUserAuth();
-
             // 사용자 권한
+            CreaetUserAuth();
             ViewData["Read"] = _userAuth.Read;
             ViewData["Write"] = _userAuth.Write;
             ViewData["Modify"] = _userAuth.Modify;
@@ -300,32 +299,36 @@ namespace PodoDemo.Controllers
             #endregion
             return View(todo);
         }
-
-        // GET: Todoes/Delete/5
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var todo = await _context.Todo
-                .SingleOrDefaultAsync(m => m.Todoid == id);
-            if (todo == null)
-            {
-                return NotFound();
-            }
-
-            return View(todo);
-        }
-
-        // POST: Todoes/Delete/5
+        
+        /// <summary>
+        /// 할일 삭제
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
+        public async Task<IActionResult> DeleteConfirmed(long id, Todo todo)
         {
-            var todo = await _context.Todo.SingleOrDefaultAsync(m => m.Todoid == id);
-            _context.Todo.Remove(todo);
+            if(id != todo.Todoid)
+            {
+                return NotFound();
+            }
+
+            // 사용자 권한
+            CreaetUserAuth();
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
+            // 삭제 권한 없음
+            if (_userAuth.Delete.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
+            var _todo = await _context.Todo.SingleOrDefaultAsync(m => m.Todoid == id);
+            _context.Todo.Remove(_todo);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
