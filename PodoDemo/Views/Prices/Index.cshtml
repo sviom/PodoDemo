@@ -1,0 +1,83 @@
+@model IEnumerable<PodoDemo.Models.Price>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Prices)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cost)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Currency)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Createdate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Createuser)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Modifydate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Modifyuser)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Ownerid)
+                </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Prices)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Currency)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Createdate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Createuser)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Modifydate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Modifyuser)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ownerid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Createuser)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Priceid">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Priceid">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Priceid">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

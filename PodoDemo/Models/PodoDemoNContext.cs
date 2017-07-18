@@ -16,6 +16,7 @@ namespace PodoDemo.Models
         public virtual DbSet<UserAuth> UserAuth { get; set; }
         public virtual DbSet<Todo> Todo { get; set; }
         public virtual DbSet<Product> Product { get; set; }
+        public virtual DbSet<Price> Price { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -598,6 +599,55 @@ namespace PodoDemo.Models
                     .IsRequired()
                     .HasMaxLength(50)
                     .HasColumnName("modifyuser");
+
+            });
+
+            modelBuilder.Entity<Price>(entity =>
+            {
+                //entity.Property(e => e.Productid)
+                //    .IsRequired()                   
+                //    .HasColumnName("productid");
+
+                entity.Property(e => e.Prices)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("prices");
+
+                entity.Property(e => e.Cost)
+                    .HasMaxLength(10)
+                    .HasColumnName("cost");
+
+                entity.Property(e => e.Currency)
+                    .HasMaxLength(10)
+                    .HasColumnName("currency");
+
+                entity.Property(e => e.Ownerid)
+                    .IsRequired()
+                    .HasColumnName("ownerid")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Createdate)
+                    .IsRequired()
+                    .HasColumnName("createdate");
+
+                entity.Property(e => e.Createuser)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("createuser");
+
+                entity.Property(e => e.Modifydate)
+                    .IsRequired()
+                    .HasColumnName("modifydate");
+
+                entity.Property(e => e.Modifyuser)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("modifyuser");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.Price)
+                    .HasForeignKey(d => d.Productid)
+                    .HasConstraintName("FK_Price_Product");
             });
         }
     }

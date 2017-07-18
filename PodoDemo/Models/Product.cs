@@ -7,6 +7,10 @@ namespace PodoDemo.Models
 {
     public class Product
     {
+        public Product()
+        {
+            Price = new HashSet<Price>();
+        }
         public long Productid { get; set; }
         public string Name { get; set; }
         public string Maker { get; set; } = "";
@@ -17,6 +21,8 @@ namespace PodoDemo.Models
         public string Createuser { get; set; }
         public DateTime Modifydate { get; set; }
         public string Modifyuser { get; set; }
+        public virtual ICollection<Price> Price { get; set; }
+
     }
 
     public class ProductSearch
