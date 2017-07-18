@@ -130,10 +130,9 @@ namespace PodoDemo.Controllers
             }
             ViewBag.AccountPropertyTypeList = propertyTypeList;
             ViewBag.AccountPropertyList = propertyList;
-
-            CreaetUserAuth();
-
+            
             // 사용자 권한
+            CreaetUserAuth();
             ViewData["Read"] = _userAuth.Read;
             ViewData["Write"] = _userAuth.Write;
             ViewData["Modify"] = _userAuth.Modify;
@@ -157,9 +156,8 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Account account)
         {
-            CreaetUserAuth();
-
             // 사용자 수정 권한 체크
+            CreaetUserAuth();
             if (_userAuth.Write.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
@@ -233,9 +231,7 @@ namespace PodoDemo.Controllers
             ViewData["Read"] = _userAuth.Read;
             ViewData["Write"] = _userAuth.Write;
             ViewData["Modify"] = _userAuth.Modify;
-            ViewData["Delete"] = _userAuth.Delete;
-
-            
+            ViewData["Delete"] = _userAuth.Delete;           
 
             return View(account);
         }
@@ -250,9 +246,8 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Accountid,Name,Phone,Fax,Homepage,Ceo,Postcode,Address,Addresscity,Addressdetail,Addresstype,Biznum,Founddate,Detail,Ownerid,Createuser,Createdate,Modifydate,Modifyuser")] Account account)
         {
+            // 수정 권한 검사
             CreaetUserAuth();
-
-            // 권한 검사
             if (_userAuth.Modify.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
@@ -286,6 +281,12 @@ namespace PodoDemo.Controllers
                 }
                 return RedirectToAction("Index");
             }
+
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
             return View(account);
         }
 
@@ -301,9 +302,8 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Delete(long? id)
         {
-            CreaetUserAuth();
-
             // 권한 검사
+            CreaetUserAuth();
             if (_userAuth.Delete.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });

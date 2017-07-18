@@ -1,88 +1,98 @@
-@model PodoDemo.Models.Product
+﻿@model PodoDemo.Models.Product
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "제품";
 }
 
-<h2>Create</h2>
+<script type="text/javascript">
+    $(document).ready(function () {
+        SetBasicElement();// 기본적으로 그리는 화면 내용
+    });
 
-<form asp-action="Create">
-    <div class="form-horizontal">
-        <h4>Product</h4>
-        <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="Name" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+    // 기본적으로 그리는 화면 내용
+    function SetBasicElement() {
+        // 검색 조건 키 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권
+        GetOptionDDL('6', 'Maker', SetoptionTag, '', true, false, false);
+        GetOptionDDL('7', 'Origin', SetoptionTag, '', true, false, false);
+    }
+
+    // 폼이 입력될 때
+    function SubmitForm() {
+        // 유효성 검사 후 진행
+        if (ValidateForm()) {
+            $("#ProductCreateForm").submit();
+        }
+    }
+
+    // 입력한 값들에 대한 유효성 검사
+    function ValidateForm() {
+        var nameValue = $("#Name").val();
+
+        if (nameValue == "") {
+            alert("제품 이름을 입력해주세요.");
+            return false;
+        }
+
+        return true;
+    }
+</script>
+
+<div class="View">
+    <div class="container custom-container">
+        <div class="row">
+            <div class="col-md-12 custom-header">
+                <p class="text-left">제품 생성</p>
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Maker" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Maker" class="form-control" />
-                <span asp-validation-for="Maker" class="text-danger"></span>
+
+        <div class="col-md-12">
+            <div class="custom-title">
+                <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                <span>기본 정보</span>
+                <hr />
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Ownerid" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Ownerid" class="form-control" />
-                <span asp-validation-for="Ownerid" class="text-danger"></span>
+
+        <form class="form-horizontal" id="ProductCreateForm" action="/Products/Create" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <label class="col-md-1 control-label requireField">제품이름</label>
+                <div class="col-md-3">
+                    <input type="text" id="Name" name="Name" class="form-control" placeholder="제품 이름" />
+                </div>
+                <label class="col-md-1 control-label">제조국</label>
+                <div class="col-md-3">
+                    <select id="Origin" name="Origin" class="form-control"></select>
+                </div>
+                <label class="col-md-1 control-label">제조사</label>
+                <div class="col-md-3">
+                    <select id="Maker" name="Maker" class="form-control"></select>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Origin" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Origin" class="form-control" />
-                <span asp-validation-for="Origin" class="text-danger"></span>
+            <div class="form-group">
+                <label class="col-md-1 control-label">제품코드</label>
+                <div class="col-md-11">
+                    <input type="tel" id="Productcode" name="Productcode" class="form-control" placeholder="제품 코드" />
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Productcode" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Productcode" class="form-control" />
-                <span asp-validation-for="Productcode" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Createdate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Createdate" class="form-control" />
-                <span asp-validation-for="Createdate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Createuser" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Createuser" class="form-control" />
-                <span asp-validation-for="Createuser" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Modifydate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Modifydate" class="form-control" />
-                <span asp-validation-for="Modifydate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Modifyuser" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Modifyuser" class="form-control" />
-                <span asp-validation-for="Modifyuser" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+        </form>
+
+        <div class="row">
+            @if (ViewData["Write"].ToString().Equals("4-1") || ViewData["Write"].ToString().Equals("4-2"))
+            {
+                <div class="col-md-2 custom-row-btn-margin">
+                    <button type="button" id="CreateAccountButton" class="btn btn-default" onclick="SubmitForm();">
+                        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+                        저장
+                    </button>
+                </div>
+            }
+            <div class="col-md-2 custom-row-btn-margin">
+                <a href="/Products/Index" class="btn btn-default">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    목록
+                </a>
             </div>
         </div>
     </div>
-</form>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
-
