@@ -604,6 +604,8 @@
     <Content Include="wwwroot\js\jqwidgets\styles\jqx.web.css" />
     <Content Include="wwwroot\js\jqwidgets\styles\jqx.windowsphone.css" />
     <Content Include="wwwroot\js\jqwidgets\styles\Thumbs.db" />
+    <Content Include="wwwroot\js\Serviceworker-register.js" />
+    <Content Include="wwwroot\js\Serviceworker.js" />
   </ItemGroup>
 
   <ItemGroup>
