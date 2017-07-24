@@ -9,8 +9,8 @@ namespace PodoDemo.Models
     {
         public long Priceid { get; set; }
         public long Productid { get; set; } = 0;
-        public float Prices { get; set; } = 0;
-        public float Cost { get; set; } = 0;
+        public double Prices { get; set; } = 0;
+        public double Cost { get; set; } = 0;
         public string Currency { get; set; } = "";
         public DateTime Createdate { get; set; }
         public string Createuser { get; set; }

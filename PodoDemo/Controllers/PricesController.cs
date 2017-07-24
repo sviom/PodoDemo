@@ -79,7 +79,7 @@ namespace PodoDemo.Controllers
                 item.Ownerid = _context.User.Single(x => x.Id == item.Ownerid).Name;
             }
 
-            return View((Object)JsonConvert.SerializeObject(priceList));
+            return View((Object)JsonConvert.SerializeObject(priceList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
         }
 
         /// <summary>

@@ -65,7 +65,7 @@
                 datafields:
                 [
                     { name: 'Priceid', type: 'number' },
-                    { name: 'Productname', type: 'string' },
+                    { name: 'Product', type: 'string', map: 'Product>Name' },
                     { name: 'Cost', type: 'string' },
                     { name: 'Prices', type: 'string' },
                     { name: 'Ownerid', type: 'string' },
@@ -95,7 +95,7 @@
                 columns: [
                     //문자로 나오는 항목
                     { text: "Priceid", datafield: "Priceid", hidden: true },
-                    { text: "제품", datafield: "Productname", align: 'center', cellsalign: 'left', width: '40%', minwidth: '100px' },
+                    { text: "제품", datafield: "Product", align: 'center', cellsalign: 'left', width: '40%', minwidth: '100px' },
                     { text: "원가", datafield: 'Cost', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
                     { text: "판매가", datafield: "Prices", align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
                     { text: '담당자', datafield: 'Ownerid', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
