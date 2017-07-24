@@ -112,7 +112,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Productid,Prices,Cost,Currency,")] Price price)
+        public async Task<IActionResult> Create([Bind("Productid,Prices,Cost,Currency")] Price price)
         {
             // 사용자 쓰기 권한 체크
             CreaetUserAuth();
@@ -123,6 +123,13 @@ namespace PodoDemo.Controllers
 
             if (ModelState.IsValid)
             {
+                price.Createdate = DateTime.Now;
+                price.Createuser = HttpContext.Session.GetString("userId");
+                price.Modifydate = DateTime.Now;
+                price.Modifyuser = HttpContext.Session.GetString("userId");
+                price.Ownerid = HttpContext.Session.GetString("userId");
+                price.Product = _context.Product.SingleOrDefault(x => x.Productid == price.Productid);
+
                 _context.Add(price);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
