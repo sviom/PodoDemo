@@ -134,19 +134,39 @@ namespace PodoDemo.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
+
+            #region 제품 만들기에 실패할 경우
             ViewData["Productid"] = new SelectList(_context.Product, "Productid", "Createuser", price.Productid);
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+            #endregion
+
             return View(price);
         }
 
-        // GET: Prices/Edit/5
+        /// <summary>
+        /// 가격표 수정 페이지로 이동
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(long? id)
         {
+            // 사용자 권한
+            CreaetUserAuth();
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
             if (id == null)
             {
                 return NotFound();
             }
 
             var price = await _context.Price.SingleOrDefaultAsync(m => m.Priceid == id);
+            price.Product = _context.Product.Single(x => x.Productid == price.Productid);
             if (price == null)
             {
                 return NotFound();

@@ -1,89 +1,145 @@
-@model PodoDemo.Models.Price
+﻿@model PodoDemo.Models.Price
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "가격표";
 }
+<script type="text/javascript">
+    $(document).ready(function () {
+        SetBasicElement();// 기본적으로 그리는 화면 내용
+    });
 
-<h2>Edit</h2>
+    // 기본적으로 그리는 화면 내용
+    function SetBasicElement() {
+        // 검색 조건 키 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권
+        GetOptionDDL('8', 'Currency', SetoptionTag, '@Model.Currency', true, false, false);
+    }
 
-<form asp-action="Edit">
-    <div class="form-horizontal">
-        <h4>Price</h4>
-        <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="Priceid" />
-        <div class="form-group">
-            <label asp-for="Productid" class="control-label col-md-2"></label>
-            <div class="col-md-10">
-                <select asp-for="Productid" class="form-control" asp-items="ViewBag.Productid"></select>
-                <span asp-validation-for="Productid" class="text-danger"></span>
+    // 폼이 입력될 때
+    function SubmitForm(targetName) {
+        if (targetName == "Edit") {
+            // 유효성 검사 후 진행
+            if (ValidateForm()) {
+                $("#PricesEditForm").prop("action", "/Prices/" + targetName + "/@Model.Priceid");
+                $("#PricesEditForm").submit();
+            }
+        } else if (targetName == "Delete") {
+            if (confirm("해당 내용을 정말로 삭제하시겠습니까?\n삭제후에는 복원되지 않습니다.")) {
+                if ($("#Priceid").val() != "" && $("#Priceid").val() != null) {
+                    $("#PricesEditForm").prop("action", "/Prices/" + targetName + "/@Model.Priceid");
+                    $("#PricesEditForm").submit();
+                } else {
+                    alert("삭제할 내용이 없습니다.");
+                    return;
+                }
+            }
+        }
+    }
+
+    // 입력한 값들에 대한 유효성 검사
+    function ValidateForm() {
+        var productValue = $("#Productid").val();
+
+        if (productValue == "") {
+            alert("제품을 선택해주세요.");
+            return false;
+        }
+
+        return true;
+    }
+
+    // 제품 검색
+    function ProductsSearchPop() {
+        WindowOpenScroll("/Products/Index?isPop=true", "", 350, 600, 100, 100);
+    }
+    // 팝업으로 검색한 제품 세팅
+    function SetProductsInfo(Productid, Productname) {
+        $("#Productname").val(Productname);
+        $("#Productid").val(Productid);
+    }
+</script>
+
+<div class="View">
+    <div class="container custom-container">
+        <div class="row">
+            <div class="col-md-12 custom-header">
+                <p class="text-left">가격 정보</p>
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Prices" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Prices" class="form-control" />
-                <span asp-validation-for="Prices" class="text-danger"></span>
+
+        <div class="col-md-12">
+            <div class="custom-title">
+                <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                <span>기본 정보</span>
+                <hr />
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Cost" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Cost" class="form-control" />
-                <span asp-validation-for="Cost" class="text-danger"></span>
+
+        <form class="form-horizontal" id="PricesEditForm" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="Priceid" name="Priceid" value="@Model.Priceid" />
+            <input type="hidden" asp-for="Createdate" value="@Model.Createdate" />
+            <input type="hidden" id="Createuser" name="Createuser" value="@Model.Createuser" />
+            <input type="hidden" id="Modifydate" name="Modifydate" value="@Model.Modifydate" />
+            <input type="hidden" id="Modifyuser" name="Modifyuser" value="@Model.Modifyuser" />
+
+            <div class="form-group">
+                <label class="col-md-1 control-label requireField">제품</label>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input type="hidden" id="Productid" name="Productid" value="@Model.Productid" />
+                        <input type="text" id="Productname" name="Productname" class="form-control"
+                               placeholder="선택된 제품이 표시됩니다." aria-describedby="product name"
+                               value="@Model.Product.Name"
+                               readonly="readonly" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" onclick="ProductsSearchPop();">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <label class="col-md-1 control-label">원가</label>
+                <div class="col-md-3">
+                    <input type="number" id="Cost" name="Cost" class="form-control" placeholder="원가 입력" value="@Model.Cost" />
+                </div>
+                <label class="col-md-1 control-label">판매가</label>
+                <div class="col-md-3">
+                    <input type="number" id="Prices" name="Prices" class="form-control" placeholder="가격표 입력" value="@Model.Prices"/>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Currency" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Currency" class="form-control" />
-                <span asp-validation-for="Currency" class="text-danger"></span>
+            <div class="form-group">
+                <label class="col-md-1 control-label">통화</label>
+                <div class="col-md-3">
+                    <select id="Currency" name="Currency" class="form-control"></select>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Createdate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Createdate" class="form-control" />
-                <span asp-validation-for="Createdate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Createuser" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Createuser" class="form-control" />
-                <span asp-validation-for="Createuser" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Modifydate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Modifydate" class="form-control" />
-                <span asp-validation-for="Modifydate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Modifyuser" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Modifyuser" class="form-control" />
-                <span asp-validation-for="Modifyuser" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Ownerid" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Ownerid" class="form-control" />
-                <span asp-validation-for="Ownerid" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+        </form>
+
+        <div class="row">
+            @if (ViewData["Write"].ToString().Equals("4-1") || ViewData["Write"].ToString().Equals("4-2"))
+            {
+                <div class="col-md-2 custom-row-btn-margin">
+                    <button type="button" id="CreatePricesButton" class="btn btn-default" onclick="SubmitForm('Edit');">
+                        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+                        저장
+                    </button>
+                </div>
+            }
+            @if (ViewData["Delete"].ToString().Equals("4-1") || ViewData["Delete"].ToString().Equals("4-2"))
+            {
+                <div class="col-md-2 custom-row-btn-margin">
+                    <button type="button" id="DeleteButton" class="btn btn-default btn-danger" onclick="SubmitForm('Delete');">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        삭제
+                    </button>
+                </div>
+            }
+            <div class="col-md-2 custom-row-btn-margin">
+                <a href="/Products/Index" class="btn btn-default">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    목록
+                </a>
             </div>
         </div>
     </div>
-</form>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
-
