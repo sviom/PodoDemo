@@ -201,6 +201,26 @@ namespace PodoDemo.Controllers
             {
                 return NotFound();
             }
+
+            // 연결된 가격표 리스트
+            List<Price> priceList = _context.Price.Where(x => x.Productid == product.Productid).ToList();
+
+            // 옵션 관련 이름으로 변환
+            foreach (Price item in priceList)
+            {
+                item.Ownerid = _context.User.Single(x => x.Id == item.Ownerid).Name;
+            }
+
+            if (priceList.Count > 0)
+            {
+                ViewData["connctedPriceList"]
+                    = JsonConvert.SerializeObject(priceList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            }
+            else
+            {
+                ViewData["connctedPriceList"] = "";
+            }
+
             return View(product);
         }
 

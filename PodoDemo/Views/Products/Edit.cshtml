@@ -8,6 +8,21 @@
 <script type="text/javascript">
     $(document).ready(function () {
         SetBasicElement();// 기본적으로 그리는 화면 내용
+
+        // 연결된 가격표 정보
+        $('#priceList').on('rowdoubleclick', function (event) {
+            var args = event.args;
+            // row's bound index.
+            var boundIndex = args.rowindex;
+            // row's visible index.
+            var visibleIndex = args.visibleindex;
+            // right click.
+            var rightclick = args.rightclick;
+            // original event.
+            var ev = args.originalEvent;
+            var data = $('#priceList').jqxGrid('getrowdata', boundIndex);
+            location.href = "/Prices/Edit/" + data.Priceid;
+        });
     });
 
     // 기본적으로 그리는 화면 내용
@@ -17,6 +32,7 @@
         GetOptionDDL('7', 'Origin', SetoptionTag, '@Model.Origin', true, false, false);
         // 부서값 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권한
         GetUserDDL("", '@Model.Ownerid', 'Ownerid', SetoptionTag, '@Model.Ownerid', false, false, false);
+        SetPricesElement(@Html.Raw(ViewData["connctedPriceList"]));             // 연결된 가격표 표시
     }
 
     // 폼이 입력될 때
@@ -50,6 +66,53 @@
         }
 
         return true;
+    }
+
+    // 연결된 가격표 항목 표시
+    function SetPricesElement(priceListRaw) {
+        var source =
+            {
+                localdata: priceListRaw,
+                datatype: "json",
+                datafields:
+                [
+                    { name: 'Priceid', type: 'number' },
+                    { name: 'Product', type: 'string', map: 'Product>Name' },
+                    { name: 'Cost', type: 'string' },
+                    { name: 'Prices', type: 'string' },
+                    { name: 'Ownerid', type: 'string' },
+                ]
+            };
+
+        var dataAdapter = new $.jqx.dataAdapter(source);
+
+        $("#priceList").jqxGrid(
+            {
+                width: '100%',
+                source: dataAdapter,
+                pageable: true,
+                autoheight: true,
+                autorowheight: true,
+                sortable: true,
+                altrows: true,
+                enabletooltips: true,
+                editable: false,
+                selectionmode: 'singlerow',
+                pagesizeoptions: [10, 15, 20, 25, 30, 35, 40, 45, 50],
+                //showfilterrow: true,
+                filterable: true,
+                pagesize: 15,
+                theme: "metroCustom",//테마설정
+                localization: GetLocalizationString(),
+                columns: [
+                    //문자로 나오는 항목
+                    { text: "Priceid", datafield: "Priceid", hidden: true },
+                    { text: "제품", datafield: "Product", align: 'center', cellsalign: 'left', width: '40%', minwidth: '100px' },
+                    { text: "원가", datafield: 'Cost', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
+                    { text: "판매가", datafield: "Prices", align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
+                    { text: '담당자', datafield: 'Ownerid', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
+                ]
+            });
     }
 </script>
 
@@ -133,5 +196,17 @@
                 </a>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="custom-title">
+                    <hr />
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    <span>연결된 가격표</span>
+                </div>
+                <div id="priceList"></div>
+            </div>
+        </div>
+
     </div>
 </div>
