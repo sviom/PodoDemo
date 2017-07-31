@@ -12,6 +12,8 @@
     function SetBasicElement() {
         // 검색 조건 키 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권
         GetOptionDDL('8', 'Currency', SetoptionTag, '@Model.Currency', true, false, false);
+        // 부서값 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권한
+        GetUserDDL("", '@Model.Ownerid', 'Ownerid', SetoptionTag, '@Model.Ownerid', false, false, false);
     }
 
     // 폼이 입력될 때
@@ -77,7 +79,7 @@
         <form class="form-horizontal" id="PricesEditForm" method="post">
             @Html.AntiForgeryToken()
             <input type="hidden" id="Priceid" name="Priceid" value="@Model.Priceid" />
-            <input type="hidden" asp-for="Createdate" value="@Model.Createdate" />
+            <input type="hidden" id="Createdate" name="Createdate" value="@Model.Createdate" />
             <input type="hidden" id="Createuser" name="Createuser" value="@Model.Createuser" />
             <input type="hidden" id="Modifydate" name="Modifydate" value="@Model.Modifydate" />
             <input type="hidden" id="Modifyuser" name="Modifyuser" value="@Model.Modifyuser" />
@@ -111,6 +113,11 @@
                 <label class="col-md-1 control-label">통화</label>
                 <div class="col-md-3">
                     <select id="Currency" name="Currency" class="form-control"></select>
+                </div>
+
+                <label class="col-md-1 control-label">담당자</label>
+                <div class="col-md-3">
+                    <select id="Ownerid" name="Ownerid" class="form-control"></select>
                 </div>
             </div>
         </form>

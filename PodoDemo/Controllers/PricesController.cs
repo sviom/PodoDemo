@@ -155,6 +155,13 @@ namespace PodoDemo.Controllers
         {
             // 사용자 권한
             CreaetUserAuth();
+
+            // 읽기 권한이 없으면 아예 들어가지 못하게 한다.
+            if (_userAuth.Read.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             ViewData["Read"] = _userAuth.Read;
             ViewData["Write"] = _userAuth.Write;
             ViewData["Modify"] = _userAuth.Modify;
@@ -175,13 +182,23 @@ namespace PodoDemo.Controllers
             return View(price);
         }
 
-        // POST: Prices/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// 실제 가격표 수정
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="price"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Priceid,Productid,Prices,Cost,Currency,Createdate,Createuser,Modifydate,Modifyuser,Ownerid")] Price price)
         {
+            // 수정 권한 검사
+            CreaetUserAuth();
+            if (_userAuth.Modify.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (id != price.Priceid)
             {
                 return NotFound();
@@ -207,37 +224,41 @@ namespace PodoDemo.Controllers
                 }
                 return RedirectToAction("Index");
             }
+
             ViewData["Productid"] = new SelectList(_context.Product, "Productid", "Createuser", price.Productid);
-            return View(price);
-        }
-
-        // GET: Prices/Delete/5
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var price = await _context.Price
-                .Include(p => p.Product)
-                .SingleOrDefaultAsync(m => m.Priceid == id);
-            if (price == null)
-            {
-                return NotFound();
-            }
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
 
             return View(price);
         }
-
-        // POST: Prices/Delete/5
+        
+        /// <summary>
+        /// 실제 가격표 삭제
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
+            // 권한 검사
+            CreaetUserAuth();
+            if (_userAuth.Delete.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+            
             var price = await _context.Price.SingleOrDefaultAsync(m => m.Priceid == id);
             _context.Price.Remove(price);
             await _context.SaveChangesAsync();
+
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
             return RedirectToAction("Index");
         }
 
