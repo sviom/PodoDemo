@@ -77,6 +77,7 @@ namespace PodoDemo.Controllers
             foreach (Price item in priceList)
             {
                 item.Ownerid = _context.User.Single(x => x.Id == item.Ownerid).Name;
+                item.Currency = _context.OptionMasterDetail.Single(x => x.Optionid == item.Currency).Name;
             }
 
             return View((Object)JsonConvert.SerializeObject(priceList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));

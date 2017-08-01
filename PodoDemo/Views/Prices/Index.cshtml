@@ -9,15 +9,10 @@
         Layout = "~/Views/Shared/Popup_Layout.cshtml";
     }
 }
-
+<script src="/Views/Prices/IndexGrid.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        SetBasicElement(@Html.Raw(Model));
-
-        // 검색 조건 키 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권
-        GetOptionDDL('8', 'Currency', SetoptionTag, '', true, false, false);
-        GetUserDDL("", '@ViewBag.UserId', 'Ownerid', SetoptionTag, '', true, false, false); // 담당자
-
+        SetBasicElement();
         $('#priceList').on('rowdoubleclick', function (event) {
             var args = event.args;
             // row's bound index.
@@ -56,51 +51,11 @@
     });
 
     // 기본 출력 항목 표시
-    function SetBasicElement(priceListRaw) {
-
-        var source =
-            {
-                localdata: priceListRaw,
-                datatype: "json",
-                datafields:
-                [
-                    { name: 'Priceid', type: 'number' },
-                    { name: 'Product', type: 'string', map: 'Product>Name' },
-                    { name: 'Cost', type: 'string' },
-                    { name: 'Prices', type: 'string' },
-                    { name: 'Ownerid', type: 'string' },
-                ]
-            };
-
-        var dataAdapter = new $.jqx.dataAdapter(source);
-
-        $("#priceList").jqxGrid(
-            {
-                width: '100%',
-                source: dataAdapter,
-                pageable: true,
-                autoheight: true,
-                autorowheight: true,
-                sortable: true,
-                altrows: true,
-                enabletooltips: true,
-                editable: false,
-                selectionmode: 'singlerow',
-                pagesizeoptions: [10, 15, 20, 25, 30, 35, 40, 45, 50],
-                //showfilterrow: true,
-                filterable: true,
-                pagesize: 15,
-                theme: "metroCustom",//테마설정
-                localization: GetLocalizationString(),
-                columns: [
-                    //문자로 나오는 항목
-                    { text: "Priceid", datafield: "Priceid", hidden: true },
-                    { text: "제품", datafield: "Product", align: 'center', cellsalign: 'left', width: '40%', minwidth: '100px' },
-                    { text: "원가", datafield: 'Cost', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
-                    { text: "판매가", datafield: "Prices", align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
-                    { text: '담당자', datafield: 'Ownerid', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
-                ]
-            });
+    function SetBasicElement() {
+         // 검색 조건 키 / 적용할 HTML코드 ID / 콜백함수 / 기본 선택 값 / 전체 / 맨위값 빈값 / 권
+        GetOptionDDL('8', 'Currency', SetoptionTag, '', true, false, false);
+        GetUserDDL("", '@ViewBag.UserId', 'Ownerid', SetoptionTag, '', true, false, false); // 담당자
+        SetPricesIndex(@Html.Raw(Model));        
     }
 
     // 제품 검색 후 반영
@@ -114,7 +69,7 @@
         var priceListRaw
             = ExecuteAjax("POST", "/Prices/Search", "json", "application/json", JSON.stringify(SearchInfo));
         // 리스트에 반영
-        SetBasicElement(priceListRaw);
+        SetPricesIndex(priceListRaw);
     }
 </script>
 
