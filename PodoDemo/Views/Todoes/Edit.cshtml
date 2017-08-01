@@ -109,7 +109,7 @@
 
         <form class="form-horizontal" id="TodoesEditForm" method="post">
             @Html.AntiForgeryToken()
-            <input type="hidden" id="Todoid" name="Todoid" value="@Model.Todoid"/>
+            <input type="hidden" id="Todoid" name="Todoid" value="@Model.Todoid" />
             <input type="hidden" id="Createdate" name="Createdate" value="@Model.Createdate" />
             <input type="hidden" id="Createuser" name="Createuser" value="@Model.Createuser" />
             <input type="hidden" id="Modifydate" name="Modifydate" value="@Model.Modifydate" />
@@ -174,6 +174,33 @@
         </form>
 
         <div class="row">
+            @if (ViewData["Modify"].ToString().Equals("4-1") || ViewData["Modify"].ToString().Equals("4-2"))
+            {
+                <div class="col-md-2 custom-row-btn-margin">
+                    <button type="button" id="CreateTodoesButton" class="btn btn-default" onclick="SubmitForm('Edit');">
+                        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+                        저장
+                    </button>
+                </div>
+            }
+            @if (ViewData["Delete"].ToString().Equals("4-1") || ViewData["Delete"].ToString().Equals("4-2"))
+            {
+                <div class="col-md-2 custom-row-btn-margin">
+                    <button type="button" id="DeleteButton" class="btn btn-default btn-danger" onclick="SubmitForm('Delete');">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        삭제
+                    </button>
+                </div>
+            }
+            <div class="col-md-2 custom-row-btn-margin">
+                <a href="/Todoes/Index" class="btn btn-default">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    목록
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-md-12">
                 <div class="custom-title">
                     <hr />
@@ -200,33 +227,6 @@
                         <td><strong>@Model.Modifyuser</strong></td>
                     </tr>
                 </table>
-            </div>
-        </div>
-
-        <div class="row">
-            @if (ViewData["Modify"].ToString().Equals("4-1") || ViewData["Modify"].ToString().Equals("4-2"))
-            {
-                <div class="col-md-2 custom-row-btn-margin">
-                    <button type="button" id="CreateTodoesButton" class="btn btn-default" onclick="SubmitForm('Edit');">
-                        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
-                        저장
-                    </button>
-                </div>
-            }
-            @if (ViewData["Delete"].ToString().Equals("4-1") || ViewData["Delete"].ToString().Equals("4-2"))
-            {
-                <div class="col-md-2 custom-row-btn-margin">
-                    <button type="button" id="DeleteButton" class="btn btn-default btn-danger" onclick="SubmitForm('Delete');">
-                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                        삭제
-                    </button>
-                </div>
-            }
-            <div class="col-md-2 custom-row-btn-margin">
-                <a href="/Todoes/Index" class="btn btn-default">
-                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-                    목록
-                </a>
             </div>
         </div>
     </div>

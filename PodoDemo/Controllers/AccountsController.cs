@@ -76,6 +76,12 @@ namespace PodoDemo.Controllers
             ViewBag.UserId = HttpContext.Session.GetString("userId");
 
             List<Account> accountList = await _context.Account.ToListAsync();
+
+            foreach (Account item in accountList)
+            {
+                item.Ownerid = _context.User.Single(x => x.Id == item.Ownerid).Name;
+            }
+
             return View((Object)JsonConvert.SerializeObject(accountList));
         }
 
