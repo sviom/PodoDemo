@@ -604,6 +604,7 @@
     <Content Include="wwwroot\js\jqwidgets\styles\jqx.web.css" />
     <Content Include="wwwroot\js\jqwidgets\styles\jqx.windowsphone.css" />
     <Content Include="wwwroot\js\jqwidgets\styles\Thumbs.db" />
+    <Content Include="wwwroot\js\Views\Contacts_IndexGrid.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -627,4 +628,7 @@
   <ItemGroup>
         <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
     </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\js\Views\Prices_IndexGrid.js" />
+  </ItemGroup>
 </Project>
