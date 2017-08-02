@@ -649,6 +649,28 @@ namespace PodoDemo.Models
                     .HasForeignKey(d => d.Productid)
                     .HasConstraintName("FK_Price_Product");
             });
+
+            modelBuilder.Entity<Organization>(entity =>
+            {
+                entity.HasKey(e => e.Organizationid)
+                    .HasName("PK_Organization");
+
+                entity.Property(e => e.Organizationid)
+                    .HasColumnName("organizationid");
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .IsRequired();
+
+                entity.Property(e => e.Createdate)
+                    .HasColumnName("createdate")
+                    .IsRequired();
+
+                entity.Property(e => e.Memo)
+                    .HasColumnName("memo");
+
+
+            });
         }
     }
 }
