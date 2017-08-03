@@ -17,6 +17,7 @@ namespace PodoDemo.Models
         public virtual DbSet<Todo> Todo { get; set; }
         public virtual DbSet<Product> Product { get; set; }
         public virtual DbSet<Price> Price { get; set; }
+        public virtual DbSet<Organization> Organization { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -440,6 +441,12 @@ namespace PodoDemo.Models
                     .HasForeignKey(d => d.Department)
                     .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_User_OptionMasterDetail");
+
+                entity.HasOne(d => d.OrganizationidNavigation)
+                    .WithMany(p => p.User)
+                    .HasForeignKey(d => d.Organizationid)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_User_Organization");
             });
 
             modelBuilder.Entity<UserAuth>(entity =>
@@ -667,9 +674,7 @@ namespace PodoDemo.Models
                     .IsRequired();
 
                 entity.Property(e => e.Memo)
-                    .HasColumnName("memo");
-
-
+                    .HasColumnName("memo");                
             });
         }
     }

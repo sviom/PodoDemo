@@ -30,8 +30,9 @@ namespace PodoDemo.Models
         public string Createuser { get; set; }
         public DateTime Modifydate { get; set; }
         public string Modifyuser { get; set; }
-
+        public long Organizationid { get; set; }
         public virtual OptionMasterDetail DepartmentNavigation { get; set; }
+        public virtual Organization OrganizationidNavigation { get; set; }
 
         public virtual ICollection<UserAuth> UserAuth { get; set; }
     }
