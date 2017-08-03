@@ -1,47 +1,111 @@
-@model IEnumerable<PodoDemo.Models.Organization>
+﻿@*@model IEnumerable<PodoDemo.Models.Organization>*@
+@model string
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "조직관리";
 }
 
-<h2>Index</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Createdate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Memo)
-                </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Createdate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Memo)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Organizationid">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Organizationid">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Organizationid">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<script type="text/javascript">
+    var mainmenuId = -1;
+
+    $(document).ready(function () {
+        SetOrganizationlist(@Html.Raw(Model));
+
+        $('#organizationList').on('rowdoubleclick', function (event) {
+            var args = event.args;
+            // row's bound index.
+            var boundIndex = args.rowindex;
+            // row's visible index.
+            var visibleIndex = args.visibleindex;
+            // right click.
+            var rightclick = args.rightclick;
+            // original event.
+            var ev = args.originalEvent;
+
+            var data = $('#organizationList').jqxGrid('getrowdata', boundIndex);
+            location.href = "/Organizations/Edit/" + data.Organizationid;
+        });
+    });
+    // 대메뉴 표시
+    function SetOrganizationlist(organizationlistRaw) {
+        var source =
+            {
+                localdata: organizationlistRaw,
+                datatype: "json",
+                datafields:
+                [
+                    { name: 'Organizationid', type: 'number' },
+                    { name: 'Name', type: 'string' },
+                    { name: 'Createdate', type: 'date', format: "yyyy-MM-dd" },
+                    { name: 'Memo', type: 'string' }
+                ]
+            };
+
+        var dataAdapter = new $.jqx.dataAdapter(source);
+
+        $("#organizationList").jqxGrid(
+            {
+                width: '100%',
+                source: dataAdapter,
+                pageable: true,
+                autoheight: true,
+                autorowheight: true,
+                sortable: true,
+                altrows: true,
+                enabletooltips: true,
+                editable: false,
+                selectionmode: 'singlerow',
+                pagesizeoptions: [10, 15, 20, 25, 30, 35, 40, 45, 50],
+                //showfilterrow: true,
+                filterable: true,
+                pagesize: 15,
+                theme: "metroCustom",//테마설정
+                //columnsheight: '40px',//헤더 높이 설정
+                localization: GetLocalizationString(),
+                columns: [
+                    //문자로 나오는 항목
+                    { text: "조직ID", datafield: "Organizationid", align: 'center', cellsalign: 'center', width: "20%", minwidth: '30px' },
+                    { text: "이름", datafield: "Name", align: 'center', cellsalign: 'center', width: "20%", minwidth: '100px'},
+                    { text: "생성일", datafield: "Createdate", align: 'center', cellsalign: 'center', width: "20%", minwidth: '100px', cellsformat: 'yyyy-MM-dd' },
+                    { text: "메모", datafield: "Memo", align: 'center', cellsalign: 'center', width: "40%", minwidth: '100px' }
+                ]
+            });
+    }
+
+</script>
+
+
+<div class="View">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 custom-header">
+                <p class="text-left">
+                    조직 관리
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="custom-title">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    <span>조직 목록</span>
+                </div>
+                <div id="organizationList"></div>
+            </div>
+        </div>
+        @if (ViewData["Write"].ToString().Equals("4-1") || ViewData["Write"].ToString().Equals("4-2"))
+        {
+            <div class="row">
+                <div class="col-md-2">
+                    <a href="/Organizations/Create" class="btn btn-default">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        조직 생성
+                    </a>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>

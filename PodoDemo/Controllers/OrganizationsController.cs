@@ -6,67 +6,132 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PodoDemo.Models;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace PodoDemo.Controllers
 {
     public class OrganizationsController : Controller
     {
         private readonly PodoDemoNContext _context;
+        private static User loginedUser = new Models.User();
+        private static UserAuth _userAuth = new UserAuth();
 
         public OrganizationsController(PodoDemoNContext context)
         {
             _context = context;    
         }
 
-        // GET: Organizations
+        /// <summary>
+        /// 인덱스 페이지로 이동
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Organization.ToListAsync());
-        }
-
-        // GET: Organizations/Details/5
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null)
+            // 관리자가 아니면 접근 못하게
+            loginedUser
+                = await _context.User
+                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
+                            .SingleAsync();            
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
             {
-                return NotFound();
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
 
-            var organization = await _context.Organization
-                .SingleOrDefaultAsync(m => m.Organizationid == id);
-            if (organization == null)
+            // 읽기 권한 없으면 못들어가게 한다.
+            CreaetUserAuth();
+            if (_userAuth.Read.Equals("4-3"))
             {
-                return NotFound();
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
 
-            return View(organization);
+            // 권한
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
+            List<Organization> podoDemoNContext = await _context.Organization.ToListAsync();
+
+            return View((Object)JsonConvert.SerializeObject(podoDemoNContext, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
         }
 
-        // GET: Organizations/Create
+        /// <summary>
+        /// 생성 페이지로 이동
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Create()
         {
+            // 사용자 쓰기 권한 체크
+            CreaetUserAuth();
+            if (_userAuth.Write.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
+            // 권한
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
             return View();
         }
 
-        // POST: Organizations/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// 조직 생성
+        /// </summary>
+        /// <param name="organization"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Organizationid,Name,Createdate,Memo")] Organization organization)
+        public async Task<IActionResult> Create([Bind("Name,Memo")] Organization organization)
         {
+            // 사용자 쓰기 권한 체크
+            CreaetUserAuth();
+            if (_userAuth.Write.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
+            // 권한
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
             if (ModelState.IsValid)
             {
+                organization.Createdate = DateTime.Now;
+
                 _context.Add(organization);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
+
             return View(organization);
         }
 
-        // GET: Organizations/Edit/5
+        /// <summary>
+        /// 조직 수정 페이지 이동
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(long? id)
         {
+            // 읽기 권한 없으면 못들어가게 한다.
+            CreaetUserAuth();
+            if (_userAuth.Read.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
+            // 권한
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
             if (id == null)
             {
                 return NotFound();
@@ -80,13 +145,29 @@ namespace PodoDemo.Controllers
             return View(organization);
         }
 
-        // POST: Organizations/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// 실제 조직 수정
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="organization"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Organizationid,Name,Createdate,Memo")] Organization organization)
         {
+            // 수정 권한 체크 
+            CreaetUserAuth();
+            if (_userAuth.Modify.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
+            // 권한
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
             if (id != organization.Organizationid)
             {
                 return NotFound();
@@ -115,38 +196,82 @@ namespace PodoDemo.Controllers
             return View(organization);
         }
 
-        // GET: Organizations/Delete/5
+        /// <summary>
+        /// 조직 삭제
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(long? id)
         {
+            // 삭제 권한 체크 
+            CreaetUserAuth();
+            if (_userAuth.Delete.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
+            // 권한
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var organization = await _context.Organization
-                .SingleOrDefaultAsync(m => m.Organizationid == id);
-            if (organization == null)
-            {
-                return NotFound();
-            }
-
-            return View(organization);
-        }
-
-        // POST: Organizations/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
-        {
             var organization = await _context.Organization.SingleOrDefaultAsync(m => m.Organizationid == id);
             _context.Organization.Remove(organization);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// 조직 중복 검사
+        /// </summary>
+        /// <param name="organization"></param>
+        /// <returns></returns>
+        [HttpPost,ActionName("Search")]
+        public bool Search([FromBody]Organization organization)
+        {
+            List<Organization> organiList = _context.Organization.Where(x => x.Name == organization.Name).ToList();
+            if(organiList.Count > 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         private bool OrganizationExists(long id)
         {
             return _context.Organization.Any(e => e.Organizationid == id);
+        }
+
+        /// <summary>
+        /// 사용자 권한 넣기
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult CreaetUserAuth()
+        {
+            CommonAPIController ss = new CommonAPIController(_context);
+            string userid = HttpContext.Session.GetString("userId");
+
+            // 사용자 세션 체크
+            if (!string.IsNullOrEmpty(userid))
+            {
+                _userAuth = ss.CheckUseauth(userid, "7-5");
+                return null;
+            }
+            else
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
         }
     }
 }

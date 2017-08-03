@@ -1,47 +1,140 @@
-@model PodoDemo.Models.Organization
+﻿@model PodoDemo.Models.Organization
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "조직관리";
 }
 
-<h2>Edit</h2>
 
-<form asp-action="Edit">
-    <div class="form-horizontal">
-        <h4>Organization</h4>
-        <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="Organizationid" />
-        <div class="form-group">
-            <label asp-for="Name" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+
+    // 조직 수정
+    function SubmitForm(targetName) {
+        if (targetName == "Edit") {
+            // 유효성 검사 후 진행
+            if (ValidateForm()) {
+                $("#OrganizationEditForm").prop("action", "/Organizations/" + targetName + "/@Model.Organizationid");
+                $("#OrganizationEditForm").submit();
+            }
+        } else if (targetName == "Delete") {
+            if (confirm("해당 내용을 정말로 삭제하시겠습니까?\n삭제후에는 복원되지 않습니다.")) {
+                if ($("#Organizationid").val() != "" && $("#Organizationid").val() != null) {
+                    $("#OrganizationEditForm").prop("action", "/Organizations/" + targetName + "/@Model.Organizationid");
+                    $("#OrganizationEditForm").submit();
+                } else {
+                    alert("삭제할 내용이 없습니다.");
+                    return;
+                }
+            }
+        }
+    }
+
+    // 입력한 값들에 대한 유효성 검사
+    function ValidateForm() {
+        var name = $("#Name").val();
+
+        if (name == "") {
+            alert("조직명을 입력해주세요.");
+            return false;
+        }
+
+        return true;
+    }
+
+    // 조직 중복 검사
+    function CheckOrganizationDuplicate() {
+        var SearchInfo = new Object();
+        SearchInfo.Name = $("#Name").val();
+
+        if (SearchInfo.Name == "") {
+            alert("조직 이름을 입력하세요.");
+            return false;
+        }
+        var checkResult = false;
+        checkResult = ExecuteAjax("POST", "/Organizations/Search", "json", "application/json", JSON.stringify(SearchInfo));
+
+        if (checkResult) {
+            $("#DuplicateText").text("사용 가능한 조직 이름입니다.");
+            $("#CreateOrganizationButton").prop("disabled", "");
+            $("#OrganizationDuplicateCheck").prop("disabled", "disabled");
+            return true;
+        } else {
+            $("#DuplicateText").text("이미 사용중인 조직이름입니다.");
+            return false;
+        }
+    }
+</script>
+<div class="View">
+    <div class="container custom-container">
+        <div class="row">
+            <div class="col-md-12 custom-header">
+                <p class="text-left">조직 생성</p>
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Createdate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Createdate" class="form-control" />
-                <span asp-validation-for="Createdate" class="text-danger"></span>
+
+        <div class="col-md-12">
+            <div class="custom-title">
+                <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                <span>기본 정보</span>
+                <hr />
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Memo" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Memo" class="form-control" />
-                <span asp-validation-for="Memo" class="text-danger"></span>
+
+        <form class="form-horizontal" id="OrganizationEditForm" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="Organizationid" name="Organizationid" value="@Model.Organizationid" />
+            <input type="hidden" id="Createdate" name="Createdate" value="@Model.Createdate" />
+
+            <div class="form-group">
+                <label class="col-md-2 control-label">조직명</label>
+                <div class="col-md-2">
+                    <input type="text" id="Name" name="Name" class="form-control" placeholder="조직이름" value="@Model.Name" />
+                </div>
+                <div class="col-md-1">
+                    <button type="button" id="OrganizationDuplicateCheck" name="OrganizationDuplicateCheck" class="btn btn-danger" onclick="CheckOrganizationDuplicate();">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        중복검사
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <p class="text-center" id="DuplicateText"></p>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+
+            <div class="form-group">
+                <label class="col-md-2 control-label">메모</label>
+                <div class="col-md-10">
+                    <textarea id="Memo" name="Memo" class="form-control" placeholder="메모입력" rows="1">@Model.Memo</textarea>
+                </div>
+            </div>
+        </form>
+
+        <div class="row">
+            @if (ViewData["Write"].ToString().Equals("4-1") || ViewData["Write"].ToString().Equals("4-2"))
+            {
+                <div class="col-md-2 custom-row-btn-margin">
+                    <button type="button" id="CreateOrganizationButton" class="btn btn-default" onclick="SubmitForm('Edit');" disabled="disabled">
+                        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+                        저장
+                    </button>
+                </div>
+            }
+            @if (ViewData["Delete"].ToString().Equals("4-1") || ViewData["Delete"].ToString().Equals("4-2"))
+            {
+                <div class="col-md-2 custom-row-btn-margin">
+                    <button type="button" id="DeleteButton" class="btn btn-default btn-danger" onclick="SubmitForm('Delete');">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        삭제
+                    </button>
+                </div>
+            }
+            <div class="col-md-2 custom-row-btn-margin">
+                <a href="/Organizations/Index" class="btn btn-default">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    목록
+                </a>
             </div>
         </div>
     </div>
-</form>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
-
