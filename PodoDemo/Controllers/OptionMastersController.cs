@@ -23,6 +23,10 @@ namespace PodoDemo.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// 시스템 관리자 권한 체크
+        /// </summary>
+        /// <returns></returns>
         public bool CheckSystemUserAsync()
         {
             User loginedUser

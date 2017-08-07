@@ -13,14 +13,17 @@ namespace PodoDemo.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly PodoDemoNContext _context;
-        //private static User loginedUser = new Models.User();
+        private readonly PodoDemoNContext _context;        
 
         public UsersController(PodoDemoNContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// 시스템 관리자 권한 체크 
+        /// </summary>
+        /// <returns></returns>
         public bool CheckSystemUserAsync()
         {
             User loginedUser

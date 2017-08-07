@@ -15,6 +15,7 @@ namespace PodoDemo.Controllers
     public class UserAuthsController : Controller
     {
         private readonly PodoDemoNContext _context;
+        private static User loginedUser = new User();
 
         public UserAuthsController(PodoDemoNContext context)
         {
@@ -23,7 +24,7 @@ namespace PodoDemo.Controllers
 
         public bool CheckSystemUserAsync()
         {
-            User loginedUser
+            loginedUser
                 = _context.User
                             .Where(x => x.Id == HttpContext.Session.GetString("userId"))
                             .Single();

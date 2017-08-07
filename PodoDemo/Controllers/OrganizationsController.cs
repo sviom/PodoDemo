@@ -14,7 +14,6 @@ namespace PodoDemo.Controllers
     public class OrganizationsController : Controller
     {
         private readonly PodoDemoNContext _context;
-        private static User loginedUser = new Models.User();
         private static UserAuth _userAuth = new UserAuth();
 
         public OrganizationsController(PodoDemoNContext context)
@@ -23,17 +22,56 @@ namespace PodoDemo.Controllers
         }
 
         /// <summary>
+        /// 시스템 관리자 권한 체크
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckSystemUserAsync()
+        {
+            User loginedUser
+                = _context.User
+                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
+                            .Single();
+
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// 사용자 권한 넣기
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult CreaetUserAuth()
+        {
+            CommonAPIController ss = new CommonAPIController(_context);
+            string userid = HttpContext.Session.GetString("userId");
+
+            // 사용자 세션 체크
+            if (!string.IsNullOrEmpty(userid))
+            {
+                _userAuth = ss.CheckUseauth(userid, "7-5");
+                return null;
+            }
+            else
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+        }
+
+
+        /// <summary>
         /// 인덱스 페이지로 이동
         /// </summary>
         /// <returns></returns>
         public async Task<IActionResult> Index()
         {
-            // 관리자가 아니면 접근 못하게
-            loginedUser
-                = await _context.User
-                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
-                            .SingleAsync();            
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
+            if (!CheckSystemUserAsync())
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
@@ -62,6 +100,11 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public IActionResult Create()
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             // 사용자 쓰기 권한 체크
             CreaetUserAuth();
             if (_userAuth.Write.Equals("4-3"))
@@ -87,6 +130,11 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Memo")] Organization organization)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             // 사용자 쓰기 권한 체크
             CreaetUserAuth();
             if (_userAuth.Write.Equals("4-3"))
@@ -119,6 +167,11 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Edit(long? id)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             // 읽기 권한 없으면 못들어가게 한다.
             CreaetUserAuth();
             if (_userAuth.Read.Equals("4-3"))
@@ -155,6 +208,11 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Organizationid,Name,Createdate,Memo")] Organization organization)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             // 수정 권한 체크 
             CreaetUserAuth();
             if (_userAuth.Modify.Equals("4-3"))
@@ -205,6 +263,11 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(long? id)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             // 삭제 권한 체크 
             CreaetUserAuth();
             if (_userAuth.Delete.Equals("4-3"))
@@ -253,25 +316,6 @@ namespace PodoDemo.Controllers
             return _context.Organization.Any(e => e.Organizationid == id);
         }
 
-        /// <summary>
-        /// 사용자 권한 넣기
-        /// </summary>
-        /// <returns></returns>
-        public IActionResult CreaetUserAuth()
-        {
-            CommonAPIController ss = new CommonAPIController(_context);
-            string userid = HttpContext.Session.GetString("userId");
-
-            // 사용자 세션 체크
-            if (!string.IsNullOrEmpty(userid))
-            {
-                _userAuth = ss.CheckUseauth(userid, "7-5");
-                return null;
-            }
-            else
-            {
-                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
-            }
-        }
+        
     }
 }

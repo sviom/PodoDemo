@@ -23,6 +23,28 @@ namespace PodoDemo.Controllers
         }
 
         /// <summary>
+        /// 시스템 관리자 권한 체크
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckSystemUserAsync()
+        {
+            User loginedUser
+                = _context.User
+                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
+                            .Single();
+
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
         /// 대메뉴 페이지 이동 및 불러오기
         /// </summary>
         /// <returns></returns>
@@ -30,13 +52,7 @@ namespace PodoDemo.Controllers
         {
             try
             {
-                loginedUser
-                = await _context.User
-                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
-                            .SingleAsync();
-
-                // 관리자가 아니면 접근 못하게
-                if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+                if (!CheckSystemUserAsync())
                 {
                     return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
                 }
@@ -63,8 +79,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public IActionResult MenuCreate([FromQuery]bool isPop)
         {
-            // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            if (!CheckSystemUserAsync())
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
@@ -79,6 +94,11 @@ namespace PodoDemo.Controllers
         [HttpPost]
         public async Task<IActionResult> MenuCreate(bool isPop, Menu mainMenu)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -122,17 +142,15 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> MenuEdit(long? id, [FromQuery]bool isPop)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            if (!CheckSystemUserAsync())
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
 
+            if (id == null)
+            {
+                return NotFound();
+            }
             var menu = await _context.Menu.SingleOrDefaultAsync(m => m.Id == id);
             if (menu == null)
             {
@@ -154,8 +172,7 @@ namespace PodoDemo.Controllers
         [HttpPost]
         public async Task<IActionResult> MenuEdit(long? Id, bool IsPop, [Bind("Id,Name,Order,Isused,Isdeleted,Createdate,Createuser,Modifydate,Modifyuser")] Menu mainMenu)
         {
-            // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
+            if (!CheckSystemUserAsync())
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
@@ -227,10 +244,10 @@ namespace PodoDemo.Controllers
         [HttpPost]
         public async Task<IActionResult> MenuDelete(long? Id, bool IsPop, [Bind("Id,Name,Order,Isused,Isdeleted,Createdate,Createuser,Modifydate,Modifyuser")] Menu mainMenu)
         {
-            //var menu = await _context.Menu.SingleOrDefaultAsync(m => m.Id == Id);
-            //_context.Menu.Remove(menu);
-            //await _context.SaveChangesAsync();
-            //return RedirectToAction("Close","Home");
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
 
             if (Id != mainMenu.Id)
             {
@@ -318,8 +335,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public IActionResult SubmenuCreate([FromQuery]bool isPop, int mainMenuid)
         {
-            // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            if (!CheckSystemUserAsync())
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
@@ -335,6 +351,11 @@ namespace PodoDemo.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmenuCreate(bool isPop, SubMenu subMenu)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -419,15 +440,14 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> SubmenuEdit(string id, [FromQuery]bool isPop, int mainMenuid)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (id == null)
             {
                 return NotFound();
-            }
-
-            // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
-            {
-                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
 
             var menu = await _context.SubMenu.SingleOrDefaultAsync(m => m.Id == id);
@@ -452,6 +472,11 @@ namespace PodoDemo.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmenuEdit(string Id, bool IsPop, [Bind("Id,Name,Order,Isused,Isdeleted,Createdate,Createuser,Modifydate,Modifyuser,Menuurl,Mainmenuid")] SubMenu subMenu)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (Id != subMenu.Id)
             {
                 return NotFound();
@@ -514,6 +539,11 @@ namespace PodoDemo.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteSubmenu(string Id, bool IsPop, [Bind("Id,Name,Order,Isused,Isdeleted,Createdate,Createuser,Modifydate,Modifyuser")] SubMenu subMenu)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (Id != subMenu.Id)
             {
                 return NotFound();
