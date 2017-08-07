@@ -59,6 +59,8 @@ namespace PodoDemo.Controllers
                 {
                     userItem.Level = _context.OptionMasterDetail.SingleOrDefault(x => x.Optionid == userItem.Level).Name;
                 }
+
+                userItem.Organization = _context.Organization.Single(x => x.Organizationid == userItem.Organizationid);
             }
 
             return View((Object)JsonConvert.SerializeObject(podoDemoNContext, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
@@ -87,7 +89,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Pw,Name,Engname,Email,Phone,Mobile,Department,Position,Excelauth,Level,Organization")] User user)
+        public async Task<IActionResult> Create([Bind("Id,Pw,Name,Engname,Email,Phone,Mobile,Department,Position,Excelauth,Level,Organizationid")] User user)
         {
             // 관리자가 아니면 접근 못하게
             if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
@@ -101,7 +103,7 @@ namespace PodoDemo.Controllers
                 user.Createuser = HttpContext.Session.GetString("userId");
                 user.Modifydate = DateTime.Now;
                 user.Modifyuser = HttpContext.Session.GetString("userId");
-                user.Organizationid = user.Organization.Organizationid;
+                user.Organization = _context.Organization.Single(x => x.Organizationid == user.Organizationid);
 
                 // 시스템 관리자 여부
                 if (user.Level == "2-1")
@@ -182,7 +184,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, string existPw, [Bind("Id,Pw,Name,Engname,Email,Phone,Mobile,Department,Position,Excelauth,Level,Createdate,Createuser,Modifydate,Modifyuser")] User user)
+        public async Task<IActionResult> Edit(string id, string existPw, [Bind("Id,Pw,Name,Engname,Email,Phone,Mobile,Department,Position,Excelauth,Level,Createdate,Createuser,Modifydate,Modifyuser,Organizationid")] User user)
         {
             if (id != user.Id)
             {
@@ -201,6 +203,7 @@ namespace PodoDemo.Controllers
                 {
                     user.Modifydate = DateTime.Now;
                     user.Modifyuser = HttpContext.Session.GetString("userId");
+                    user.Organization = _context.Organization.Single(x => x.Organizationid == user.Organizationid);
 
                     // 시스템 관리자 여부
                     if (user.Level == "2-1")

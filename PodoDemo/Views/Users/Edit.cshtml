@@ -13,6 +13,7 @@
         GetOptionDDL('1', 'Department', SetoptionTag, '@Model.Department', true, false, false);
         GetOptionDDL('3', 'Position', SetoptionTag, '@Model.Position', true, false, false);
         GetOptionDDL('2', 'Level', SetoptionTag, '@Model.Level', true, false, false);
+        GetOrganizationDDL('Organizationid', SetoptionTag, '@Model.Organizationid', false, true, false);
 
         $("#Excelauth_T").prop("checked", "@Excelauth_T");
         $("#Excelauth_F").prop("checked", "@Excelauth_F");
@@ -48,6 +49,7 @@
         var Department = $("#Department option:selected").val();
         var Position = $("#Position option:selected").val();
         var Level = $("#Level option:selected").val();
+        var Organization = $("#Organizationid option:selected").val();
 
         if (Id == "") {
             alert("사용자 아이디를 입력해주세요.");
@@ -90,6 +92,12 @@
             alert("시스템등급을 선택해주세요.");
             return false;
         }
+
+        if (Organization == "") {
+            alert("조직을 선택해주세요.");
+            return false;
+        }
+
         return true;
     }
 </script>
@@ -207,6 +215,13 @@
                 <label class="col-md-2 control-label requireField">시스템등급</label>
                 <div class="col-md-2">
                     <select id="Level" name="Level" class="form-control"></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label requireField">조직</label>
+                <div class="col-md-2">
+                    <select id="Organizationid" name="Organizationid" class="form-control"></select>
                 </div>
             </div>
         </form>
