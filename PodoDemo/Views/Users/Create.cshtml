@@ -10,6 +10,7 @@
         GetOptionDDL('1', 'Department', SetoptionTag, '', true, false, false);
         GetOptionDDL('3', 'Position', SetoptionTag, '', true, false, false);
         GetOptionDDL('2', 'Level', SetoptionTag, '', true, false, false);
+        GetOrganizationDDL('Organization', SetoptionTag, '', false, true, false);
     });
 
     // 메뉴 수정 내용 저장
@@ -33,6 +34,7 @@
         var Department = $("#Department option:selected").val();
         var Position = $("#Position option:selected").val();
         var Level = $("#Level option:selected").val();
+        var Organization = $("#Organization option:selected").val();
 
         if (Id == "") {
             alert("사용자 아이디를 입력해주세요.");
@@ -73,6 +75,12 @@
             alert("시스템등급을 선택해주세요.");
             return false;
         }
+
+        if (Organization == "") {
+            alert("조직을 선택해주세요.");
+            return false;
+        }
+
         return true;
     }
 </script>
@@ -175,6 +183,13 @@
                 <label class="col-md-2 control-label requireField">시스템등급</label>
                 <div class="col-md-2">
                     <select id="Level" name="Level" class="form-control"></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label requireField">조직</label>
+                <div class="col-md-2">
+                    <select id="Organization" name="Organization" class="form-control"></select>
                 </div>
             </div>
         </form>

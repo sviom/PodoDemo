@@ -32,7 +32,7 @@ namespace PodoDemo.Models
         public string Modifyuser { get; set; }
         public long Organizationid { get; set; }
         public virtual OptionMasterDetail DepartmentNavigation { get; set; }
-        public virtual Organization OrganizationidNavigation { get; set; }
+        public virtual Organization Organization { get; set; }
 
         public virtual ICollection<UserAuth> UserAuth { get; set; }
     }

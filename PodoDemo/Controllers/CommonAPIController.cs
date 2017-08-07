@@ -98,6 +98,30 @@ namespace PodoDemo.Controllers
         {
             SubMenu _submenu = _context.SubMenu.Where(x => x.Id == inSubmenu.Id).SingleOrDefault();
             return JsonConvert.SerializeObject(_submenu);
-        }        
+        }
+
+        /// <summary>
+        /// 현재 생성되어 있는 조직 목록 가져오기
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("GetOrganizationDDL")]
+        public List<DDL> GetOrganizationDDL()
+        {
+            List<Organization> organizationList = _context.Organization.ToList();
+            List<DDL> organizationDDLList = new List<DDL>();
+
+            foreach (Organization item in organizationList)
+            {
+                DDL tempDDL = new DDL()
+                {
+                    Text = item.Name,
+                    Value = item.Organizationid.ToString()
+                };
+                organizationDDLList.Add(tempDDL);
+            }
+
+            return organizationDDLList;
+        }
     }
 }

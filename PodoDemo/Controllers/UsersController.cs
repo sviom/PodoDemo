@@ -87,7 +87,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Pw,Name,Engname,Email,Phone,Mobile,Department,Position,Excelauth,Level")] User user)
+        public async Task<IActionResult> Create([Bind("Id,Pw,Name,Engname,Email,Phone,Mobile,Department,Position,Excelauth,Level,Organization")] User user)
         {
             // 관리자가 아니면 접근 못하게
             if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
@@ -101,6 +101,7 @@ namespace PodoDemo.Controllers
                 user.Createuser = HttpContext.Session.GetString("userId");
                 user.Modifydate = DateTime.Now;
                 user.Modifyuser = HttpContext.Session.GetString("userId");
+                user.Organizationid = user.Organization.Organizationid;
 
                 // 시스템 관리자 여부
                 if (user.Level == "2-1")

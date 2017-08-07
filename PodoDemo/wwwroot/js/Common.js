@@ -191,6 +191,41 @@ function GetUserDDL(searchKey, userID, extraParam, callbackFnc, selval, isAll, i
     });
 }
 
+//조직 리스트 바인딩
+//extraParam: callbackFnc에서 사용할 추가 파라미터(여러개일 경우 배열로)
+//callbakFnc: 결과값을 전달할 함수
+//selval: 기본 선택값 필요시 
+function GetOrganizationDDL(extraParam, callbackFnc, selval, isAll, isEmpty, auth) {
+    $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        //url: "/Service/CommonService.svc/GetJoinedUserDDL",
+        url: window.location.origin + "/api/CommonAPI/GetOrganizationDDL",
+        //data: JSON.stringify({
+        //    "SearchKey": searchKey
+        //    , "Userid": userID
+        //}),
+        async: false,
+        dataType: "json",
+        success: function (result) {
+            // 프로퍼티 소문자 대문자로 변환
+            var newResult = new Array();
+            for (var i = 0; i < result.length; i++) {
+                var resultObject = new Object();
+                resultObject.Text = result[i].text;
+                resultObject.Value = result[i].value;
+
+                newResult.push(resultObject);
+            }
+
+            callbackFnc(extraParam, newResult, selval, isAll, isEmpty, auth);
+        },
+        error: function (data) {
+            alert("[!ERROR]\n" + data.responseText);
+        }
+    });
+}
+
 // Select Tag로 Binding
 function SetoptionTag(control, result, selval, isAll, isEmpty, auth) {
     $("#" + control).html(ConvertToOptionTag(result, isAll, isEmpty, auth, selval));

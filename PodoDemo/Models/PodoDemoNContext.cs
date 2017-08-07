@@ -442,7 +442,7 @@ namespace PodoDemo.Models
                     .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_User_OptionMasterDetail");
 
-                entity.HasOne(d => d.OrganizationidNavigation)
+                entity.HasOne(d => d.Organization)
                     .WithMany(p => p.User)
                     .HasForeignKey(d => d.Organizationid)
                     .OnDelete(DeleteBehavior.Cascade)
