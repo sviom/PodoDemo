@@ -14,11 +14,29 @@ namespace PodoDemo.Controllers
     public class UsersController : Controller
     {
         private readonly PodoDemoNContext _context;
-        private static User loginedUser = new Models.User();
+        //private static User loginedUser = new Models.User();
 
         public UsersController(PodoDemoNContext context)
         {
             _context = context;
+        }
+
+        public bool CheckSystemUserAsync()
+        {
+            User loginedUser
+                = _context.User
+                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
+                            .Single();
+
+            // 관리자가 아니면 접근 못하게
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         /// <summary>
@@ -27,19 +45,11 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Index()
         {
-            loginedUser
-                = await _context.User
-                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
-                            .SingleAsync();
-
-            // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
+            if (!CheckSystemUserAsync())
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
 
-            //JsonConvert.SerializeObject(mainMenuList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            //var podoDemoNContext = _context.User.Include(u => u.DepartmentNavigation);
             List<User> podoDemoNContext = await _context.User.ToListAsync();
 
             // 부서 직급 사용자 등급 표시
@@ -72,8 +82,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public IActionResult Create()
         {
-            // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
+            if (!CheckSystemUserAsync())
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
@@ -91,8 +100,7 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Pw,Name,Engname,Email,Phone,Mobile,Department,Position,Excelauth,Level,Organizationid")] User user)
         {
-            // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
+            if (!CheckSystemUserAsync())
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
@@ -160,8 +168,7 @@ namespace PodoDemo.Controllers
                 return NotFound();
             }
 
-            // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
+            if (!CheckSystemUserAsync())
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
@@ -191,8 +198,7 @@ namespace PodoDemo.Controllers
                 return NotFound();
             }
 
-            // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
+            if (!CheckSystemUserAsync())
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
@@ -250,8 +256,7 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {
-            // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
+            if (!CheckSystemUserAsync())
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }

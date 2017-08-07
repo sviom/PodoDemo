@@ -15,11 +15,28 @@ namespace PodoDemo.Controllers
     public class UserAuthsController : Controller
     {
         private readonly PodoDemoNContext _context;
-        private static User loginedUser = new Models.User();
 
         public UserAuthsController(PodoDemoNContext context)
         {
             _context = context;
+        }
+
+        public bool CheckSystemUserAsync()
+        {
+            User loginedUser
+                = _context.User
+                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
+                            .Single();
+
+            // 관리자가 아니면 접근 못하게 // 권한은 일반 관리자도 가능하다
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         /// <summary>
@@ -28,13 +45,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Index()
         {
-            loginedUser
-                = await _context.User
-                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
-                            .SingleAsync();
-
-            // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            if (!CheckSystemUserAsync())
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
@@ -72,7 +83,11 @@ namespace PodoDemo.Controllers
             List<UserAuth> _userauthlist = new List<UserAuth>();
 
             // 최종관리자는 다 본다.
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
+            if (loginedUser.Level == "2-1" && loginedUser.Level == "시스템관리자")
+            {
+                _userauthlist = await _context.UserAuth.Where(x => x.Userid == info.Userid).ToListAsync();
+            }
+            else
             {
                 if (!string.IsNullOrEmpty(info.Menuid))
                 {
@@ -100,10 +115,6 @@ namespace PodoDemo.Controllers
                 {
                     _userauthlist = await _context.UserAuth.Where(x => x.Userid == info.Userid).Where(x => x.Submenu.Ismanager != true).ToListAsync();
                 }
-            }
-            else
-            {
-                _userauthlist = await _context.UserAuth.Where(x => x.Userid == info.Userid).ToListAsync();
             }
 
             // 해당 권한 메뉴 이름 배정
@@ -143,8 +154,7 @@ namespace PodoDemo.Controllers
         [HttpPost]
         public async Task<bool> EditUserauthList([FromBody]List<UserAuth> userAuthList)
         {
-            // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            if (!CheckSystemUserAsync())
             {
                 return false;
             }

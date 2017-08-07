@@ -23,19 +23,31 @@ namespace PodoDemo.Controllers
             _context = context;
         }
 
+        public bool CheckSystemUserAsync()
+        {
+            User loginedUser
+                = _context.User
+                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
+                            .Single();
+
+            // 관리자가 아니면 접근 못하게 // 권한은 일반 관리자도 가능하다
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         /// <summary>
         /// 옵션 리스트 페이지로 이동
         /// </summary>
         /// <returns></returns>
         public async Task<IActionResult> Index()
         {
-            loginedUser
-                = await _context.User
-                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
-                            .SingleAsync();
-
-            // 관리자가 아니면 접근 못하게
-            if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+            if (!CheckSystemUserAsync())
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
             }
@@ -62,6 +74,11 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public IActionResult MasterCreate([FromQuery]bool isPop)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             ViewBag.isPop = isPop;
             ViewBag.Ismaster = loginedUser.Ismaster;
             return View();
@@ -77,6 +94,11 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MasterCreate(bool isPop, [Bind("Name,Description,Isused")] OptionMaster optionMaster)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (ModelState.IsValid)
             {
                 optionMaster.Createdate = DateTime.Now;
@@ -101,6 +123,11 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> MasterEdit(long? id, [FromQuery]bool isPop)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -128,6 +155,11 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MasterEdit(long Masterid, bool IsPop, [Bind("Masterid,Name,Description,Isused,Createdate,Createuser,Modifydate,Modifyuser,Issystem,Ownerid")] OptionMaster optionMaster)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (Masterid != optionMaster.Masterid)
             {
                 return NotFound();
@@ -168,10 +200,10 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> MasterDelete(long Masterid, bool IsPop, [Bind("Masterid,Name,Description,Isused,Createdate,Createuser,Modifydate,Modifyuser,Issystem,Ownerid")] OptionMaster optionMaster)
         {
-            //var menu = await _context.Menu.SingleOrDefaultAsync(m => m.Id == Id);
-            //_context.Menu.Remove(menu);
-            //await _context.SaveChangesAsync();
-            //return RedirectToAction("Close","Home");
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
 
             var dd = await _context.OptionMaster.SingleOrDefaultAsync(m => m.Masterid == Masterid);
             _context.OptionMaster.Remove(dd);
@@ -219,6 +251,11 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public IActionResult OptionDetailCreate([FromQuery]bool isPop, long Masterid)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             ViewBag.isPop = isPop;
             ViewData["Masterid"] = Masterid;
             return View();
@@ -234,6 +271,11 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OptionDetailCreate(bool isPop, OptionMasterDetail optionmasterDetail)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (ModelState.IsValid)
             {
                 optionmasterDetail.Createdate = DateTime.Now;
@@ -259,6 +301,11 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> OptionDetailEdit(string id, [FromQuery]bool isPop, long Masterid)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -285,6 +332,11 @@ namespace PodoDemo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OptionDetailEdit(string Optionid, bool IsPop, OptionMasterDetail optionmasterDetail)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (Optionid != optionmasterDetail.Optionid)
             {
                 return NotFound();
@@ -355,6 +407,11 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> OptiondetailDelete(string Optionid, bool IsPop, OptionMasterDetail optionmasterDetail)
         {
+            if (!CheckSystemUserAsync())
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             var ss = _context.OptionMasterDetail.SingleOrDefault(m => m.Optionid == Optionid);
             _context.OptionMasterDetail.Remove(ss);
 

@@ -123,5 +123,42 @@ namespace PodoDemo.Controllers
 
             return organizationDDLList;
         }
+
+        /// <summary>
+        /// 시스템 사용자 권한 체크
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckSystemUserAsync(bool isManager)
+        {
+            User loginedUser
+                = _context.User
+                            .Where(x => x.Id == HttpContext.Session.GetString("userId"))
+                            .Single();
+
+            if (isManager)
+            {
+                // 관리자가 아니면 접근 못하게 // 권한은 일반 관리자도 가능하다
+                if (loginedUser.Level == "2-1" && loginedUser.Level == "시스템관리자")
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                // 관리자가 아니면 접근 못하게 // 권한은 일반 관리자도 가능하다
+                if (loginedUser.Level != "2-1" && loginedUser.Level != "2-2" && loginedUser.Level != "시스템관리자" && loginedUser.Level != "CRM관리자")
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }            
+        }
     }
 }
