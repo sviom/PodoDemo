@@ -71,31 +71,40 @@ namespace PodoDemo.Controllers
         {
             List<UserAuth> _userauthlist = new List<UserAuth>();
 
-            if (!string.IsNullOrEmpty(info.Menuid))
+            // 최종관리자는 다 본다.
+            if (loginedUser.Level != "2-1" && loginedUser.Level != "시스템관리자")
             {
-                if (!string.IsNullOrEmpty(info.Submenuid))
+                if (!string.IsNullOrEmpty(info.Menuid))
                 {
-                    _userauthlist =
-                        await _context.UserAuth
-                        .Where(x => x.Userid == info.Userid)
-                        .Where(x => x.Submenu.Mainmenuid == Convert.ToDouble(info.Menuid))
-                        .Where(x => x.Submenuid == info.Submenuid)
-                        .ToListAsync();
+                    if (!string.IsNullOrEmpty(info.Submenuid))
+                    {
+                        _userauthlist =
+                            await _context.UserAuth
+                            .Where(x => x.Userid == info.Userid)
+                            .Where(x => x.Submenu.Mainmenuid == Convert.ToDouble(info.Menuid))
+                            .Where(x => x.Submenuid == info.Submenuid)
+                            .Where(x => x.Submenu.Ismanager != true)
+                            .ToListAsync();
+                    }
+                    else
+                    {
+                        _userauthlist =
+                            await _context.UserAuth
+                            .Where(x => x.Userid == info.Userid)
+                            .Where(x => x.Submenu.Mainmenuid == Convert.ToDouble(info.Menuid))
+                            .Where(x => x.Submenu.Ismanager != true)
+                            .ToListAsync();
+                    }
                 }
                 else
                 {
-                    _userauthlist =
-                        await _context.UserAuth
-                        .Where(x => x.Userid == info.Userid)
-                        .Where(x => x.Submenu.Mainmenuid == Convert.ToDouble(info.Menuid))
-                        .ToListAsync();
+                    _userauthlist = await _context.UserAuth.Where(x => x.Userid == info.Userid).Where(x => x.Submenu.Ismanager != true).ToListAsync();
                 }
             }
             else
             {
                 _userauthlist = await _context.UserAuth.Where(x => x.Userid == info.Userid).ToListAsync();
             }
-
 
             // 해당 권한 메뉴 이름 배정
             foreach (UserAuth item in _userauthlist)
@@ -113,7 +122,7 @@ namespace PodoDemo.Controllers
         [HttpPost]
         public async Task<string> GetAuthList()
         {
-            List<OptionMasterDetail> authList 
+            List<OptionMasterDetail> authList
                 = await _context.OptionMasterDetail
                                 .Where(x => x.Masterid == 4 && x.Isused == true)
                                 .ToListAsync();

@@ -8,10 +8,10 @@
     $(document).ready(function () {
         GetUserDDL("", '@ViewBag.UserId', 'Ownerid', SetoptionTag, '@ViewBag.UserId', false, false, false);
 
-        GetOptionDDL('4', 'ReadAll', SetoptionTag, '', false, false, false);
-        GetOptionDDL('4', 'ModifyAll', SetoptionTag, '', false, false, false);
-        GetOptionDDL('4', 'WriteAll', SetoptionTag, '', false, false, false);
-        GetOptionDDL('4', 'DeleteAll', SetoptionTag, '', false, false, false);
+        GetOptionDDL('4', 'ReadAll', SetoptionTag, '', false, true, false);
+        GetOptionDDL('4', 'ModifyAll', SetoptionTag, '', false, true, false);
+        GetOptionDDL('4', 'WriteAll', SetoptionTag, '', false, true, false);
+        GetOptionDDL('4', 'DeleteAll', SetoptionTag, '', false, true, false);
 
         SetoptionTag('Menu', JSON.parse('@Html.Raw(ViewBag.MenuList)'), '', true, false, false);
         SetoptionTag('Submenu', JSON.parse('@Html.Raw(ViewBag.SubmenuList)'), '', true, false, false);
@@ -130,8 +130,7 @@
 
         var lis
             = ExecuteAjax("POST", "/UserAuths/GetUserauthList", "json", "application/json", JSON.stringify(Info));
-        console.log("사용 권한 목록");
-        console.log(lis);
+
         SetBasicElement(lis);
     }
 
