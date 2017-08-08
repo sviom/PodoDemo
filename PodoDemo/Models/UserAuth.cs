@@ -7,6 +7,8 @@ namespace PodoDemo.Models
 {
     public class UserAuth
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
         public string Userid { get; set; }
         public string Read { get; set; }
@@ -18,9 +20,7 @@ namespace PodoDemo.Models
         public string Createuser { get; set; }
         public DateTime Modifydate { get; set; }
         public string Modifyuser { get; set; }
-
         public virtual SubMenu Submenu { get; set; }
-
         public virtual User User { get; set; }
     }
 

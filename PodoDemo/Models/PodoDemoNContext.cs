@@ -18,6 +18,7 @@ namespace PodoDemo.Models
         public virtual DbSet<Product> Product { get; set; }
         public virtual DbSet<Price> Price { get; set; }
         public virtual DbSet<Organization> Organization { get; set; }
+        public virtual DbSet<Appointment> Appointment { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -491,10 +492,6 @@ namespace PodoDemo.Models
                 entity.Property(e => e.Submenuid).HasColumnName("submenuid");
                 entity.Property(e => e.Userid).HasColumnName("userid");
 
-                //entity.HasOne(d => d.Submenu)
-                //    .WithMany(p => p.UserAuth)
-                //    .HasForeignKey(d => d.Submenuid)
-                //    .HasConstraintName("FK_Auth_SubMenu");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserAuth)
@@ -675,6 +672,77 @@ namespace PodoDemo.Models
 
                 entity.Property(e => e.Memo)
                     .HasColumnName("memo");                
+            });
+
+            modelBuilder.Entity<Appointment>(entity =>
+            {
+                entity.Property(e => e.Appointmentid).HasColumnName("appointmentid");
+                //entity.HasKey(e => e.Todoid)
+                //.HasName("PK_Todo");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.Regardingobjectid)
+                    .HasColumnName("regardingobjectid");
+
+                entity.Property(e => e.Regardingobjecttypeid)
+                    .HasColumnName("regardingobjecttypeid");
+
+                entity.Property(e => e.Regardingobjectname)
+                    .HasColumnName("regardingobjectname");
+
+                entity.Property(e => e.Startdate)
+                    .IsRequired()
+                    .HasColumnName("startdate");
+
+                entity.Property(e => e.Enddate)
+                    .HasColumnName("enddate");
+
+                entity.Property(e => e.Createdate)
+                    .IsRequired()
+                    .HasColumnName("createdate");
+
+                entity.Property(e => e.Createuser)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("createuser");
+
+                entity.Property(e => e.Modifydate)
+                    .IsRequired()
+                    .HasColumnName("modifydate");
+
+                entity.Property(e => e.Modifyuser)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("modifyuser");
+
+                entity.Property(e => e.Ownerid)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("ownerid");
+
+                entity.HasOne(d => d.Owner)
+                    .WithMany(p => p.Appointment)
+                    .HasForeignKey(d => d.Ownerid)
+                    .HasConstraintName("FK_Appointment_User");
+
+
+                //entity.HasOne(d => d.Submenu)
+                //    .WithMany(p => p.UserAuth)
+                //    .HasForeignKey(d => d.Submenuid)
+                //    .HasConstraintName("FK_Auth_SubMenu");
+
+
+                entity.Property(e => e.State)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("state");
             });
         }
     }

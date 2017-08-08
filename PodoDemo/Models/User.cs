@@ -9,6 +9,9 @@ namespace PodoDemo.Models
         public User()
         {
             UserAuth = new HashSet<UserAuth>();
+            Account = new HashSet<Account>();
+            Product = new HashSet<Product>();
+            Appointment = new HashSet<Appointment>();
         }
 
         [Key]
@@ -35,5 +38,8 @@ namespace PodoDemo.Models
         public virtual Organization Organization { get; set; }
 
         public virtual ICollection<UserAuth> UserAuth { get; set; }
+        public virtual ICollection<Account> Account { get; set; }
+        public virtual ICollection<Product> Product { get; set; }
+        public virtual ICollection<Appointment> Appointment { get; set; }
     }
 }
