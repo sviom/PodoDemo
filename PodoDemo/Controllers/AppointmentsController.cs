@@ -162,10 +162,10 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Appointment appointment)
+        public async Task<IActionResult> Create(bool? isPop, [Bind("Name,Startdate,Enddate,State,Regardingobjectid,Regardingobjecttypeid,Regardingobjectname,Description")] Appointment appointment)
         {
             // 사용자에게 쓰기 권한이 있는지 체크
-            CreaetUserAuth();            
+            CreaetUserAuth();
             if (_userAuth.Write.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
@@ -183,6 +183,15 @@ namespace PodoDemo.Controllers
                 _context.Add(appointment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
+            }
+
+            if (isPop == null)
+            {
+                ViewBag.isPop = false;
+            }
+            else
+            {
+                ViewBag.isPop = isPop;
             }
 
             ViewData["Ownerid"] = new SelectList(_context.User, "Id", "Id", appointment.Ownerid);

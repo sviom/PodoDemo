@@ -113,6 +113,7 @@
 
         <form class="form-horizontal" id="AppointmentsCreateForm" action="/Appointments/Create" method="post">
             @Html.AntiForgeryToken()
+            @*<input type="hidden" id="IsPop" name="IsPop" value="@Html.Raw(ViewBag.isPop)" />*@
             <div class="form-group">
                 <label class="col-md-1 control-label requireField">제목</label>
                 <div class="col-md-3">
@@ -139,8 +140,8 @@
                 <label class="col-md-1 control-label">관련항목<br />검색하기</label>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <input type="hidden" id="Regardingobjectid" name="Regardingobjectid" value="" />
-                        <input type="hidden" id="Regardingobjecttypeid" name="Regardingobjecttypeid" value="" />
+                        <input type="hidden" id="Regardingobjectid" name="Regardingobjectid" value="0" />
+                        <input type="hidden" id="Regardingobjecttypeid" name="Regardingobjecttypeid" />
                         <select class="form-control" id="RegardingTypeList" name="RegardingTypeList"></select>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" onclick="SearchRegardingObjectPop();">
