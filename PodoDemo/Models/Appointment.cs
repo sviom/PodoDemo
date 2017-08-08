@@ -23,4 +23,13 @@ namespace PodoDemo.Models
         public string Ownerid { get; set; }
         public string State { get; set; }
     }
+
+    public class AppointmentSearch
+    {
+        public string Name { get; set; }
+        public DateTime Startdate { get; set; } = DateTime.MinValue;
+        public DateTime Enddate { get; set; } = DateTime.MinValue;
+        public string Ownerid { get; set; }
+        public string State { get; set; }
+    }
 }

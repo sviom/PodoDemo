@@ -38,8 +38,7 @@
             @if (ViewBag.isPop)
             {
                 <text>
-            if (typeof window.opener.SetRegardingInfo == "function") { window.opener.SetRegardingInfo(data.Todoid, data.Name) }
-            window.close();
+            if (typeof window.opener.SetRegardingInfo == "function") { window.opener.SetRegardingInfo(data.Appointmentid, data.Name); window.close(); }
                 </text>
             }
             else
@@ -59,7 +58,7 @@
                 datatype: "json",
                 datafields:
                 [
-                    { name: 'Todoid', type: 'number' },
+                    { name: 'Appointmentid', type: 'number' },
                     { name: 'Name', type: 'string' },
                     { name: 'Startdate', type: 'date' },
                     { name: 'Ownerid', type: 'string' },
@@ -89,7 +88,7 @@
                 theme: "metroCustom",//테마설정
                 localization: GetLocalizationString(),
                 columns: [
-                    { text: "Todoid", datafield: "Todoid", hidden: true },
+                    { text: "Todoid", datafield: "Appointmentid", hidden: true },
                     { text: "제목", datafield: "Name", align: 'center', cellsalign: 'left', width: '30%', minwidth: '100px' },
                     { text: "관련항목", datafield: "Regardingobjectname", align: 'center', cellsalign: 'left', width: '20%', minwidth: '100px' },
                     { text: "시작일", datafield: 'Startdate', align: 'center', cellsalign: 'center', width: '15%', minwidth: '100px', cellsformat: 'yyyy-MM-dd' },
