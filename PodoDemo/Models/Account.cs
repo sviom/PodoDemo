@@ -34,7 +34,7 @@ namespace PodoDemo.Models
         public string Modifyuser { get; set; }
         public bool Isdeleted { get; set; }
         public string Ownerid { get; set; }
-
+        public virtual User Owner { get; set; }
         public virtual ICollection<Contact> Contact { get; set; }
     }
 

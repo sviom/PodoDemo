@@ -1,0 +1,185 @@
+﻿@model PodoDemo.Models.Appointment
+
+@{
+    ViewData["Title"] = "약속";
+
+    // 팝업 여부 확인
+    if (ViewBag.isPop)
+    {
+        Layout = "~/Views/Shared/Popup_Layout.cshtml";
+    }
+}
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        SetBasicElement();// 기본적으로 그리는 화면 내용
+
+        @*
+            팝업 여부에 따라 팝업이면 기본적으로 거래처 검색 페이지라고 생각해야 한다.
+        *@
+        @if (ViewBag.isPop)
+        {
+            <text>
+        //if (typeof window.opener.SetAccountsInfo == "function") { window.opener.SetAccountsInfo(data.Accountid, data.Name); }
+        //if (typeof window.opener.SetRegardingInfo == "function") { window.opener.SetRegardingInfo(data.Accountid, data.Name) }
+        //window.close();
+            </text>
+        }
+        else
+        {
+            <text>
+        //location.href = "/Accounts/Edit/" + data.Accountid;
+            </text>
+        }
+    });
+
+    // 기본적으로 그리는 화면 내용
+    function SetBasicElement() {
+        $("#jqdatetimeinput_startdate").jqxDateTimeInput({ width: '100%', formatString: 'yyyy-MM-dd' });
+        $("#jqdatetimeinput_enddate").jqxDateTimeInput({ width: '100%', formatString: 'yyyy-MM-dd' });
+        GetOptionDDL('5', 'State', SetoptionTag, '', true, false, false);
+        SetoptionTag('RegardingTypeList', JSON.parse('@Html.Raw(ViewBag.SubmenuList)'), '', false, true, false);
+    }
+
+    // 폼이 입력될 때
+    function SubmitForm() {
+        // 유효성 검사 후 진행
+        if (ValidateForm()) {
+            $("#Startdate").val($('#jqdatetimeinput_startdate').jqxDateTimeInput('getText'));
+            $("#Enddate").val($('#jqdatetimeinput_enddate').jqxDateTimeInput('getText'));
+            $("#AppointmentsCreateForm").submit();
+        }
+    }
+
+    // 입력한 값들에 대한 유효성 검사
+    function ValidateForm() {
+        var nameValue = $("#Name").val();
+        var startdateValue = $("#jqdatetimeinput_startdate").jqxDateTimeInput('getText');
+        var stateValue = $("#State option:selected").val();
+
+        if (nameValue == "") {
+            alert("제목을 입력해주세요.");
+            return false;
+        }
+
+        if (startdateValue == "") {
+            alert("시작날짜는 반드시 지정해주세요.");
+            return false;
+        } else {
+            if (!IsDateType(startdateValue)) {
+                alert("날짜 형식을 올바르게 입력해주세요.");
+                return false;
+            }
+        }
+
+        if (stateValue == "") {
+            alert("상태를 선택해주세요.");
+            return false;
+        }
+
+        return true;
+    }
+
+    // 관련항목에 따른 각 항목 Index 띄워주기
+    function SearchRegardingObjectPop() {
+        var inSubmenu = new Object();
+        inSubmenu.Id = $("#RegardingTypeList option:selected").val();
+        var menu = ExecuteAjax("POST", window.location.origin + "/api/CommonAPI/GetSubmenuUrl", "json", "application/json", JSON.stringify(inSubmenu));
+        $("#Regardingobjecttypeid").val(menu.Id);
+        WindowOpenScroll(menu.Menuurl+ "?isPop=true", "", 350, 600, 100, 100);
+    }
+
+    // 관련항목에서 설정한 내용들 반영
+    function SetRegardingInfo(id, name) {
+        $("#Regardingobjectid").val(id);
+        $("#Regardingobjectname").val(name);
+    }
+</script>
+
+<div class="View">
+    <div class="container custom-container">
+        <div class="row">
+            <div class="col-md-12 custom-header">
+                <p class="text-left">약속 생성</p>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="custom-title">
+                <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                <span>기본 정보</span>
+                <hr />
+            </div>
+        </div>
+
+        <form class="form-horizontal" id="AppointmentsCreateForm" action="/Appointments/Create" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <label class="col-md-1 control-label requireField">제목</label>
+                <div class="col-md-3">
+                    <input type="text" id="Name" name="Name" class="form-control" placeholder="제목" />
+                </div>
+
+                <label class="col-md-1 control-label requireField">시작일</label>
+                <div class="col-md-3">
+                    <div id="jqdatetimeinput_startdate"></div>
+                    <input type="hidden" id="Startdate" name="Startdate" />
+                </div>
+                <label class="col-md-1 control-label">종료일</label>
+                <div class="col-md-3">
+                    <div id="jqdatetimeinput_enddate"></div>
+                    <input type="hidden" id="Enddate" name="Enddate" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-1 control-label requireField">상태</label>
+                <div class="col-md-3">
+                    <select id="State" name="State" class="form-control"></select>
+                </div>
+                <label class="col-md-1 control-label">관련항목<br />검색하기</label>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input type="hidden" id="Regardingobjectid" name="Regardingobjectid" value="" />
+                        <input type="hidden" id="Regardingobjecttypeid" name="Regardingobjecttypeid" value="" />
+                        <select class="form-control" id="RegardingTypeList" name="RegardingTypeList"></select>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" onclick="SearchRegardingObjectPop();">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" id="Regardingobjectname" name="Regardingobjectname" class="form-control"
+                           placeholder="선택된 관련항목이 표시됩니다." aria-describedby="regardingobject name" readonly="readonly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-1 control-label">설명</label>
+                <div class="col-md-11">
+                    <textarea id="Description" name="Description" class="form-control" placeholder="내용을 입력하세요." rows="4"></textarea>
+                </div>
+            </div>
+        </form>
+
+        <div class="row">
+            @if (ViewData["Write"].ToString().Equals("4-1") || ViewData["Write"].ToString().Equals("4-2"))
+            {
+                <div class="col-md-2 custom-row-btn-margin">
+                    <button type="button" id="CreateAppointmentButton" class="btn btn-default" onclick="SubmitForm();">
+                        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+                        저장
+                    </button>
+                </div>
+            }
+            <div class="col-md-2 custom-row-btn-margin">
+                <a href="/Appointments/Index" class="btn btn-default">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    목록
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -15,6 +15,7 @@ namespace PodoDemo.Models
         public string Name { get; set; }
         public string Maker { get; set; } = "";
         public string Ownerid { get; set; } = "";
+        public virtual User Owner { get; set; }
         public string Origin { get; set; } = "";
         public string Productcode { get; set; } = "";
         public DateTime Createdate { get; set; }

@@ -20,6 +20,7 @@ namespace PodoDemo.Models
         public DateTime Modifydate { get; set; }
         public string Modifyuser { get; set; }
         public string Ownerid { get; set; }
+        public virtual User Owner { get; set; }
         public string State { get; set; }
     }
 

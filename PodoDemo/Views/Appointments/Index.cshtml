@@ -1,0 +1,211 @@
+﻿@*@model IEnumerable<PodoDemo.Models.Appointment>*@
+@model string
+
+@{
+    ViewData["Title"] = "약속";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        GetUserDDL("", '@ViewBag.UserId', 'Ownerid', SetoptionTag, '', true, false, false);     // 담당자
+        GetOptionDDL('5', 'State', SetoptionTag, '', true, false, false);                       // 상태
+
+        $("#jqdatetimeinput_Startdate").jqxDateTimeInput({ width: '100%', formatString: 'yyyy-MM-dd' }).val("");
+
+        SetBasicElement(@Html.Raw(Model));
+
+        // 고객타입, 담당자 변경 시 마다 거래처 재검색
+        $("#State, #Ownerid").change(function () {
+            SearchAppointments();
+        });
+
+        $('#appointmentList').on('rowdoubleclick', function (event) {
+            var args = event.args;
+            // row's bound index.
+            var boundIndex = args.rowindex;
+            // row's visible index.
+            var visibleIndex = args.visibleindex;
+            // right click.
+            var rightclick = args.rightclick;
+            // original event.
+            var ev = args.originalEvent;
+
+            var data = $('#appointmentList').jqxGrid('getrowdata', boundIndex);
+
+            @*
+                팝업 여부에 따라 팝업이면 기본적으로 거래처 검색 페이지라고 생각해야 한다.
+            *@
+            @if (ViewBag.isPop)
+            {
+                <text>
+            if (typeof window.opener.SetRegardingInfo == "function") { window.opener.SetRegardingInfo(data.Todoid, data.Name) }
+            window.close();
+                </text>
+            }
+            else
+            {
+                <text>
+            location.href = "/Appointments/Edit/" + data.Todoid;
+                </text>
+            }
+        });
+    });
+
+    // 기본적으로 그리는 화면 내용
+    function SetBasicElement(appointmentListRaw) {
+        var source =
+            {
+                localdata: appointmentListRaw,
+                datatype: "json",
+                datafields:
+                [
+                    { name: 'Todoid', type: 'number' },
+                    { name: 'Name', type: 'string' },
+                    { name: 'Startdate', type: 'date' },
+                    { name: 'Ownerid', type: 'string' },
+                    { name: 'Regardingobjectname', type: 'string' },
+                    { name: 'State', type: 'string' }
+                ]
+            };
+
+        var dataAdapter = new $.jqx.dataAdapter(source);
+
+        $("#appointmentList").jqxGrid(
+            {
+                width: '100%',
+                source: dataAdapter,
+                pageable: true,
+                autoheight: true,
+                autorowheight: true,
+                sortable: true,
+                altrows: true,
+                enabletooltips: true,
+                editable: false,
+                selectionmode: 'singlerow',
+                pagesizeoptions: [10, 15, 20, 25, 30, 35, 40, 45, 50],
+                //showfilterrow: true,
+                filterable: true,
+                pagesize: 15,
+                theme: "metroCustom",//테마설정
+                localization: GetLocalizationString(),
+                columns: [
+                    { text: "Todoid", datafield: "Todoid", hidden: true },
+                    { text: "제목", datafield: "Name", align: 'center', cellsalign: 'left', width: '30%', minwidth: '100px' },
+                    { text: "관련항목", datafield: "Regardingobjectname", align: 'center', cellsalign: 'left', width: '20%', minwidth: '100px' },
+                    { text: "시작일", datafield: 'Startdate', align: 'center', cellsalign: 'center', width: '15%', minwidth: '100px', cellsformat: 'yyyy-MM-dd' },
+                    { text: "상태", datafield: "State", align: 'center', cellsalign: 'center', width: '15%', minwidth: '100px' },
+                    { text: '담당자', datafield: 'Ownerid', align: 'center', cellsalign: 'center', width: '20%', minwidth: '100px' },
+                ]
+            });
+    }
+
+    // 거래처 검색 후 반영
+    function SearchAppointments() {
+        var SearchInfo = new Object();
+        SearchInfo.Name = $("#Name").val();
+        SearchInfo.State = $("#State").val();
+        SearchInfo.Ownerid = $("#Ownerid").val();
+        // 값이 없으면 컨트롤러에서 인식 못해서 아예 없애면 기본값으로 들어감
+        if ($("#jqdatetimeinput_Startdate").jqxDateTimeInput('getText') != "") {
+            SearchInfo.Startdate = $("#jqdatetimeinput_Startdate").jqxDateTimeInput('getText');
+        }
+
+        var appointmentListRaw
+            = ExecuteAjax("POST", "/Appointments/Search", "json", "application/json", JSON.stringify(SearchInfo));
+        // 리스트에 반영
+        SetBasicElement(appointmentListRaw);
+    }
+
+</script>
+
+<div class="View">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 custom-header">
+                <p class="text-left">
+                    약속 목록
+                </p>
+            </div>
+        </div>
+
+        <form class="form-horizontal" id="SearcAppointmentForm">
+            <input type="hidden" id="IsPop" name="IsPop" value="@Html.Raw(ViewBag.isPop)" />
+
+            <div class="form-group">
+                <div class="col-md-12">
+                    <div class="custom-title">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        <span>검색</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-1 control-label">제목</label>
+                <div class="col-md-2">
+                    <input type="text" id="Name" name="Name" class="form-control" placeholder="제목 입력" onkeypress="ExecuteEnterkey(SearchAppointments);" />
+                </div>
+
+                <label class="col-md-1 control-label">상태</label>
+                <div class="col-md-2">
+                    <select id="State" name="State" class="form-control"></select>
+                </div>
+                <label class="col-md-1 control-label">시작일자</label>
+                <div class="col-md-2">
+                    <div id="jqdatetimeinput_Startdate"></div>
+                    <input type="hidden" id="Startdate" name="Startdate" />
+                </div>
+
+                <label class="col-md-1 control-label">담당자</label>
+                <div class="col-md-2">
+                    <select id="Ownerid" name="Ownerid" class="form-control"></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-10 col-md-2">
+                    <button type="button" class="btn btn-default" onclick="SearchAppointments();">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        검색
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="custom-title">
+                    <hr />
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    <span>상세 내용</span>
+                </div>
+                <div id="appointmentList"></div>
+            </div>
+        </div>
+
+        @if (ViewBag.isPop)
+        {
+            <div class="row">
+                <div class="col-md-offset-10 col-md-2">
+                    <button type="button" class="btn btn-default" onclick="window.close();">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        닫기
+                    </button>
+                </div>
+            </div>
+        }
+        else
+        {
+            @if (ViewData["Write"].ToString().Equals("4-1") || ViewData["Write"].ToString().Equals("4-2"))
+            {
+                <div class="row">
+                    <div class="col-md-2">
+                        <a href="/Appointments/Create" class="btn btn-default">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                            약속 생성
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

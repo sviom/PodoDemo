@@ -106,6 +106,11 @@ namespace PodoDemo.Models
                     .HasColumnName("ownerid")
                     .HasMaxLength(50);
 
+                entity.HasOne(d => d.Owner)
+                    .WithMany(p => p.Account)
+                    .HasForeignKey(d => d.Ownerid)
+                    .HasConstraintName("FK_Account_User");
+
                 entity.Property(e => e.Phone)
                     .HasColumnName("phone")
                     .HasMaxLength(20);
@@ -552,6 +557,11 @@ namespace PodoDemo.Models
                     .HasMaxLength(50)
                     .HasColumnName("ownerid");
 
+                entity.HasOne(d => d.Owner)
+                    .WithMany(p => p.Todo)
+                    .HasForeignKey(d => d.Ownerid)
+                    .HasConstraintName("FK_Todo_User");
+
                 entity.Property(e => e.State)
                     .IsRequired()
                     .HasMaxLength(10)
@@ -585,6 +595,11 @@ namespace PodoDemo.Models
                     .IsRequired()
                     .HasColumnName("ownerid")
                     .HasMaxLength(50);
+
+                entity.HasOne(d => d.Owner)
+                    .WithMany(p => p.Product)
+                    .HasForeignKey(d => d.Ownerid)
+                    .HasConstraintName("FK_Product_User");
 
                 entity.Property(e => e.Createdate)
                     .IsRequired()
@@ -731,13 +746,6 @@ namespace PodoDemo.Models
                     .WithMany(p => p.Appointment)
                     .HasForeignKey(d => d.Ownerid)
                     .HasConstraintName("FK_Appointment_User");
-
-
-                //entity.HasOne(d => d.Submenu)
-                //    .WithMany(p => p.UserAuth)
-                //    .HasForeignKey(d => d.Submenuid)
-                //    .HasConstraintName("FK_Auth_SubMenu");
-
 
                 entity.Property(e => e.State)
                     .IsRequired()

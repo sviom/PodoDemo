@@ -7,8 +7,6 @@ namespace PodoDemo.Models
 {
     public class UserAuth
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
         public string Userid { get; set; }
         public string Read { get; set; }
