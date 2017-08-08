@@ -2,12 +2,35 @@
 
 @{
     ViewData["Title"] = "할일";
-}
 
+    // 팝업 여부 확인
+    if (ViewBag.isPop)
+    {
+        Layout = "~/Views/Shared/Popup_Layout.cshtml";
+    }
+}
 
 <script type="text/javascript">
     $(document).ready(function () {
         SetBasicElement();// 기본적으로 그리는 화면 내용
+
+        @*
+            팝업 여부에 따라 팝업이면 기본적으로 거래처 검색 페이지라고 생각해야 한다.
+        *@
+        @if (ViewBag.isPop)
+        {
+            <text>
+        //if (typeof window.opener.SetAccountsInfo == "function") { window.opener.SetAccountsInfo(data.Accountid, data.Name); }
+        //if (typeof window.opener.SetRegardingInfo == "function") { window.opener.SetRegardingInfo(data.Accountid, data.Name) }
+        //window.close();
+            </text>
+        }
+        else
+        {
+            <text>
+        //location.href = "/Accounts/Edit/" + data.Accountid;
+            </text>
+        }
     });
 
     // 기본적으로 그리는 화면 내용

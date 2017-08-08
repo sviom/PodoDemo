@@ -49,9 +49,8 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Index(bool? isPop)
         {
-            CreaetUserAuth();
-
             // 사용자 읽기 권한 체크
+            CreaetUserAuth();
             if (_userAuth.Read.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
@@ -121,11 +120,10 @@ namespace PodoDemo.Controllers
         /// 할일 생성페이지 이동
         /// </summary>
         /// <returns></returns>
-        public IActionResult Create()
+        public IActionResult Create(bool? isPop)
         {
-            CreaetUserAuth();
-
             // 사용자 권한
+            CreaetUserAuth();
             ViewData["Read"] = _userAuth.Read;
             ViewData["Write"] = _userAuth.Write;
             ViewData["Modify"] = _userAuth.Modify;
@@ -135,6 +133,15 @@ namespace PodoDemo.Controllers
             if (_userAuth.Write.Equals("4-3"))
             {
                 return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
+            if (isPop == null)
+            {
+                ViewBag.isPop = false;
+            }
+            else
+            {
+                ViewBag.isPop = isPop;
             }
 
             List<DDL> submenuDDL = new List<DDL>();
