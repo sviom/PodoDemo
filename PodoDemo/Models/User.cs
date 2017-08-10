@@ -13,6 +13,7 @@ namespace PodoDemo.Models
             Product = new HashSet<Product>();
             Appointment = new HashSet<Appointment>();
             Todo = new HashSet<Todo>();
+            Holiday = new HashSet<Holiday>();
         }
 
         [Key]
@@ -43,5 +44,6 @@ namespace PodoDemo.Models
         public virtual ICollection<Product> Product { get; set; }
         public virtual ICollection<Appointment> Appointment { get; set; }
         public virtual ICollection<Todo> Todo { get; set; }
+        public virtual ICollection<Holiday> Holiday { get; set; }
     }
 }

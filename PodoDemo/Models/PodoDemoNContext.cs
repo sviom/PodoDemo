@@ -19,6 +19,7 @@ namespace PodoDemo.Models
         public virtual DbSet<Price> Price { get; set; }
         public virtual DbSet<Organization> Organization { get; set; }
         public virtual DbSet<Appointment> Appointment { get; set; }
+        public virtual DbSet<Holiday> Holiday { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -751,6 +752,62 @@ namespace PodoDemo.Models
                     .IsRequired()
                     .HasMaxLength(10)
                     .HasColumnName("state");
+            });
+
+            modelBuilder.Entity<Holiday>(entity =>
+            {
+                entity.Property(e => e.Holidayid).HasColumnName("holidayid");
+                //entity.HasKey(e => e.Todoid)
+                //.HasName("PK_Todo");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.Startdate)
+                    .IsRequired()
+                    .HasColumnName("startdate");
+
+                entity.Property(e => e.Enddate)
+                    .IsRequired()
+                    .HasColumnName("enddate");
+
+                entity.Property(e => e.Createdate)
+                    .IsRequired()
+                    .HasColumnName("createdate");
+
+                entity.Property(e => e.Createuser)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("createuser");
+
+                entity.Property(e => e.Modifydate)
+                    .IsRequired()
+                    .HasColumnName("modifydate");
+
+                entity.Property(e => e.Modifyuser)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("modifyuser");
+
+                entity.Property(e => e.Ownerid)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("ownerid");
+
+                entity.HasOne(d => d.Owner)
+                    .WithMany(p => p.Holiday)
+                    .HasForeignKey(d => d.Ownerid)
+                    .HasConstraintName("FK_Holiday_User");
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("type");
             });
         }
     }

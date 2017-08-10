@@ -315,13 +315,34 @@ namespace PodoDemo.Controllers
 
             return View(appointment);
         }
-
-
-        // POST: Appointments/Delete/5
+        
+        /// <summary>
+        /// 약속 삭제
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
+        public async Task<IActionResult> Delete(long? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            // 사용자 권한
+            CreaetUserAuth();
+            ViewData["Read"] = _userAuth.Read;
+            ViewData["Write"] = _userAuth.Write;
+            ViewData["Modify"] = _userAuth.Modify;
+            ViewData["Delete"] = _userAuth.Delete;
+
+            // 삭제 권한 없음
+            if (_userAuth.Delete.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             var appointment = await _context.Appointment.SingleOrDefaultAsync(m => m.Appointmentid == id);
             _context.Appointment.Remove(appointment);
             await _context.SaveChangesAsync();
