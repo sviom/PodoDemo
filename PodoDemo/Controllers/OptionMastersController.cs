@@ -29,7 +29,7 @@ namespace PodoDemo.Controllers
         /// <returns></returns>
         public bool CheckSystemUserAsync()
         {
-            User loginedUser
+            loginedUser
                 = _context.User
                             .Where(x => x.Id == HttpContext.Session.GetString("userId"))
                             .Single();
