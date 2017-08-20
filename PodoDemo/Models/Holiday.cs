@@ -19,6 +19,6 @@ namespace PodoDemo.Models
         public string Ownerid { get; set; }
         public virtual User Owner { get; set; }
         public string Type { get; set; }
-        public double Remaindate { get; set; }
+        public double Remaindate { get; set; }      // 휴가 남은 개수
     }
 }

@@ -116,15 +116,32 @@ namespace PodoDemo.Controllers
             return View();
         }
 
-        // POST: Holidays/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// 휴가 생성
+        /// </summary>
+        /// <param name="holiday"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Holidayid,Name,Description,Startdate,Enddate,Createdate,Createuser,Modifydate,Modifyuser,Ownerid,Type,Remaindate")] Holiday holiday)
+        public async Task<IActionResult> Create([Bind("Name,Description,Startdate,Enddate,Type")] Holiday holiday)
         {
+            // 사용자에게 쓰기 권한이 있는지 체크
+            CreaetUserAuth();
+            if (_userAuth.Write.Equals("4-3"))
+            {
+                return RedirectToAction("Error", "Home", new { errormessage = "UserauthError" });
+            }
+
             if (ModelState.IsValid)
             {
+                holiday.Createdate = DateTime.Now;
+                holiday.Createuser = HttpContext.Session.GetString("userId");
+                holiday.Modifydate = DateTime.Now;
+                holiday.Modifyuser = HttpContext.Session.GetString("userId");
+                holiday.Ownerid = HttpContext.Session.GetString("userId");
+                holiday.Owner = _context.User.Single(x => x.Id == holiday.Ownerid);
+                holiday.Remaindate = 0;
+
                 _context.Add(holiday);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
